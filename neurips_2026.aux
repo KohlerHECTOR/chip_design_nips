@@ -1,0 +1,48 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Contributions:}{1}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related work}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Combinational optimization}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Graph represntation learning for AIGs}{1}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Reinforcement learning for AIGs}{1}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Graph reinforcement learning for other combinatorial optimization}{1}{subsection.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces PPO on the ten MLCAD benchmarks with five observation encoders, hyper-parameter matched. (a) mean AND count over the ten benchmarks; (b) per-benchmark change against the MLP, shaded band is one seed standard deviation; (c) mean reduction against the parameters the encoder adds to the policy.}}{2}{figure.1}\protected@file@percent }
+\newlabel{fig:rl-main}{{1}{2}{PPO on the ten MLCAD benchmarks with five observation encoders, hyper-parameter matched. (a) mean AND count over the ten benchmarks; (b) per-benchmark change against the MLP, shaded band is one seed standard deviation; (c) mean reduction against the parameters the encoder adds to the policy}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Background material}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}And-inverter graphs minimization}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Markov decision process}{2}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Methodology}{2}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Graph state representation}{2}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Graph convolutional networks}{2}{subsubsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Engineered graph features}{2}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Reinforcement learning}{2}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Experiments}{2}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Graph reinforcement learning}{2}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Adding a GCN to the policy does not improve AIG minimization (Figures~\ref {fig:rl-main},~\ref {fig:rl-per-benchmark}).}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The result holds over a hundred further circuits and does not grow with circuit size (Figures~\ref {fig:rl-ex},~\ref {fig:rl-ex-size}).}{2}{section*.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Per-benchmark learning curves for the runs aggregated in Figure~\ref {fig:rl-main}(a). Dashed line: \texttt  {resyn2}.}}{3}{figure.2}\protected@file@percent }
+\newlabel{fig:rl-per-benchmark}{{2}{3}{Per-benchmark learning curves for the runs aggregated in Figure~\ref {fig:rl-main}(a). Dashed line: \texttt {resyn2}}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces The same comparison on \texttt  {ex200}--\texttt  {ex299}, where each encoder ran at its own baseline hyper-parameters. Restricted to the $390$ of $500$ (benchmark, seed) cells all four encoders completed, covering $80$ benchmarks.}}{3}{figure.3}\protected@file@percent }
+\newlabel{fig:rl-ex}{{3}{3}{The same comparison on \texttt {ex200}--\texttt {ex299}, where each encoder ran at its own baseline hyper-parameters. Restricted to the $390$ of $500$ (benchmark, seed) cells all four encoders completed, covering $80$ benchmarks}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Value prediction}{3}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}Building a dataset}{3}{subsubsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}Theoretical lower bounds on the prediction error}{3}{subsubsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Message passing cannot predict $V^\star $ better than the statistics the MLP already sees (Figures~\ref {fig:bounds},~\ref {fig:depth}).}{3}{section*.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Reduction against the MLP as a function of input circuit size on \texttt  {ex200}--\texttt  {ex299}. Line: mean over size quartiles.}}{4}{figure.4}\protected@file@percent }
+\newlabel{fig:rl-ex-size}{{4}{4}{Reduction against the MLP as a function of input circuit size on \texttt {ex200}--\texttt {ex299}. Line: mean over size quartiles}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Best error (a) and best ranking (b) achievable by each model class on $V^\star $, over nine benchmarks and ten dataset seeds. Each class is replaced by the optimal predictor for the information it can distinguish, so the value shown cannot be beaten by any model in that class. $^{*}$\texttt  {C1355} has only six distinct targets.}}{4}{figure.5}\protected@file@percent }
+\newlabel{fig:bounds}{{5}{4}{Best error (a) and best ranking (b) achievable by each model class on $V^\star $, over nine benchmarks and ten dataset seeds. Each class is replaced by the optimal predictor for the information it can distinguish, so the value shown cannot be beaten by any model in that class. $^{*}$\texttt {C1355} has only six distinct targets}{figure.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.3}Empirical performances of AIG-specific models on value prediction}{4}{subsubsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Trained graph models, including AIG-specific ones, do not beat predicting the mean (Figures~\ref {fig:trained},~\ref {fig:curves}).}{4}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Futre work}{4}{section.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces The MPNN bound as a function of depth $k$.}}{5}{figure.6}\protected@file@percent }
+\newlabel{fig:depth}{{6}{5}{The MPNN bound as a function of depth $k$}{figure.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Technical appendices and supplementary material}{5}{appendix.A}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Test error of eight trained models, normalised by the variance of the target so that $1.0$ is the error of predicting the mean. Violet ticks: the $1$-WL bound of Figure~\ref {fig:bounds}.}}{6}{figure.7}\protected@file@percent }
+\newlabel{fig:trained}{{7}{6}{Test error of eight trained models, normalised by the variance of the target so that $1.0$ is the error of predicting the mean. Violet ticks: the $1$-WL bound of Figure~\ref {fig:bounds}}{figure.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Validation error over training for the configurations of Figure~\ref {fig:trained}.}}{7}{figure.8}\protected@file@percent }
+\newlabel{fig:curves}{{8}{7}{Validation error over training for the configurations of Figure~\ref {fig:trained}}{figure.8}{}}
+\gdef \@abspage@last{13}
