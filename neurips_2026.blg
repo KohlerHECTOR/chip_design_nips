@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: neurips_2026.aux
+The style file: plainnat.bst
+Database file #1: neurips_2026.bib
+Warning--empty publisher in Bellman
+Warning--empty booktitle in Mishchenko2006ScalableLS
+You've used 48 entries,
+            2773 wiz_defined-function locations,
+            897 strings with 15939 characters,
+and the built_in function-call counts, 28767 in all, are:
+= -- 2412
+> -- 2204
+< -- 34
++ -- 737
+- -- 689
+* -- 2457
+:= -- 4413
+add.period$ -- 181
+call.type$ -- 48
+change.case$ -- 368
+chr.to.int$ -- 48
+cite$ -- 98
+duplicate$ -- 1197
+empty$ -- 2048
+format.name$ -- 757
+if$ -- 6067
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 48
+newline$ -- 281
+num.names$ -- 196
+pop$ -- 803
+preamble$ -- 1
+purify$ -- 323
+quote$ -- 0
+skip$ -- 1010
+stack$ -- 0
+substring$ -- 712
+swap$ -- 217
+text.length$ -- 19
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 513
+warning$ -- 2
+while$ -- 197
+width$ -- 0
+write$ -- 685
+(There were 2 warnings)

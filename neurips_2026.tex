@@ -3,6 +3,9 @@
 % if you need to pass options to natbib, use, e.g.:
 %     \PassOptionsToPackage{numbers, compress}{natbib}
 % before loading neurips_2026
+% numeric citations (as with the plain style), while keeping \citet working
+% with the plainnat bibliography style used below.
+\PassOptionsToPackage{numbers, compress}{natbib}
 
 % The authors should use one of these tracks.
 % Before accepting by the NeurIPS conference, select one of the options below.
@@ -48,7 +51,7 @@
  % \usepackage[preprint]{neurips_2026}
 
 % to avoid loading the natbib package, add option nonatbib:
-%    \usepackage[nonatbib]{neurips_2026}
+  %  \usepackage[nonatbib]{neurips_2026}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -61,9 +64,15 @@
 \usepackage{microtype}      % microtypography
 \usepackage{xcolor}         % colors
 \usepackage{graphicx}       % figures
+\usepackage{tikz}
+\usepackage{subcaption}
+\usepackage{algorithm}       % algorithm float
+\usepackage{algpseudocode}   % pseudocode body
+
+\newtheorem{definition}{Definition}
 
 % Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote. 
-\title{Understanding representation learning in RL-based logic optimization}
+\title{Understanding graph representation learning in reinforcement learning based logic optimization}
 
 
 % The \author macro works with any number of authors. There are two commands
@@ -115,36 +124,295 @@
 
 \begin{abstract}
   Computer chips ought to be as small as possible for cost efficiency. The problem of minimizing chip size while preserving the chip's functionality has been studied through the prism of and-inverter graphs (AIGs) since any boolean function can be represented by AIGs.
-  Because the complexity of AIG size minimization is unkown (it is NP-hard under some assumptions), it is a fitting candidate for neural solvers that can leverage learned representations to generalize to unseen AIGs and outpace standard enumerations and branch-and-bound solvers.
+  Because the complexity of AIG size minimization is unknown---it is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard---it is a fitting candidate for neural solvers that can leverage learned representations to generalize to unseen AIGs and outpace standard enumerations and branch-and-bound solvers.
   Reinforcement learning and more generally planning have been used to optimize such AIGs without the need for intractable supervision signals. Contemporarily, graph representation learning have been applied to train models that can perform tasks on unseen AIGs.
   More recently, those two technologies have been combined and achieved competitive performances with state-of-the-art heuristics.
   In this preliminary work, we question the adequacy of graph representation learning to improve deep reinforcement learning for logic AIG minimization.
 \end{abstract}
 
 
-
 \section{Introduction}
-\paragraph{Contributions:} First, we show that when replicating past work's graph reinforcement learning pipelines, grah representation learning did not help the training compared to simple multi-layer parceptrons trained with graphs statistics (number of nodes, edges, \dots). More fundamentally, we show that both theoretically and empiricially many graph representations, even AIG-specific ones, cannot predict the values of AIGs--in the RL sense--more accurately than standard multi-layer perceptrons trained on graphs statistics only.
+A circuit that computes a given Boolean function with fewer gates occupies less area and is cheaper to manufacture, which matters at the scale of the semiconductor industry~\cite{economy}.
+Logic synthesis addresses this at the technology-independent level: given a Boolean function, find a small circuit that computes it.
+And-Inverter Graphs (AIGs) are the representation used for this step, because AND and NOT are functionally complete---so every Boolean function admits an AIG.
+
+AIG minimization has no known exact algorithm that scales.
+It is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard~\cite{nphard}, and which is related to Graph Isomorphism~\cite{graphiso}.
+In practice, AIGs are reduced by applying sequences of local rewriting heuristics such as those implemented in \texttt{ABC}~\cite{abc}.
+Choosing the sequence is itself a search problem, and it has been addressed with Bayesian optimization~\cite{bayes}, multi-armed bandits~\cite{flow-bandits}, reinforcement learning~\cite{rl-logic1,rl-gnn1} and Monte Carlo tree search~\cite{gnn-mcts}.
+
+Several of these methods encode the current AIG with a graph neural network rather than with a fixed set of summary statistics~\cite{rl-gnn1,gnn-mcts,chipgrl}.
+The motivation is the same as the very first deep reinforcement learning algorithm, which was designed specifically for Backgammon~\cite{td-gammon}: the state space for an AIG minimization is huge and cannot be enumerated.
+Most importantly, learned representation of the circuit should carry structural information that statistics discard, and that it is what should allow a deep reinforcement algorithm~\cite{ppo} to train efficiently by generalizing to unseen circuits: ``I have seen a similar graph before, I should probably edit the AIG in a similar way to get good results''.
+We are not aware of a study that isolates the contribution of the AIG encoder in the reinforcement learning training.
+This work reports such an ablation.
+
+\paragraph{Contributions:} First, we show that when replicating past work's graph reinforcement learning pipelines, graph representation learning did not help the training compared to simple multi-layer perceptrons trained with graph statistics (number of nodes, edges, \dots). More fundamentally, we show that both theoretically and empirically many graph representations, even AIG-specific ones, cannot predict the values of AIGs--in the RL sense--more accurately than standard multi-layer perceptrons trained on graph statistics only.
 
 
 \section{Related work}
-\subsection{Combinational optimization}
-\subsection{Graph represntation learning for AIGs} (GraphBench, DeepGate, \dots)
-\subsection{Reinforcement learning for AIGs} (AlphaSynth, MLCAD, \dots)
-\subsection{Graph reinforcement learning for other combinatorial optimization} (review paper \dots)
+\subsection{Combinational optimization}\label{sec:abc}
+Combinational synthesis is a class of fast heuristics that reduce an AIG by rewriting it locally, and that work well in practice~\cite{rewriting,Mishchenko2006ScalableLS,resub}.
+\texttt{ABC}~\cite{abc} is the reference implementation and is widely used in academia; its standard primitives are \texttt{balance}, \texttt{rewrite}, \texttt{resub} and \texttt{refactor}.
+For instance, \texttt{refactor} performs iterative collapsing and refactoring of logic cones in the AIG, attempting to reduce both the number of nodes and the number of levels.
+Since no primitive is globally optimal, reduction is done by composing them into sequences.
+Hand-designed sequences are the reference points against which learned methods are measured: \texttt{resyn}~\cite{resyn} applies \texttt{balance}, \texttt{rewrite}, \texttt{balance}, \texttt{rewrite}, \texttt{balance}, and the \texttt{ABC} documentation also ships a more aggressive sequence known as the ``lazy man's synthesis''~\cite{lms}.
+Searching over sequences has been automated without learned circuit representations, with Bayesian optimization~\cite{bayes} and with multi-armed bandits~\cite{flow-bandits}.
+
+\subsection{Graph representation learning for AIGs}
+A separate line of work learns representations of circuits that are meant to transfer across circuits, rather than a policy for one circuit.
+DeepGate4~\cite{chipgrl} is representative: it learns node embeddings of AIGs and scales them to large designs, and is one of several AIG-specific encoders that we evaluate in Section~\ref{sec:value}.
+\texttt{GraphBench}~\cite{graphbench} is, to our knowledge, the first AIG reduction benchmark built for methods that must perform on unseen AIGs.
+It provides a training set of Boolean functions of varying input and output dimension and a disjoint test set, and it reports node reduction relative to the expert \texttt{ABC} sequence \texttt{resyn2}, \texttt{resyn2}, \texttt{dc2}, \texttt{resyn2rs}, \texttt{resyn2}.
+Its main result is negative: given the AIG obtained by the naive construction of Section~\ref{sec:strashing}, specialised DAG generative models~\cite{directo,layerdag} do not preserve functional equivalence while reducing size.
+Our results are negative in the same sense, for a different family of models.
+
+\subsection{Reinforcement learning for AIGs}
+\citet{rl-logic1} formulate synthesis as an MDP whose states are vectors of AIG statistics---numbers of primary inputs and outputs, nodes, edges, levels and latches, and the proportions of AND and NOT nodes---whose actions are \texttt{ABC} primitives, and whose reward combines node count and level count.
+\citet{rl-gnn1} keep \texttt{ABC} primitives as actions but encode the whole AIG with a graph convolutional network, alongside a small vector of statistics and recent actions, and reward the relative reduction in node count.
+This is the formulation we adopt, and we state it in full in Section~\ref{sec:mdp-instance}.
+\citet{rl-generalization1} predate both and act with Boolean algebraic operations on majority-inverter graphs; we do not compare against it directly because MIGs and AIGs are not directly comparable.
+Both~\citet{rl-logic1} and~\citet{rl-gnn1} train with policy gradient methods~\cite{pg_sutton,reinforce,a2c}.
+We are not aware of a value-based~\cite{watkins1992q,dqn} treatment, even though AIG editing is deterministic.
+These methods report reductions beyond the \texttt{ABC} sequences, but they are not designed to generalise: a policy is trained to reduce one AIG, so the training cost is paid again for every new circuit.
+Search-based methods lift that restriction. AlphaSyn~\cite{gnn-mcts} and AlphaChip~\cite{chip} plan online and therefore apply to circuits unseen at training time, but there is no separation between training and inference: every edit requires a lookahead, and every lookahead step requires network forward passes.
+
+\subsection{Graph reinforcement learning for other combinatorial optimization}
+AIG reduction is an instance of graph structure optimization in the taxonomy of~\citet{graphrl}, who survey reinforcement learning applied to combinatorial problems on graphs and report that a graph neural network encoder is the common choice of state representation.
+Within chip design the same combination is used for transistor sizing~\cite{transistors} and for macro placement~\cite{chip}; in both cases the encoder is motivated as the component that enables transfer to new circuits.
 
 \section{Background material}
 \subsection{And-inverter graphs minimization}
+Given an arbitrary Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, the objective is to find an And-Inverter Graph that encodes $f$ with as few nodes as possible.
+
+\begin{definition}[And-Inverter Graph, following section 3.2.1 from~\citet{graphbench}]\label{def:aig}
+An And-Inverter Graph $\mathcal{G}:=(V, E)$ is a directed acyclic graph of in-degree (fanin) at most two.
+The node set is partitioned into input nodes of in-degree $0$, $V^{in} := \{v^{in}_1,\dots,v^{in}_n\}$, AND nodes of in-degree two, $V^{AND}:=\{v^{AND}_1,\dots,v^{AND}_k\}$, and output nodes of in-degree one, $V^{out}:=\{v^{out}_1,\dots,v^{out}_m\}$; AIGs are therefore heterogeneous graphs~\cite{hetero}.
+The edge set is $E\subseteq V\times V \times \{0, 1\}$, with $0$ indicating direct transmission and $1$ indicating input negation (NOT).
+For an input $\boldsymbol{x}\in \{0, 1\}^n$, values are assigned to input nodes, propagated through gate nodes (applying inversion where specified), and collected at output nodes to yield $\mathcal{G}(\boldsymbol{x})\in \{0, 1\}^m$.
+Because the combination of AND and NOT is functionally complete, any Boolean function can be represented using only these two operations.
+\end{definition}
+
+We write $\mathcal{G}_f:=\left\{\mathcal{G}: \mathcal{G} (\boldsymbol{x}) = f(\boldsymbol{x})\ \forall \boldsymbol{x}\in \{0, 1\}^n\right\}$ for the set of AIGs functionally equivalent to $f$.
+AIGs are non-canonical representations of Boolean functions~\cite{fraig}---two different AIGs can represent the same function---so $|\mathcal{G}_f| > 1$ in general, as in Figure~\ref{fig:example}.
+
+\begin{definition}[And-Inverter Graph reduction]\label{def:pbm}
+Given a Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, we want to find
+$${\mathcal{G}}^\star \subseteq \underset{\mathcal{G}\in \mathcal{G}_f}{\operatorname{arg\ min}} |V|,$$
+the AIGs functionally equivalent to $f$ with as few nodes as possible.
+\end{definition}
+
+The hardness of this problem is not known.
+It is an instance of the Minimum Circuit Size Problem~\cite{nphard}, a natural and well-studied problem in NP that is not known to be NP-hard\footnote{\url{https://mcsp.work/index.html}}, and which is related to Graph Isomorphism~\cite{graphiso}.
+In the absence of a breakthrough in complexity theory, this motivates the development of heuristics.
+
+\begin{figure}
+\begin{subfigure}[b]{0.5\textwidth}
+\centering
+  \begin{tikzpicture}[scale=0.62, every node/.style={scale=0.62}]
+      \draw
+        (0, 0) node[draw,circle] (0){\large$x_1$}
+        (2, 0) node[draw,circle] (1){\large$x_2$}
+        (4, 0) node[draw,circle] (2){\large$x_3$}
+        (1, 2) node[draw,circle] (3){AND}
+        (3, 2) node[draw,circle] (4){AND}
+        (1.5, 4) node[draw,circle] (5){AND}
+        (3, 4) node[draw,circle] (6){$f_2(\boldsymbol{x})$}
+        (1.5, 6) node[draw,circle] (7){$f_1(\boldsymbol{x})$};
+      \begin{scope}[->]
+        \draw (0) to node[] {NOT} (3);
+        \draw (1) to (3);
+        \draw (1) to (5);
+        \draw (1) to (4);
+        \draw (2) to (4);
+        \draw (3) to (5);
+        \draw (4) to (6);
+        \draw (5) to (7);
+      \end{scope}
+    \end{tikzpicture}
+    \subcaption*{$\mathcal{G}_1$: 8 nodes, 4 levels.}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.62, every node/.style={scale=0.62}]
+      \draw
+        (0, 0) node[draw,circle] (0){\large$x_1$}
+        (2, 0) node[draw,circle] (1){\large$x_2$}
+        (4, 0) node[draw,circle] (2){\large$x_3$}
+        (1, 2) node[draw,circle] (3){AND}
+        (3, 2) node[draw,circle] (4){AND}
+        (3, 4) node[draw,circle] (6){$f_2(\boldsymbol{x})$}
+        (1, 4) node[draw,circle] (7){$f_1(\boldsymbol{x})$};
+      \begin{scope}[->]
+        \draw (0) to node[] {NOT} (3);
+        \draw (1) to (3);
+        \draw (1) to (4);
+        \draw (2) to (4);
+        \draw (3) to (7);
+        \draw (4) to (6);
+      \end{scope}
+    \end{tikzpicture}
+    \subcaption*{$\mathcal{G}_2$: 7 nodes, 3 levels.}
+\end{subfigure}
+\caption{Two functionally equivalent AIGs with different numbers of nodes for the Boolean function $f(x_1, x_2, x_3) = (\bar{x_1}\land x_2, x_2 \land x_3)$.}\label{fig:example}
+\end{figure}
+
+\paragraph{Obtaining an AIG.}\label{sec:strashing}
+An AIG for $f$ is obtained from its truth table $\{0, 1\}^{2^n \times (m+n)}$ by writing $f$ as a disjunctive normal form---for each output and each of the $2^n$ rows, a conjunction of $n$ literals---which takes $O(mn2^n)$ time and yields at most $mn2^n$ literals.
+The DNF is then factored with De Morgan's laws so that it uses only ANDs and NOTs, and one AND node is added to the AIG per AND symbol in the factored form.
+While doing so, one-level structural hashing (\texttt{strashing})~\cite{fraig} adds a node only if no node with the same inputs already exists, which requires storing a dictionary from input pairs (and their permutation) to node indices.
+The resulting AIG has at most $mn2^n - 1$ AND nodes, $n$ input nodes and $m$ output nodes.
+This is the starting point that combinational synthesis then reduces.
+
 \subsection{Markov decision process}
+AIG reduction can be formulated as a sequential decision making task in which the environment is the current AIG, the actions are edits of that AIG, and the rewards are shaped to favour edits that remove nodes.
+Formally, this is the problem of finding an optimal policy for a Markov decision process~\cite{Bellman,puterman}.
+
+\begin{definition}[Markov decision process]\label{def:mdp} An MDP is a tuple $\mathcal{M} = \langle S, A, R, T, T_0 \rangle$.
+$S$ is a finite set of states representing all possible configurations of the environment (e.g. AIGs, or AIG statistics).
+$A$ is a finite set of actions available to the agent (e.g. AIG edits).
+$R: S \times A \rightarrow \mathbb{R}$ is a deterministic reward function that assigns a real-valued reward to each state-action pair (e.g. number of deleted nodes).
+$T: S \times A \rightarrow \Delta(S)$ is the transition function that maps state-action pairs to probability distributions over next states $\Delta(S)$ (e.g. how graph edits change the AIG; here the transitions are deterministic).
+$T_0 \in \Delta(S)$ is the initial distribution over states (e.g. a set of AIGs to reduce).
+\end{definition}
+
+\begin{definition}[Reinforcement learning objective]\label{def:mdp-obj} Given an MDP $\mathcal{M}\equiv\langle S, A, R, T, T_0 \rangle$, the goal is to find a policy $\pi: S \rightarrow A$ that maximises the expected discounted sum of rewards
+{\small
+$$J(\pi) = \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, \pi(s_t)) \mid s_0 \sim T_0, s_{t+1} \sim T(s_t, \pi(s_t))\right]$$}
+where $0< \gamma\leq 1$ is the discount factor that controls the trade-off between immediate and future rewards.
+\end{definition}
+
+We write $V^\star(s)$ for the value of a state under an optimal policy, i.e. the discounted sum of rewards collected from $s$ by acting optimally.
+$V^\star$ is the quantity a critic is trained to approximate in actor-critic methods, and the quantity a state representation must be able to distinguish states by; Section~\ref{sec:value} uses it to measure what a representation can express, independently of any training procedure.
+Reinforcement learning algorithms optimise the objective of Definition~\ref{def:mdp-obj} by trial and error; we refer to~\citet{sutton} for an introduction.
 
 \section{Methodology}
-\subsection{Graph state representation}
+We keep the reinforcement learning pipeline of past work fixed and vary only how the current AIG is presented to the policy.
+The MDP, the policy and value heads, the training algorithm and the hyper-parameter grid are identical across the runs we compare, so the encoder is the only difference between two of them.
+
+\subsection{The Markov decision process}\label{sec:mdp-instance}
+We use the formulation of~\citet{rl-gnn1}, instantiating Definition~\ref{def:mdp} as follows.
+Let $\mathcal{G}_0$ be the AIG to reduce, and write $n_t$ and $\ell_t$ for the number of AND nodes and the number of levels of the AIG after $t$ actions.
+
+\paragraph{Actions.} $A$ is a set of five \texttt{ABC} primitives,
+$$A = \{\texttt{balance},\ \texttt{rewrite},\ \texttt{rewrite -z},\ \texttt{refactor},\ \texttt{refactor -z}\},$$
+where \texttt{-z} enables zero-cost replacements.
+This is the action set of~\citet{rl-gnn1}; our environment also implements a seven-action variant adding \texttt{resub} and \texttt{resub -z}, and the full \texttt{ABC} action space, neither of which is used in the experiments below.
+
+\paragraph{Transitions and initial state.} $T$ is deterministic: the selected primitive is run on the current AIG.
+Every primitive preserves functional equivalence, so every reachable state lies in $\mathcal{G}_{f}$ and the problem of Definition~\ref{def:pbm} is never violated, only under-solved.
+$T_0$ is a point mass on $\mathcal{G}_0$, read from the benchmark file at the start of each episode.
+
+\paragraph{Horizon.} Episodes last exactly $H = 20$ actions and terminate at $t = H$, with no early stopping.
+This makes the induced optimization a search over flows of length $20$ from a five-element alphabet which is again the exact setting of~\citet{rl-gnn1}.
+
+\paragraph{Reward.} The reward is the relative reduction in AND count with respect to the initial AIG,
+$$R(s_t, a_t) = 1 - \frac{n_{t+1}}{n_0},$$
+and is issued at every step rather than only at the end.
+It is a level and not a difference: with $\gamma = 1$ the return $\sum_{t} (1 - n_t / n_0)$ is maximised by an agent that keeps the AIG small throughout the episode, not merely by one that ends small.
+Levels do not enter the reward; unlike the multi-objective reward of~\citet{rl-logic1}, we optimise node count alone, which is the objective of Definition~\ref{def:pbm}.
+We report the smallest AND count seen during an episode, $\min_{t \leq H} n_t$.
+
+\paragraph{Observations.} The agent does not see the state directly but through an observation with two parts, a graph and a vector, described in Section~\ref{sec:repr}.
+The vector part is always present; the graph part is what the encoders under comparison do or do not consume.
+
+\subsection{Graph state representation}\label{sec:repr}
+\paragraph{Message passing neural networks.}\label{sec:mpnn}
+Every graph encoder considered in this paper belongs to the message passing family~\cite{mpnn}.
+A message passing neural network attaches a vector $h_v^{(0)}$ to each node $v$, initialised from that node's features, and refines it over $k$ rounds:
+{\small
+$$h_v^{(t+1)} = \phi^{(t)}\Big(h_v^{(t)}, \textstyle\bigoplus_{u \in \mathcal{N}(v)} \psi^{(t)}\big(h_v^{(t)}, h_u^{(t)}, e_{uv}\big)\Big),$$}
+where $\mathcal{N}(v)$ are the neighbours of $v$, $e_{uv}$ is an optional label on the edge between $u$ and $v$, $\bigoplus$ is a permutation-invariant aggregator, and $\phi^{(t)}, \psi^{(t)}$ are learned.
+A graph-level vector is then obtained by pooling $\{h_v^{(k)}\}_{v\in V}$ with a second permutation-invariant readout.
+Architectures in this family differ only in the choice of $\psi$, $\bigoplus$ and $\phi$: GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage} are instances, and so are the AIG-specific encoders we evaluate in Section~\ref{sec:trained}.
+They also share a limitation.
+After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman refinement assign the same colour carry the same embedding~\cite{gin,wlgnn}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
+Section~\ref{sec:bounds} turns this into a lower bound on the error of every such encoder.
+
+\subsubsection{Engineered graph features}\label{sec:features}
+The vector part of the observation, which we write $x_\mathcal{G} \in \mathbb{R}^{|A| + 5}$, holds a summary of the current AIG and of the recent history of the episode:
+{\small
+$$x_\mathcal{G} = \Big[\underbrace{\tfrac{1}{q}\textstyle\sum_{j=1}^{q}\mathbf{1}[a_{t-j} = a]}_{a \in A},\ \ \frac{n_t}{n_0},\ \frac{\ell_t}{\ell_0},\ \frac{n_{t-1}}{n_0},\ \frac{\ell_{t-1}}{\ell_0},\ \frac{t}{H}\Big].$$}
+The first $|A| = 5$ entries are a normalised histogram of the last $q$ actions; we set $q = H$, so they summarise the whole flow applied so far.
+The next four are the AND count and the level count of the current and of the previous AIG, each divided by its value in $\mathcal{G}_0$, so that the vector is scale-free and comparable across benchmarks of very different sizes.
+The last entry is the normalised time step, which makes the finite-horizon problem Markov in the observation.
+Note that $x_\mathcal{G}$ carries no structural information about the circuit: two AIGs with the same size, depth and history are indistinguishable to it.
+It is computed in a single pass over the graph and adds no parameters of its own.
+
 \subsubsection{Graph convolutional networks}
-\subsubsection{Engineered graph features}
-\subsection{Reinforcement learning}
+The graph part of the observation is the AIG itself, as in~\citet{rl-gnn1}: nodes carry a one-hot encoding of their type among the six types \texttt{abc\_py} exposes, and a directed edge is added from each fanin to the node it feeds.
+Edges carry no label, so complementation is visible to the encoder only through node types.
+A graph convolutional network~\cite{gcn} performs a fixed number of message passing rounds over this graph and pools the resulting node embeddings into a graph-level vector, which is concatenated with $x_\mathcal{G}$ before the policy and value heads.
+We instantiate four such encoders, listed in Table~\ref{tab:encoders}, spanning $2{,}496$ to $107{,}968$ parameters added to the policy.
+The three smaller ones hold the depth fixed at three rounds and vary the width; the largest also raises the depth to five, so that depth and width are not confounded.
+
+\begin{table}[t]
+  \centering
+  \caption{The four graph encoders. Depth is the number of message passing rounds, width the hidden dimension, and output the dimension of the pooled vector concatenated with $x_\mathcal{G}$. The baseline uses no encoder at all.}
+  \label{tab:encoders}
+  \begin{tabular}{lrrr}
+    \toprule
+    encoder & depth & width & output \\
+    \midrule
+    \texttt{small}     & 3 & $12$  & $4$  \\
+    \texttt{medium}    & 3 & $64$  & $32$ \\
+    \texttt{large}     & 3 & $128$ & $64$ \\
+    \texttt{v.\,large} & 5 & $128$ & $64$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+% TODO: add a "parameters added" column from gcn_style.N_ADDED; only the two
+% endpoints of the range are quoted in the text above.
+
+The baseline is the same architecture with the graph part of the observation dropped, so that the policy reads $x_\mathcal{G}$ alone through a multi-layer perceptron.
+The comparison is therefore not between two competing representations but between $x_\mathcal{G}$ and $x_\mathcal{G}$ augmented with a learned representation of the circuit: the graph encoder is only ever added to the baseline, never substituted for it.
+
+\subsection{Reinforcement learning}\label{sec:rl-method}
+Policies are trained with PPO~\cite{ppo} on the MDP of Section~\ref{sec:mdp-instance}.
+Algorithm~\ref{alg:graphppo} states the resulting procedure, which we call \textsc{GraphPPO}.
+It is ordinary PPO with the encoder made explicit: line~\ref{line:encode} is the only place where the five configurations we compare differ, and the encoder is trained end to end with the policy and value heads rather than pre-trained or frozen.
+
+We use the implementation of \texttt{stable-baselines3}~\cite{sb3} with $\gamma = 1$: the horizon is finite and fixed, so the return is bounded without discounting and there is no reason to prefer early reductions over late ones.
+Eight environments run in parallel and each contributes $20$ steps per update, so an update is computed from $160$ transitions and a single episode spans five updates.
+Training lasts $8{,}000$ environment steps, that is $N = 50$ updates.
+The policy and value heads are each two hidden layers of $256$ units and share the encoder of line~\ref{line:encode}.
+After every update we evaluate the greedy policy for one episode, which is the quantity the learning curves report.
+Because the comparison is between encoders and not between tuned systems, each encoder is run over the same grid of learning rates, entropy coefficients and seeds, and encoders are compared only on the grid cells that all of them completed.
+
+\begin{algorithm}[t]
+\caption{\textsc{GraphPPO}. The encoder $f_\theta$ is the only component that varies across the runs we compare; everything else is held fixed.}
+\label{alg:graphppo}
+\begin{algorithmic}[1]
+\Require AIG $\mathcal{G}_0$ to reduce with $n_0$ AND nodes, encoder $f_\theta$, policy head $\pi_\theta$, value head $V_\theta$, action set $A$ of five \texttt{ABC} primitives, horizon $H=100$, iterations $N$, epochs $K$, clipping $\epsilon$, entropy weight $\beta$, value weight $c$, step size $\eta$
+\State $n^\star \gets n_0$
+\For{$i = 1, \dots, N$}
+  \State $\mathcal{D} \gets \emptyset$
+  \For{each parallel environment}
+    \State $\mathcal{G} \gets \mathcal{G}_0$
+    \For{$t = 0, \dots, H-1$}
+      \State $s_t \gets \big(f_\theta(\mathcal{G}),\ x_\mathcal{G}\big)$ \label{line:encode} \Comment{$f_\theta$ is a GCN, or is absent for the baseline}
+      \State $a_t \sim \pi_\theta(\cdot \mid s_t)$, \quad $a_t \in A$
+      \State $\mathcal{G} \gets \textsc{Abc}(\mathcal{G}, a_t)$ \Comment{deterministic, preserves functional equivalence}
+      \State $r_t \gets 1 - |V^{AND}(\mathcal{G})| \,/\, n_0$ \Comment{relative size, issued at every step}
+      \State $\mathcal{D} \gets \mathcal{D} \cup \{(s_t, a_t, r_t, \log\pi_\theta(a_t\mid s_t), V_\theta(s_t))\}$
+      \State $n^\star \gets \min\big(n^\star,\ |V^{AND}(\mathcal{G})|\big)$
+    \EndFor
+  \EndFor
+  \State compute returns $\hat R_t$ and advantages $\hat A_t$ from $\mathcal{D}$
+  \State $\theta_{\text{old}} \gets \theta$
+  \For{$K$ epochs over minibatches of $\mathcal{D}$}
+    \State $\rho_t(\theta) \gets \pi_\theta(a_t\mid s_t)\,/\,\pi_{\theta_{\text{old}}}(a_t\mid s_t)$
+    \State {\small$L(\theta) \gets \widehat{\mathbb{E}}_t\big[\min\big(\rho_t\hat A_t,\ \mathrm{clip}(\rho_t, 1-\epsilon, 1+\epsilon)\hat A_t\big) - c\big(V_\theta(s_t) - \hat R_t\big)^2 + \beta\,\mathcal{H}\big[\pi_\theta(\cdot\mid s_t)\big]\big]$}
+    \State $\theta \gets \theta + \eta\,\nabla_\theta L(\theta)$ \Comment{gradients flow through $f_\theta$}
+  \EndFor
+\EndFor
+\State \Return $n^\star$, the smallest AND count visited
+\end{algorithmic}
+\end{algorithm}
 
 \section{Experiments}
-\subsection{Graph reinforcement learning}
+\subsection{Graph reinforcement learning}\label{sec:rl-exp}
 
 \begin{figure}[t]
   \centering
@@ -165,17 +433,27 @@
   \label{fig:rl-per-benchmark}
 \end{figure}
 
+\paragraph{Setup.}
+The benchmarks are the ten MLCAD circuits \texttt{apex1}, \texttt{bc0},
+\texttt{C1355}, \texttt{C5315}, \texttt{C6288}, \texttt{C7552}, \texttt{dalu},
+\texttt{i10}, \texttt{k2} and \texttt{mainpla}. Each of the five encoders is run
+on each benchmark at every combination of three learning rates ($10^{-4}$,
+$10^{-5}$, $10^{-6}$), three entropy coefficients ($0$, $0.01$, $0.1$) and five
+seeds, for $2{,}250$ runs in total. Twenty-six of them (eighteen
+\texttt{small}, eight \texttt{v.\,large}) stopped before the fiftieth update; we
+drop them rather than pad them, and requiring all five encoders to have
+completed a given (benchmark, learning rate, entropy, seed) cell leaves $424$ of
+the $450$ cells. Every number below averages over that same set of cells, so no
+encoder is given its own best hyper-parameters --- tuning each separately would
+let the selection step, rather than the encoder, decide the winner. We report
+the final AND count divided by the AND count of the input AIG, so that
+benchmarks of different sizes can be averaged.
+
 \paragraph{Adding a GCN to the policy does not improve AIG minimization
 (Figures~\ref{fig:rl-main},~\ref{fig:rl-per-benchmark}).}
-We train PPO on ten MLCAD benchmarks with five observation encoders --- an MLP
-on graph statistics and four GCNs spanning $2{,}496$ to $107{,}968$ added
-parameters --- over a grid of three learning rates, three entropy coefficients
-and five seeds, for $2{,}250$ runs in total. Encoders are compared only on the
-$424$ of $450$ (benchmark, learning rate, entropy, seed) cells that all five
-completed, so no encoder is tuned against the others. Every GCN reduces the
-final AND count by $0.76$--$0.85\%$ relative to the MLP, which is less than the
-$1.23\%$ standard deviation induced by changing the seed alone, and a $43\times$
-increase in encoder size moves that figure by nothing.
+Every GCN reduces the final AND count by $0.76$--$0.85\%$ relative to the MLP,
+which is less than the $1.23\%$ standard deviation induced by changing the seed
+alone, and a $43\times$ increase in encoder size moves that figure by nothing.
 
 \begin{figure}[t]
   \centering
@@ -204,15 +482,72 @@ effect is flat across two and a half orders of magnitude of circuit size. We
 note that the MLP runs were executed on CPU and did not finish on the largest
 circuits, which is why $20$ benchmarks are excluded.
 
-\subsection{Value prediction}
-\subsubsection{Building a dataset}
-\subsubsection{Theoretical lower bounds on the prediction error}
+\subsection{Value prediction}\label{sec:value}
+The previous section compares encoders inside one algorithm, so a null result there could be a property of that algorithm rather than of the representations.
+We therefore ask a question that does not involve a training algorithm at all: how well can the optimal value $V^\star$ of a state be predicted from what a given class of models is able to see?
+
+\subsubsection{Building a dataset}\label{sec:dataset}
+Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of Section~\ref{sec:mdp-instance} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
+We therefore build, for each benchmark, a dataset of states paired with a Monte-Carlo estimate of their value, obtained by sampling both the states and the continuations from them.
+
+\paragraph{States.} A state is the AIG obtained by applying a uniformly random flow to the benchmark $\mathcal{G}_0$: we draw a length $L\sim\mathcal{U}\{2,\dots,10\}$, then $L$ primitives independently and uniformly from the five-element action set, and run them in order.
+We sample $1{,}000$ such states per benchmark.
+Each one is written to disk as an \texttt{.aig} file and stored together with the statistics $x_\mathcal{G}$ of Section~\ref{sec:features} recorded at that point of the flow, so that every model class of Sections~\ref{sec:bounds} and~\ref{sec:trained} is evaluated on exactly the same states and the same targets---the graph models read the \texttt{.aig} file, the MLP reads $x_\mathcal{G}$.
+
+\paragraph{Targets.} From each stored state $s$ we run $M = 100$ independent rollouts of $8$ further uniformly random primitives, reload the state between rollouts, and record the AND count $n^{(j)}(s)$ reached at the end of rollout $j$.
+The target is the best of them,
+$$\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s),$$
+that is, the smallest AND count the sampler managed to reach within $8$ actions of $s$.
+This is a best-of-$M$ estimate: it is an upper bound on $\min$ over the $5^8$ flows of length eight, and it approaches it from above as $M$ grows.
+Producing one dataset therefore costs $1{,}000 \times (L + M \times 8) \approx 8\times 10^{5}$ \texttt{ABC} primitive calls per benchmark and per seed, which is why $M$ is lowered to $10$ on \texttt{C6288}, by far the most expensive circuit of the suite to rewrite.
+
+\paragraph{What the target measures.} $\widehat{V}$ is expressed in AND nodes rather than in returns, so it is ordered the other way round from the value of Definition~\ref{def:mdp-obj}---smaller is better---and it truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments.
+Neither affects the comparison between model classes.
+The map $n \mapsto 1 - n/n_0$ from AND count to the reward of Section~\ref{sec:mdp-instance} is affine and order-reversing, all the errors we report are ratios to the variance of the target and are therefore free of its units, and the rank correlations we report are unchanged up to sign.
+What the truncation does mean is that our targets approximate the value of an eight-step-to-go problem under a best-of-$M$ estimate, not the exact $V^\star$ of the full episode, and the bounds of Section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
+
+\paragraph{Protocol.} The procedure is repeated with ten seeds ($0$ to $9$) per benchmark, each seed drawing its own $1{,}000$ states and its own rollouts, and each resulting dataset is split at random into training, validation and test sets; the figures of this section report over those ten repetitions.
+The benchmarks are the same ten MLCAD circuits as in Section~\ref{sec:rl-exp}, and results are reported over nine of them.
+Two circuits are degenerate for this purpose: on \texttt{C1355} the sampler reaches only six distinct values of $\widehat{V}$, and on \texttt{C6288} only two, so the latter is excluded where noted.
+
+\subsubsection{Theoretical lower bounds on the prediction error}\label{sec:bounds}
+A model that cannot distinguish two states must assign them the same prediction.
+For a class of models, this partitions the state space, and the best achievable squared error is attained by the predictor that outputs, for each part, the mean target over that part.
+That error is a lower bound: no model in the class can beat it, regardless of its size, its training procedure or its optimisation.
+This is the protocol of \texttt{Graphtester}~\cite{graphtester}, which measures the theoretical boundary of graph neural networks on a given dataset rather than the performance of one trained instance; we reimplement it so that it applies to our four state representations and to the target of Section~\ref{sec:dataset}.
+
+\paragraph{The classes we bound.} We compute the bound for four classes, ordered by what they can see.
+A \emph{size} model sees the number of nodes $|V_\mathcal{G}|$ alone---this is what a $0$-layer message passing network reduces to, since with no rounds of message passing the readout can only count nodes.
+A \emph{size and depth} model sees the pair $(|V_\mathcal{G}|, d_\mathcal{G})$, where $d_\mathcal{G}$ is the logic depth reported by \texttt{ABC}.
+An \emph{$x_\mathcal{G}$} model sees the engineered statistics of Section~\ref{sec:features} in full, the action histogram included, which is exactly what the MLP baseline reads.
+A \emph{message passing} model sees the $1$-WL colouring of the AIG, which upper bounds the separating power of every architecture of Section~\ref{sec:mpnn} by the argument given there.
+Comparing the third and the fourth is the question of this section: what a learned encoder could express, against what the statistics already express.
+The two are incomparable rather than nested, and this matters for reading the result below.
+Only the current size and depth entries of $x_\mathcal{G}$ are functions of the current AIG; the previous step's size and depth, the normalised time step and the action histogram are episode history that no encoder of the current graph can recover.
+The $x_\mathcal{G}$ bound may therefore fall below the $1$-WL bound without contradicting it, and a policy that reads both---which is what Algorithm~\ref{alg:graphppo} does---is bounded by neither alone.
+
+\paragraph{Computing the partitions.} For the first two classes the partition is by exact equality of the descriptors.
+For $x_\mathcal{G}$, the full feature vector is snapped to a grid of spacing $10^{-8}$ and states are grouped by equality of the snapped vector, so the model we bound and the MLP of Section~\ref{sec:rl-method} see the same thing.
+For message passing, we group states by their $1$-WL graph hash, computed with \texttt{networkx}'s~\cite{networkx} \texttt{weisfeiler\_lehman\_graph\_hash} at every number of iterations $k = 1, \dots, 50$, with each node labelled by its type.\footnote{The hash is a $16$-byte \texttt{blake2b} digest. A collision would merge two groups that $1$-WL separates and can only raise the reported value, so the bound would become conservative rather than optimistic; at $1{,}000$ graphs per dataset the probability of one is negligible.}
+We bound four views of the AIG, which is what the four message passing curves of Figures~\ref{fig:bounds} and~\ref{fig:depth} report: the undirected graph $\mathcal{G}$, the directed graph $\mathcal{G}^\rightarrow$ in which refinement follows the fanin relation, and the two variants $\mathcal{G}^e, \mathcal{G}^{\rightarrow e}$ that additionally label each edge with its complement bit, so that inversion is visible to the refinement rather than only through node types.
+Errors are divided by $\max(1, \operatorname{Var}\widehat{V})$; in AND-node units the variance is orders of magnitude above one on every benchmark, so the clamp never binds and the reported quantity is the plain normalised error.
+
+\paragraph{Metrics.} Besides the squared error we report how well each class can \emph{order} states, since a critic that ranks successors correctly is useful even when its absolute errors are large.
+We measure the rank association between $\widehat{V}$ and the group-mean predictor of the class with Spearman's $\rho$, Kendall's $\tau$, and the weighted $\tau$, which puts more weight on the top of the ranking---the states an agent would actually select.
+Rank correlations are computed at $k = 50$ refinement iterations.
+
+\paragraph{A control for partition granularity.} The bound is computed in sample: the group means are fitted on the same $1{,}000$ states the error is measured on.
+A partition fine enough to isolate every state therefore drives it to zero regardless of whether the representation carries any signal about $\widehat{V}$.
+We control for this by recomputing every bound with the targets randomly permuted across states---$25$ permutations per dataset, $8$ on \texttt{mainpla} and \texttt{C6288}---which leaves the partition intact and destroys the association.
+The gap between a curve and its permuted counterpart, not the height of the curve, is what indicates that a representation carries information about the value; the same control is applied to the rank correlations, where the null is the correlation between $\widehat{V}$ and a random permutation of itself.
+Every bound we report sits one to two orders of magnitude below its shuffled-label counterpart---between $11$ and $474$ times below it, depending on the benchmark---so the partitions are not merely fine enough to memorise the targets.
+The two partitions we compare are also of nearly equal granularity, at $865$ parts for $x_\mathcal{G}$ and $860$ for $1$-WL out of $1{,}000$ states on average, so neither class is given more degrees of freedom than the other.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_value_bounds.pdf}
   \caption{Best error (a) and best ranking (b) achievable by each model class on
-  $V^\star$, over nine benchmarks and ten dataset seeds. Each class is replaced
+  $\widehat{V}$, over nine benchmarks and ten dataset seeds. Each class is replaced
   by the optimal predictor for the information it can distinguish, so the value
   shown cannot be beaten by any model in that class. $^{*}$\texttt{C1355} has
   only six distinct targets.}
@@ -226,21 +561,62 @@ circuits, which is why $20$ benchmarks are excluded.
   \label{fig:depth}
 \end{figure}
 
-\paragraph{Message passing cannot predict $V^\star$ better than the statistics
-the MLP already sees (Figures~\ref{fig:bounds},~\ref{fig:depth}).}
+\paragraph{No message passing network can predict $\widehat{V}$ as well as the
+statistics the MLP already sees (Figures~\ref{fig:bounds},~\ref{fig:depth}).}
 A $k$-layer MPNN separates graphs at most as finely as $k$ iterations of
 $1$-WL, so grouping states by their $1$-WL colour and predicting each group's
-mean $V^\star$ gives an error no MPNN can beat; the same construction bounds a
-$0$-layer network, a $(\text{size},\text{depth})$ model, and a model seeing only
-the MLP's features $x_\mathcal{G}$. Message passing is worth a great deal over
-size and depth alone, but the MLP's own features close almost all of that gap:
-the two bounds are within a factor of $1.7$ on eight of nine benchmarks and
-within $1.1$ on five, and rank states equally well ($\tau \approx 0.98$).
+mean $\widehat{V}$ gives an error no MPNN can beat; the same construction bounds a
+$0$-layer network, a $(\text{size},\text{depth})$ model, and a model seeing the
+MLP's features $x_\mathcal{G}$. Message passing is worth a great deal over
+global descriptors: the bound falls from $0.02$--$0.64$ of the target variance
+for node count alone, to $1.1\times10^{-3}$--$0.24$ once depth is added, and to
+$3\times10^{-4}$--$1.2\times10^{-2}$ for $1$-WL. It is worth nothing over
+$x_\mathcal{G}$. On eight of the nine benchmarks the $x_\mathcal{G}$ bound is
+the \emph{lower} of the two, at $0.73$ to $0.99$ times the MPNN bound; only
+\texttt{C1355} goes the other way, where message passing is better by $1.93
+\times$. The ordering is stable within a dataset: paired by seed,
+$x_\mathcal{G}$ is lower on all ten seeds of six benchmarks and on seven and
+eight of ten for \texttt{dalu} and \texttt{C7552}. For ranking the two classes
+are indistinguishable --- weighted Kendall $\tau \geq 0.97$ for both on every
+benchmark, with $x_\mathcal{G}$ ahead by at most $0.014$ --- while size and
+depth alone reach only $0.60$--$0.99$.
+This is possible because $x_\mathcal{G}$ is not a coarsening of the graph: it
+carries the episode history described above, which no encoder of the current
+AIG can reconstruct.
 Depth is irrelevant --- the bound moves by at most $1.1\times10^{-3}$ between
 $k=1$ and $k=50$, and edge direction and inverter bits change it by less than
 $10^{-6}$. \texttt{C6288} is excluded: its target takes two distinct values.
 
-\subsubsection{Empirical performances of AIG-specific models on value prediction}
+\paragraph{Limitations of the bounds.} Four restrictions should be read with the numbers above.
+First, they hold over the state distribution of Section~\ref{sec:dataset}---AIGs reached by uniformly random flows of length two to ten---and not over the states a trained policy visits, which are fewer and more correlated; a representation could be uninformative on the former and useful on the latter.
+Second, each dataset descends from a single benchmark, so what is bounded is the ability to tell apart states \emph{of one circuit}, whereas the argument for learned encoders in Section~\ref{sec:repr} is transfer \emph{across} circuits; our experiment does not test that claim, and a cross-circuit dataset could behave differently.
+Third, $\widehat{V}$ is a Monte-Carlo estimate, so part of its variance is sampling noise that no representation can predict.
+That noise raises every bound by roughly the same amount and therefore compresses the ratios between classes towards one, which works in favour of the negative conclusion we draw; the $1$-WL and $x_\mathcal{G}$ bounds being close is evidence that message passing adds little, but not proof that the noise floor is not what they are both close to.
+Fourth, the $1$-WL argument covers message passing networks whose input is the AIG with node-type features, which is the setting of Section~\ref{sec:repr} and of~\citet{rl-gnn1}.
+It does not cover higher-order architectures, models given node identifiers or positional encodings, nor encoders whose node features are not a function of the graph alone---the simulation-derived features used by some AIG-specific models are an example, and for those the bound of Figure~\ref{fig:bounds} is not binding.
+
+\subsubsection{Empirical performances of AIG-specific models on value prediction}\label{sec:trained}
+The bounds of Section~\ref{sec:bounds} say what a representation \emph{could} express.
+This section asks what models actually trained on the same datasets achieve, which is the quantity a critic in Algorithm~\ref{alg:graphppo} would reach.
+
+\paragraph{Models.} We train eight regressors on the datasets of Section~\ref{sec:dataset}.
+Four are generic message passing networks---GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage}---taken from \texttt{PyTorch Geometric}~\cite{pyg}.
+Three are AIG-specific: DeepGate~\cite{deepgate}, PolarGate~\cite{polargate} and FuncGNN~\cite{funcgnn}, each run from its authors' implementation.
+The eighth is the MLP of Section~\ref{sec:features}, which reads $x_\mathcal{G}$ and no graph at all, and is the baseline the graph models have to beat.
+All eight share the same head so that only the encoder differs: node embeddings are mean-pooled into one vector per AIG, which a two-layer ReLU network maps to a scalar.
+GCN, GIN and GraphSAGE consume the six-way one-hot node type of Section~\ref{sec:repr}; GAT, PolarGate and FuncGNN consume the three-way type (input, AND, inverter) of the DeepGate reader, with the inverter bit exposed as a signed edge feature, so that the models that were designed to use complementation receive it.
+DeepGate is the one exception to end-to-end training: we load the pretrained encoder, freeze it, and train only the head on its mean-pooled functional embeddings, which is how it is meant to be used as a general-purpose circuit encoder.
+
+\paragraph{Training and selection.} Targets are $\widehat{V}$ divided by the AND count of the benchmark's initial AIG, so they lie in $(0, 1]$ and are comparable across circuits.
+Each dataset of $1{,}000$ states is split $80/10/10$ into training, validation and test sets by a permutation seeded by the run seed.
+Models are trained for $1{,}000$ epochs with Adam~\cite{adam} on the mean squared error, in mini-batches of $16$ unless the batch size is searched over.
+Each architecture is given its own grid of $36$ configurations---three learning rates ($10^{-3}$, $5\times10^{-4}$, $10^{-4}$) crossed with a width and a depth, or with the number of attention heads for GAT and the polarity weight for PolarGate---and $12$ for DeepGate, whose frozen encoder leaves only the head to tune.
+The grid is run at seed $0$, the configuration with the lowest final validation error is selected, and that configuration alone is then rerun on the ten seeds we report; the seed selects the dataset, the split and the initialisation together, so the ten repetitions are independent in all three.
+We report test error normalised by the variance of the test targets, so that $1.0$ is the error of predicting the mean.
+
+\paragraph{Two caveats.} The comparison is generous to the graph models in one respect and strict in another.
+It is generous because the MLP reads the full $x_\mathcal{G}$, action histogram included, whereas the $x_\mathcal{G}$ bound of Section~\ref{sec:bounds} was computed without it: the baseline the graph models fail to beat here is stronger than the one they are compared against in Figure~\ref{fig:bounds}.
+It is strict because a single grid at seed $0$, one head architecture and $1{,}000$ epochs is far less tuning than any of these encoders received in the papers that introduced them; we read the result below as evidence that they do not fit this target out of the box, not as an upper bound on what they could do with more effort.
 
 \begin{figure}[t]
   \centering
@@ -261,50 +637,28 @@ $10^{-6}$. \texttt{C6288} is excluded: its target takes two distinct values.
 
 \paragraph{Trained graph models, including AIG-specific ones, do not beat
 predicting the mean (Figures~\ref{fig:trained},~\ref{fig:curves}).}
-We train four generic message-passing networks (GCN, GIN, GAT, GraphSAGE),
-three AIG-specific ones (DeepGate, PolarGate, FuncGNN) and an MLP on
-$x_\mathcal{G}$, each over its own grid of $36$ configurations ($12$ for
-DeepGate), selecting on validation error and reporting test error. All seven
+All seven
 graph models land between $0.90$ and $1.74$ times the target variance --- at or
 above the constant predictor --- while the MLP reaches $0.47$ at the median.
 Their training error is also $\approx 1$, so this is a failure to fit rather
 than to generalise, and it leaves them two to three orders of magnitude above
 the bound of Figure~\ref{fig:bounds} that their own architecture class admits.
 
-\section{Futre work}
-Many actions
+\section{Future work}
+Our results are restricted to the setting used by past work, in which the actions are the few \texttt{ABC} primitives of Section~\ref{sec:abc}.
+An action space of that size gives the policy little to decide, and the states it can reach are the images of a handful of scripts, which may be why statistics suffice to tell them apart.
+A finer-grained action space---edits of individual nodes or cones rather than whole-graph scripts---would produce states that differ locally, and is the setting in which a structural representation has the most room to help.
+Measuring the bounds of Section~\ref{sec:value} in that setting would say whether the negative result is a property of AIG reduction or of the action space it is usually given.
+
+Two further directions follow from the material above.
+First, AIG editing is deterministic and its exploration problem is hard, a combination for which value-based algorithms~\cite{watkins1992q,dqn} are usually competitive, yet the existing work on AIG reduction is entirely policy gradient-based.
+Second,~\citet{graphbench} report that DAG generative models fail at AIG reduction without establishing why; the bounds we compute measure what a representation can distinguish, and applying them to the generative setting would test whether the same limitation is at play.
 
 
 \section*{References}
 
-
-References follow the acknowledgments in the camera-ready paper. Use unnumbered first-level heading for
-the references. Any choice of citation style is acceptable as long as you are
-consistent. It is permissible to reduce the font size to \verb+small+ (9 point)
-when listing the references.
-Note that the Reference section does not count towards the page limit.
-\medskip
-
-
-{
-\small
-
-
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
-connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
-(eds.), {\it Advances in Neural Information Processing Systems 7},
-pp.\ 609--616. Cambridge, MA: MIT Press.
-
-
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
-  Realistic Neural Models with the GEneral NEural SImulation System.}  New York:
-TELOS/Springer--Verlag.
-
-
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of learning and
-recall at excitatory recurrent synapses and cholinergic modulation in rat
-hippocampal region CA3. {\it Journal of Neuroscience} {\bf 15}(7):5249-5262.
-}
+\bibliographystyle{plainnat}
+\bibliography{neurips_2026}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
