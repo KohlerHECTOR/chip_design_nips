@@ -1,4 +1,4 @@
-\begin{thebibliography}{48}
+\begin{thebibliography}{51}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -21,6 +21,18 @@ Eric Allender and Bireswar Das.
 \newblock \doi{https://doi.org/10.1016/j.ic.2017.04.004}.
 \newblock URL
   \url{https://www.sciencedirect.com/science/article/pii/S0890540117300512}.
+
+\bibitem[Basak~Chowdhury et~al.(2024)Basak~Chowdhury, Romanelli, Tan, Karri,
+  and Garg]{more-mcts}
+Animesh Basak~Chowdhury, Marco Romanelli, Benjamin Tan, Ramesh Karri, and
+  Siddharth Garg.
+\newblock Retrieval-guided reinforcement learning for boolean circuit
+  minimization.
+\newblock In B.~Kim, Y.~Yue, S.~Chaudhuri, K.~Fragkiadaki, M.~Khan, and Y.~Sun,
+  editors, \emph{International Conference on Learning Representations}, volume
+  2024, pages 35039--35060, 2024.
+\newblock URL
+  \url{https://proceedings.iclr.cc/paper_files/paper/2024/file/96bbdd0ed2a9e7cd2fb7caf2fae15f3d-Paper-Conference.pdf}.
 
 \bibitem[Bellman(1957)]{Bellman}
 Richard Bellman.
@@ -146,6 +158,18 @@ Mufei Li, Viraj Shitole, Eli Chien, Changhai Man, Zhaodong Wang, Srinivas, Ying
   2024}, 2024.
 \newblock URL \url{https://openreview.net/forum?id=IsarrieeQA}.
 
+\bibitem[Liu et~al.(2026)Liu, Tang, Pei, Yu, Zheng, He, Dai, Chen, and
+  Yu]{contextual-bandit}
+Fangzhou Liu, Wuqian Tang, Zehua Pei, Ziyang Yu, Haisheng Zheng, Zhuolun He,
+  Mengjia Dai, Tinghuan Chen, and Bei Yu.
+\newblock Cb-evo: Contextual bandit tuning with evolutionary search for logic
+  synthesis.
+\newblock \emph{ACM Trans. Des. Autom. Electron. Syst.}, 31\penalty0 (6), June
+  2026.
+\newblock ISSN 1084-4309.
+\newblock \doi{10.1145/3779431}.
+\newblock URL \url{https://doi.org/10.1145/3779431}.
+
 \bibitem[Liu et~al.(2024)Liu, Zhai, Zhao, Lin, Yu, and Shi]{polargate}
 Jiawei Liu, Jianwang Zhai, Mingyu Zhao, Zhe Lin, Bei Yu, and Chuan Shi.
 \newblock Polargate: Breaking the functionality representation bottleneck of
@@ -247,6 +271,16 @@ Martin~L. Puterman.
 \newblock \emph{Markov Decision Processes: Discrete Stochastic Dynamic
   Programming}.
 \newblock John Wiley \& Sons, 1994.
+
+\bibitem[Qian et~al.(2024)Qian, Zhou, Zhou, and Wang]{more-rl}
+Yu~Qian, Xuegong Zhou, Hao Zhou, and Lingli Wang.
+\newblock An efficient reinforcement learning based framework for exploring
+  logic synthesis.
+\newblock \emph{ACM Trans. Des. Autom. Electron. Syst.}, 29\penalty0 (2),
+  January 2024.
+\newblock ISSN 1084-4309.
+\newblock \doi{10.1145/3632174}.
+\newblock URL \url{https://doi.org/10.1145/3632174}.
 
 \bibitem[Raffin et~al.(2021)Raffin, Hill, Gleave, Kanervisto, Ernestus, and
   Dormann]{sb3}

@@ -5,45 +5,45 @@ The style file: plainnat.bst
 Database file #1: neurips_2026.bib
 Warning--empty publisher in Bellman
 Warning--empty booktitle in Mishchenko2006ScalableLS
-You've used 48 entries,
+You've used 51 entries,
             2773 wiz_defined-function locations,
-            897 strings with 15939 characters,
-and the built_in function-call counts, 28767 in all, are:
-= -- 2412
-> -- 2204
-< -- 34
-+ -- 737
-- -- 689
-* -- 2457
-:= -- 4413
-add.period$ -- 181
-call.type$ -- 48
-change.case$ -- 368
-chr.to.int$ -- 48
-cite$ -- 98
-duplicate$ -- 1197
-empty$ -- 2048
-format.name$ -- 757
-if$ -- 6067
+            916 strings with 16842 characters,
+and the built_in function-call counts, 30964 in all, are:
+= -- 2600
+> -- 2395
+< -- 36
++ -- 800
+- -- 749
+* -- 2670
+:= -- 4763
+add.period$ -- 197
+call.type$ -- 51
+change.case$ -- 395
+chr.to.int$ -- 51
+cite$ -- 104
+duplicate$ -- 1274
+empty$ -- 2173
+format.name$ -- 820
+if$ -- 6519
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 48
-newline$ -- 281
-num.names$ -- 196
-pop$ -- 803
+missing$ -- 51
+newline$ -- 303
+num.names$ -- 210
+pop$ -- 848
 preamble$ -- 1
-purify$ -- 323
+purify$ -- 347
 quote$ -- 0
-skip$ -- 1010
+skip$ -- 1084
 stack$ -- 0
-substring$ -- 712
-swap$ -- 217
-text.length$ -- 19
+substring$ -- 766
+swap$ -- 237
+text.length$ -- 21
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 513
+type$ -- 546
 warning$ -- 2
-while$ -- 197
+while$ -- 210
 width$ -- 0
-write$ -- 685
+write$ -- 739
 (There were 2 warnings)
