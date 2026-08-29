@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  22 AUG 2026 19:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  29 AUG 2026 12:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -924,8 +924,8 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-LaTeX Font Info:    Trying to load font information for T1+phv on input line 12
-8.
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 13
+4.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
@@ -941,32 +941,37 @@ Package microtype Info: Loading generic protrusion settings for font family
 st/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-su
 per-t1.enc}]
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 205--210
+Underfull \hbox (badness 10000) in paragraph at lines 215--220
 [][]\T1/ptm/m/it/10 (+20) An And-
  []
 
-[3] [4] [5]
+[3] [4]
+Underfull \vbox (badness 1715) has occurred while \output is active []
+
+ [5]
 <figures/fig_gcn_main.pdf, id=340, 553.02184pt x 222.3625pt>
 File: figures/fig_gcn_main.pdf Graphic file (type pdf)
 <use figures/fig_gcn_main.pdf>
-Package pdftex.def Info: figures/fig_gcn_main.pdf  used on input line 365.
+Package pdftex.def Info: figures/fig_gcn_main.pdf  used on input line 375.
 (pdftex.def)             Requested size: 397.48499pt x 159.82603pt.
- [6 <./figures/fig_gcn_main.pdf>] [7] [8]
+
+[6 <./figures/fig_gcn_main.pdf>] [7] [8]
 <figures/fig_value_bounds.pdf, id=451, 470.16278pt x 258.56978pt>
 File: figures/fig_value_bounds.pdf Graphic file (type pdf)
 <use figures/fig_value_bounds.pdf>
-Package pdftex.def Info: figures/fig_value_bounds.pdf  used on input line 464.
+Package pdftex.def Info: figures/fig_value_bounds.pdf  used on input line 474.
 (pdftex.def)             Requested size: 278.23827pt x 153.0204pt.
  [9 <./figures/fig_value_bounds.pdf>]
 <figures/fig_trained_models.pdf, id=555, 431.75993pt x 244.86887pt>
 File: figures/fig_trained_models.pdf Graphic file (type pdf)
 <use figures/fig_trained_models.pdf>
-Package pdftex.def Info: figures/fig_trained_models.pdf  used on input line 535
+Package pdftex.def Info: figures/fig_trained_models.pdf  used on input line 545
 .
 (pdftex.def)             Requested size: 278.23827pt x 157.80281pt.
- [10]
+
+[10]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 564.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 574.
  (./neurips_2026.bbl [11 <./figures/fig_trained_models.pdf>]
 Underfull \hbox (badness 1377) in paragraph at lines 27--36
 \T1/ptm/m/n/10 (+20) dharth Garg.  Retrieval-guided re-in-force-ment learn-ing 
@@ -975,21 +980,21 @@ for boolean cir-cuit min-i-miza-
 
 [12] [13] [14]) [15]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 613.
+put line 623.
  [16
 
 ] [17]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 652.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 662.
 <figures/fig_gcn_ex_main.pdf, id=748, 518.30002pt x 222.3625pt>
 File: figures/fig_gcn_ex_main.pdf Graphic file (type pdf)
 <use figures/fig_gcn_ex_main.pdf>
-Package pdftex.def Info: figures/fig_gcn_ex_main.pdf  used on input line 660.
+Package pdftex.def Info: figures/fig_gcn_ex_main.pdf  used on input line 670.
 (pdftex.def)             Requested size: 397.48499pt x 170.53427pt.
 <figures/fig_gcn_ex_size.pdf, id=751, 537.4642pt x 169.65231pt>
 File: figures/fig_gcn_ex_size.pdf Graphic file (type pdf)
 <use figures/fig_gcn_ex_size.pdf>
-Package pdftex.def Info: figures/fig_gcn_ex_size.pdf  used on input line 671.
+Package pdftex.def Info: figures/fig_gcn_ex_size.pdf  used on input line 681.
 (pdftex.def)             Requested size: 397.48499pt x 125.47084pt.
  [18
 
@@ -997,7 +1002,7 @@ Package pdftex.def Info: figures/fig_gcn_ex_size.pdf  used on input line 671.
 <figures/fig_mpnn_depth.pdf, id=852, 505.58261pt x 353.43619pt>
 File: figures/fig_mpnn_depth.pdf Graphic file (type pdf)
 <use figures/fig_mpnn_depth.pdf>
-Package pdftex.def Info: figures/fig_mpnn_depth.pdf  used on input line 684.
+Package pdftex.def Info: figures/fig_mpnn_depth.pdf  used on input line 694.
 (pdftex.def)             Requested size: 397.48499pt x 277.87405pt.
  [19
 
@@ -1006,12 +1011,12 @@ Package pdftex.def Info: figures/fig_mpnn_depth.pdf  used on input line 684.
 File: figures/fig_gcn_per_benchmark.pdf Graphic file (type pdf)
 <use figures/fig_gcn_per_benchmark.pdf>
 Package pdftex.def Info: figures/fig_gcn_per_benchmark.pdf  used on input line 
-695.
+705.
 (pdftex.def)             Requested size: 397.48499pt x 198.0706pt.
 <figures/fig_training_curves.pdf, id=928, 501.32672pt x 376.85167pt>
 File: figures/fig_training_curves.pdf Graphic file (type pdf)
 <use figures/fig_training_curves.pdf>
-Package pdftex.def Info: figures/fig_training_curves.pdf  used on input line 70
+Package pdftex.def Info: figures/fig_training_curves.pdf  used on input line 71
 3.
 (pdftex.def)             Requested size: 397.48499pt x 298.79636pt.
  [20
@@ -1043,7 +1048,7 @@ Here is how much of TeX's memory you used:
  47842 multiletter control sequences out of 15000+600000
  634281 words of font info for 325 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,12n,87p,1193b,895s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,12n,87p,1009b,895s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/share/t
@@ -1071,7 +1076,7 @@ type1/public/cm-super/sftt1200.pfb></usr/share/texlive/texmf-dist/fonts/type1/u
 rw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utm
 b8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/s
 hare/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on neurips_2026.pdf (27 pages, 803109 bytes).
+Output written on neurips_2026.pdf (27 pages, 802929 bytes).
 PDF statistics:
  1264 PDF objects out of 1440 (max. 8388607)
  774 compressed objects within 8 object streams
