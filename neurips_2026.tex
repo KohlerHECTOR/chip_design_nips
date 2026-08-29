@@ -145,9 +145,9 @@ In practice, AIGs are reduced by applying sequences of heuristics that rewrite t
 Many such heuristics are implemented in the \texttt{ABC}~\cite{abc} software.
 Choosing the best heuristics sequence is a search problem.
 
-In the absence of exact solvers, machine learning such as supervised learning has been applied to AIG minimization~\cite{graphbench}. 
-However it suffered from two major weaknesses: first, the supervision signal to train from could be a suboptimal minimal AIG since no exact solver exists, and second, graph generative models are still quite limited~\cite{}.
-Successful machine learning approaches are unsupervised ones that only require a scalar signal (often the size of a given AIG which is cheap to obtain): Bayesian optimization~\cite{bayes}, multi-armed bandits~\cite{flow-bandits}, reinforcement learning (RL)~\cite{rl-logic1,rl-gnn1} and Monte Carlo tree search~\cite{gnn-mcts}.
+In the absence of exact solvers, machine learning, such as supervised learning, has been applied to AIG minimization~\cite{graphbench}. 
+However it suffered from two major weaknesses: first, the supervision signal to train from could be a suboptimal AIG since no exact solver exists, and second, graph generative models are still quite limited~\cite{}.
+Successful machine learning approaches are unsupervised ones that only require a scalar signal, often the size of a given AIG which is cheap to obtain: Bayesian optimization~\cite{bayes}, multi-armed bandits~\cite{flow-bandits}, reinforcement learning (RL)~\cite{rl-logic1,rl-gnn1} and Monte Carlo tree search~\cite{gnn-mcts}.
 Contemporarily, graph representation learning has been applied to train models on graph data, and circuits are graphs: task-agnostic encoders built specifically for AIGs are now available~\cite{deepgate,polargate,funcgnn,chipgrl}.
 The two lines of work have since been combined.
 Several of the methods above encode the current AIG with a graph neural network rather than with a fixed set of summary statistics~\cite{rl-gnn1,gnn-mcts,more-mcts}, and achieve reductions beyond the expert \texttt{ABC} heuristics.
@@ -162,77 +162,47 @@ We show the following results.
 
 \paragraph{Contributions:} First, we show that adding a graph convolutional network to the policy does not improve AIG reduction beyond a multi-layer perceptron that reads graph statistics (number of nodes, of levels, \dots).
 Second, we derive empirical performance bounds--in terms of AIG value prediction--for message passing networks bounded by the $1$-dimensional Weisfeiler-Leman refinement as well as for AIGs specific models.
-
+Next, we present existing AIG minimization methods.
 
 \section{Related work}\label{sec:relwork}
 \subsection{Combinational optimization}\label{sec:abc}
-Combinational synthesis is a class of fast algorithms that reduce an AIG by rewriting it locally, and that work well in practice~\cite{rewriting,Mishchenko2006ScalableLS,resub}.
-\texttt{ABC}~\cite{abc} is the reference implementation and is widely used in academia.
+Combinational synthesis is a class of fast heuristics that reduce an AIG by rewriting it locally, and that work well in practice~\cite{rewriting,Mishchenko2006ScalableLS,resub}.
+\texttt{ABC}~\cite{abc} is the reference implementation and is widely used both in industry and academia.
 Throughout this paper we call \emph{primitives} its standard local transformations, \texttt{balance}, \texttt{rewrite}, \texttt{resub} and \texttt{refactor}, and \emph{heuristics} the named sequences of primitives it ships, such as \texttt{resyn2}.
-For instance, the primitive \texttt{refactor} performs iterative collapsing and refactoring of logic cones in the AIG, attempting to reduce both the number of nodes and the number of levels.
 Since no primitive is globally optimal, reduction is done by composing them into heuristics.
-Hand-designed heuristics are the reference points against which learned methods are measured: \texttt{resyn}~\cite{resyn} applies \texttt{balance}, \texttt{rewrite}, \texttt{balance}, \texttt{rewrite}, \texttt{balance}, and the \texttt{ABC} documentation also ships a more aggressive heuristic known as the ``lazy man's synthesis''~\cite{lms}.
+Hand-designed heuristics are the reference points against which learned methods are measured: \texttt{resyn}~\cite{resyn} applies \texttt{balance}, \texttt{rewrite}, \texttt{balance}, \texttt{rewrite}, \texttt{balance}.
 Searching over sequences of primitives has been automated without learned circuit representations, with Bayesian optimization~\cite{bayes} and with multi-armed bandits~\cite{flow-bandits}.
 
 \subsection{Graph representation learning for AIGs}
 A separate line of work learns representations of circuits that are meant to transfer across circuits, rather than a policy for one circuit.
-DeepGate4~\cite{chipgrl} is representative: it learns node embeddings of AIGs and scales them to large designs.
+DeepGate4~\cite{chipgrl} is a fundation model that learns node embeddings of AIGs, supposidly useful for various downstream tasks on AIGs.
 Three encoders from this line---DeepGate~\cite{deepgate}, PolarGate~\cite{polargate} and FuncGNN~\cite{funcgnn}---are among the models we evaluate in Section~\ref{sec:value}.
 \texttt{GraphBench}~\cite{graphbench} is, to our knowledge, the first AIG reduction benchmark built for methods that must perform on unseen AIGs.
-It provides a training set of Boolean functions of varying input and output dimension and a disjoint test set, and it reports node reduction relative to the expert \texttt{ABC} heuristics \texttt{resyn2}, \texttt{resyn2}, \texttt{dc2}, \texttt{resyn2rs}, \texttt{resyn2}, applied in that order.
+It provides a training set of Boolean functions of varying input and output dimension and a disjoint test set, and it reports node reduction relative to the expert \texttt{ABC} heuristic: \texttt{resyn2}, \texttt{resyn2}, \texttt{dc2}, \texttt{resyn2rs}, \texttt{resyn2}, applied in that order.
 Its main result is negative: given the AIG obtained by the naive construction from a truth table, specialized DAG generative models~\cite{directo,layerdag} do not preserve functional equivalence while reducing size.
-Our results are negative in the same sense, for a different family of models.
 
 \subsection{Reinforcement learning for AIGs}
-The works discussed in this section agree on the action space, which is the one drawn in Figure~\ref{fig:mdp}: a single \texttt{ABC} primitive applied to the whole graph, never an entire heuristic such as \texttt{resyn2}, and finer than a primitive only in~\citet{rl-generalization1}.
-Section~\ref{sec:future} returns to what that choice gives up.
-What varies is the encoding of the circuit.
-Most recent methods, here and in the neighboring chip design tasks of Section~\ref{sec:otherco}, run a graph neural network on the circuit as part of the deep reinforcement learning agent, sometimes alongside engineered features and sometimes as the whole state representation~\cite{rl-generalization1,rl-gnn1,gnn-mcts,more-mcts,chip,transistors}, while others describe the circuit with graph statistics alone~\cite{rl-logic1,contextual-bandit}.
-None of them reports how much of its performance is due to the graph neural network, so the importance of the learned representation is unknown.
-This is precisely the axis this paper ablates.
+The works discussed in this section use similar AIG minimization formulations: the state observed by the trained policy is some represntation of the AIG to minimize and the actions are \texttt{ABC} primitives (sec.~\ref{sec:abc}).
 
 \citet{rl-logic1} formulate synthesis as an MDP whose states are vectors of AIG statistics---numbers of primary inputs and outputs, nodes, edges, levels and latches, and the proportions of AND and NOT nodes---whose actions are \texttt{ABC} primitives, and whose reward combines node count and level count.
 \citet{rl-gnn1} keep \texttt{ABC} primitives as actions but encode the whole AIG with a graph convolutional network, alongside a small vector of statistics and recent actions, and reward the relative reduction in node count.
 Episodes there have a fixed horizon and no early stopping, so the induced problem is a search over flows of fixed length.
 This is the formulation we adopt, horizon included, and we state it in full in Section~\ref{sec:mdp-instance}.
-\citet{rl-generalization1} predate both and act with Boolean algebraic operations on majority-inverter graphs; we do not compare against it directly because MIGs and AIGs are not directly comparable.
-Both~\citet{rl-logic1} and~\citet{rl-gnn1} train with policy gradient methods~\cite{pg_sutton,reinforce,a2c}.
-We are not aware of a value-based~\cite{watkins1992q,dqn} treatment, even though AIG editing is deterministic; Section~\ref{sec:future} returns to what that omission means for our conclusion.
-These methods report reductions beyond the \texttt{ABC} heuristics, but they are not designed to generalize: a policy is trained to reduce one AIG, so the training cost is paid again for every new circuit.
-Search-based methods lift that restriction. AlphaSyn~\cite{gnn-mcts} and AlphaChip~\cite{chip} plan online and therefore apply to circuits unseen at training time, but there is no separation between training and inference: every edit requires a lookahead, and every lookahead step requires network forward passes.
+Both~\citet{rl-logic1} and~\citet{rl-gnn1} train with policy gradient methods~\cite{pg_sutton,reinforce,a2c,ppo}.
+We are not aware of a value-based~\cite{watkins1992q,dqn} treatment, even though AIG editing is deterministic.
+These methods report minimization performances beyond the \texttt{ABC} heuristics, but they are not designed to generalize: a policy is trained to reduce one AIG, so the training cost is paid again for every new circuit.
+Search-based methods lift that restriction. AlphaSyn~\cite{gnn-mcts} and AlphaChip~\cite{chip} plan online and therefore apply to any circuits: every AIG edit choice requires a lookahead, and every lookahead step requires network forward passes.
+However we argue that the cost of retraining a model is cheap compared to the cost of producing unnecessarily big chips at scale.
 ABC-RL~\cite{more-mcts} sits in between: a policy pre-trained on other circuits guides the tree search, and its influence is scaled down when the circuit at hand is far from anything in the training set.
 Two further formulations widen the setting rather than the state: ESE~\cite{more-rl} adds technology mapping operations to the action space and trains with PPO~\cite{ppo}, and CB-EVO~\cite{contextual-bandit} drops the sequential state altogether and treats the choice of primitive as a contextual bandit whose context is a set of circuit features.
 
 \subsection{Graph reinforcement learning for other combinatorial optimization}\label{sec:otherco}
 AIG reduction is an instance of graph structure optimization in the taxonomy of~\citet{graphrl}, who survey reinforcement learning applied to combinatorial problems on graphs and report that a graph neural network encoder is the common choice of state representation.
 Within chip design the same combination is used for transistor sizing~\cite{transistors} and for macro placement~\cite{chip}; in both cases the encoder is motivated as the component that enables transfer to new circuits.
+Next, we formulate AIG minimization as a Markov decision problem.
 
 \section{Background material}
-\subsection{And-inverter graphs minimization}
-Given an arbitrary Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, the objective is to find an And-Inverter Graph that encodes $f$ with as few nodes as possible.
-
-\begin{definition}[And-Inverter Graph, following section 3.2.1 from~\citet{graphbench}]\label{def:aig}
-An And-Inverter Graph $\mathcal{G}:=(V, E)$ is a directed acyclic graph of in-degree (fanin) at most two.
-The node set is partitioned into input nodes of in-degree $0$, $V^{in} := \{v^{in}_1,\dots,v^{in}_n\}$, AND nodes of in-degree two, $V^{AND}:=\{v^{AND}_1,\dots,v^{AND}_k\}$, and output nodes of in-degree one, $V^{out}:=\{v^{out}_1,\dots,v^{out}_m\}$; AIGs are therefore heterogeneous graphs~\cite{hetero}.
-The edge set is $E\subseteq V\times V \times \{0, 1\}$, with $0$ indicating direct transmission and $1$ indicating input negation (NOT).
-For an input $\boldsymbol{x}\in \{0, 1\}^n$, values are assigned to input nodes, propagated through gate nodes (applying inversion where specified), and collected at output nodes to yield $\mathcal{G}(\boldsymbol{x})\in \{0, 1\}^m$.
-Because the combination of AND and NOT is functionally complete, any Boolean function can be represented using only these two operations.
-\end{definition}
-
-We write $\mathcal{G}_f:=\left\{\mathcal{G}: \mathcal{G} (\boldsymbol{x}) = f(\boldsymbol{x})\ \forall \boldsymbol{x}\in \{0, 1\}^n\right\}$ for the set of AIGs functionally equivalent to $f$.
-AIGs are non-canonical representations of Boolean functions~\cite{fraig}---two different AIGs can represent the same function---so $|\mathcal{G}_f| > 1$ in general: the first two graphs of Figure~\ref{fig:mdp} are functionally equivalent and have eight and seven nodes respectively.
-
-\begin{definition}[And-Inverter Graph reduction]\label{def:pbm}
-Given a Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, we want to find
-$${\mathcal{G}}^\star \subseteq \underset{\mathcal{G}\in \mathcal{G}_f}{\operatorname{arg\ min}} |V|,$$
-the AIGs functionally equivalent to $f$ with as few nodes as possible.
-\end{definition}
-
-The hardness of this problem is not known.
-It is an instance of the Minimum Circuit Size Problem~\cite{nphard}, a natural and well-studied problem in NP that is not known to be NP-hard\footnote{\url{https://mcsp.work/index.html}}, and which is related to Graph Isomorphism~\cite{graphiso}.
-In the absence of a breakthrough in complexity theory, this motivates the development of the approximate algorithms of Section~\ref{sec:abc}.
-
-\begin{figure}[t]
+\begin{figure}[h]
   \centering
   \resizebox{\linewidth}{!}{\begin{tikzpicture}[scale=0.7]
         \draw
@@ -299,39 +269,45 @@ In the absence of a breakthrough in complexity theory, this motivates the develo
   \label{fig:mdp}
 \end{figure}
 
-\subsection{Markov decision process}
-AIG reduction can be formulated as a sequential decision making task in which the environment is the current AIG, the actions are edits of that AIG, and the rewards are shaped to favor edits that remove nodes.
-Formally, this is the problem of finding an optimal policy for a Markov decision process~\cite{Bellman,puterman}.
+\subsection{And-inverter graphs minimization}
+Given an arbitrary Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, the objective is to find an and-inverter graph that encodes $f$ with as few nodes as possible.
 
-\begin{definition}[Markov decision process]\label{def:mdp} An MDP is a tuple $\mathcal{M} = \langle S, A, R, T, T_0 \rangle$.
+Section 3.2.1 from~\citet{graphbench} states that an and-inverter graph $\mathcal{G}:=(V, E)$ is a directed acyclic graph of in-degree (fanin) at most two.
+The node set is partitioned into input nodes of in-degree $0$, $V^{in} := \{v^{in}_1,\dots,v^{in}_n\}$, AND nodes of in-degree two, $V^{AND}:=\{v^{AND}_1,\dots,v^{AND}_k\}$, and output nodes of in-degree one, $V^{out}:=\{v^{out}_1,\dots,v^{out}_m\}$; AIGs are therefore heterogeneous graphs~\cite{hetero}.
+The edge set is $E\subseteq V\times V \times \{0, 1\}$, with $0$ indicating direct transmission and $1$ indicating input negation (NOT).
+For an input $\boldsymbol{x}\in \{0, 1\}^n$, values are assigned to input nodes, propagated through gate nodes (applying inversion where specified), and collected at output nodes to yield $\mathcal{G}(\boldsymbol{x})\in \{0, 1\}^m$.
+Because the combination of AND and NOT is functionally complete, any Boolean function can be represented using only these two operations.
+
+We write $\mathcal{G}_f:=\left\{\mathcal{G}: \mathcal{G} (\boldsymbol{x}) = f(\boldsymbol{x})\ \forall \boldsymbol{x}\in \{0, 1\}^n\right\}$ for the set of AIGs functionally equivalent to $f$.
+AIGs are non-canonical representations of Boolean functions~\cite{fraig}---two different AIGs can represent the same function---so $|\mathcal{G}_f| > 1$ in general: e.g. the graphs of Figure~\ref{fig:mdp} are functionally equivalent.
+Given a Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, we want to find ${\mathcal{G}}^\star \subseteq \underset{\mathcal{G}\in \mathcal{G}_f}{\operatorname{arg\ min}} |V|,$ the AIGs functionally equivalent to $f$ with as few nodes as possible.
+The hardness of this problem is not known: it is an instance of the Minimum Circuit Size Problem~\cite{nphard}, a well-studied problem in NP that is not known to be NP-hard\footnote{\url{https://mcsp.work/index.html}}.
+
+\subsection{Markov decision process}
+AIG minimization can be formulated as a sequential decision making task in which the environment is the current AIG, the actions are edits of that AIG, and the rewards are shaped to favor edits that remove nodes.
+Formally, this is the problem of finding an optimal policy for a Markov decision process (MDP)~\cite{Bellman,puterman}.
+An MDP is a tuple $\mathcal{M} = \langle S, A, R, T, T_0 \rangle$.
 $S$ is a finite set of states representing all possible configurations of the environment (e.g. AIGs, or AIG statistics).
 $A$ is a finite set of actions available to the agent (e.g. AIG edits).
 $R: S \times A \rightarrow \mathbb{R}$ is a deterministic reward function that assigns a real-valued reward to each state-action pair (e.g. number of deleted nodes).
 $T: S \times A \rightarrow \Delta(S)$ is the transition function that maps state-action pairs to probability distributions over next states $\Delta(S)$ (e.g. how graph edits change the AIG; here the transitions are deterministic).
 $T_0 \in \Delta(S)$ is the initial distribution over states (e.g. a set of AIGs to reduce).
-\end{definition}
 
-\begin{definition}[Reinforcement learning objective]\label{def:mdp-obj} Given an MDP $\mathcal{M}\equiv\langle S, A, R, T, T_0 \rangle$, the goal is to find a policy $\pi: S \rightarrow A$ that maximizes the expected discounted sum of rewards
-{\small
-$$J(\pi) = \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, \pi(s_t)) \mid s_0 \sim T_0, s_{t+1} \sim T(s_t, \pi(s_t))\right]$$}
+Given an MDP $\mathcal{M}\equiv\langle S, A, R, T, T_0 \rangle$, the goal of reinforcement learning is to find a policy $\pi: S \rightarrow A$ that maximizes the expected discounted sum of rewards {\small$J(\pi) = \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, \pi(s_t)) \mid s_0 \sim T_0, s_{t+1} \sim T(s_t, \pi(s_t))\right]$}
 where $0< \gamma\leq 1$ is the discount factor that controls the trade-off between immediate and future rewards.
-\end{definition}
 
-We write $V^\star(s)$ for the value of a state under an optimal policy, i.e. the discounted sum of rewards collected from $s$ by acting optimally.
+We write $V^\star(s)=\mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t R(s_t, \pi(s_t)) \mid s_0 \sim =s, s_{t+1} \sim T(s_t, \pi(s_t))\right]$ for the value of a state under an optimal policy, i.e. the discounted sum of rewards collected from $s$ by acting optimally.
 $V^\star$ is the quantity a critic is trained to approximate in actor-critic methods, and the quantity a state representation must be able to distinguish states by; Section~\ref{sec:value} uses it to measure what a representation can express, independently of any training procedure.
-Reinforcement learning algorithms optimize the objective of Definition~\ref{def:mdp-obj} by trial and error; we refer to~\citet{sutton} for an introduction.
 
 \subsection{Message passing neural networks}\label{sec:mpnn}
-Every graph encoder considered in this paper belongs to the message passing family~\cite{mpnn}.
-A message passing neural network attaches a vector $h_v^{(0)}$ to each node $v$, initialized from that node's features, and refines it over $k$ rounds:
-{\small
-$$h_v^{(t+1)} = \phi^{(t)}\Big(h_v^{(t)}, \textstyle\bigoplus_{u \in \mathcal{N}(v)} \psi^{(t)}\big(h_v^{(t)}, h_u^{(t)}, e_{uv}\big)\Big),$$}
+A message passing neural network (MPNN)~\cite{mpnn} attaches a vector $h_v^{(0)}$ to each node $v$, initialized from that node's features, and refines it over $k$ rounds: {\small$h_v^{(t+1)} = \phi^{(t)}\Big(h_v^{(t)}, \textstyle\bigoplus_{u \in \mathcal{N}(v)} \psi^{(t)}\big(h_v^{(t)}, h_u^{(t)}, e_{uv}\big)\Big),$}
 where $\mathcal{N}(v)$ are the neighbours of $v$, $e_{uv}$ is an optional label on the edge between $u$ and $v$, $\bigoplus$ is a permutation-invariant aggregator, and $\phi^{(t)}, \psi^{(t)}$ are learned.
 A graph-level vector is then obtained by pooling $\{h_v^{(k)}\}_{v\in V}$ with a second permutation-invariant readout.
 Architectures in this family differ only in the choice of $\psi$, $\bigoplus$ and $\phi$: GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage} are instances, and so are the AIG-specific encoders we evaluate in Section~\ref{sec:trained}.
-They also share a limitation.
-After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman refinement assign the same color carry the same embedding~\cite{gin,wlgnn}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
+They also share a limitation. After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman refinement assign the same color carry the same embedding~\cite{gin,wlgnn,graphtester}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
 Section~\ref{sec:bounds} turns this into a lower bound on the error of every such encoder.
+
+Next, we present our methodology for studying the effect of MPNNs when using RL to train policies for AIG minimization formulated as an MDP.
 
 \section{Methodology}
 We take the pipeline of~\citet{rl-gnn1}---the MLCAD 2020 formulation that later work reuses---and vary only how the current AIG is presented to the policy.
