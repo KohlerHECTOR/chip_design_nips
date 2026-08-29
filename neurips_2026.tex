@@ -73,7 +73,7 @@
 \newtheorem{definition}{Definition}
 
 % Note. For the workshop paper template, both \title{} and \workshoptitle{} are required, with the former indicating the paper title shown in the title and the latter indicating the workshop title displayed in the footnote. 
-\title{Understanding graph representation learning in reinforcement learning based logic optimization}
+\title{Understanding graph representation learning in reinforcement learning based logic synthesis}
 
 
 % The \author macro works with any number of authors. There are two commands
@@ -124,34 +124,44 @@
 
 
 \begin{abstract}
-Computer chips ought to be as small as possible for cost efficiency. The problem of minimizing chip size while preserving the chip's functionality has been studied through the prism of and-inverter graphs (AIGs), since any Boolean function can be represented by an AIG. Because the complexity of AIG size minimization is unknown---it is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard---no procedure returns optimal AIGs at the sizes of interest, and there is therefore no supervision signal in the form of optimal AIGs to imitate. Reinforcement learning, and more generally planning, have been used to optimize AIGs in the absence of such a signal. Contemporarily, graph representation learning has been applied to train machine learning models to perform tasks on graph data. More recently, those two technologies have been combined and reported to outperform state-of-the-art logic synthesis heuristics, but the relative importance of graph representation learning in those methods remains unknown. Is graph representation learning useful when optimizing and-inverter graphs with reinforcement learning? 
+Computer chips ought to be as small as possible for cost efficiency.
+The problem of minimizing chip size while preserving the chip's functionality has been studied through the prism of and-inverter graphs (AIGs), since any Boolean function can be represented by an AIG.
+Because the complexity of AIG size minimization is unknown---it is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard---no procedure returns optimal AIGs at the sizes of interest, and there is therefore no supervision signal in the form of optimal AIGs to imitate.
+Reinforcement learning, and more generally planning, have been used to optimize AIGs in the absence of such a signal.
+Contemporarily, graph representation learning has been applied to train machine learning models to perform tasks on graph data.
+More recently, those two technologies have been combined and reported to outperform state-of-the-art logic synthesis heuristics, but the relative importance of graph representation learning in those methods remains unknown.
+Is graph representation learning useful when optimizing and-inverter graphs with reinforcement learning? 
 \end{abstract}
 
 
 \section{Introduction}
-A circuit that computes a given Boolean function with fewer gates occupies less area and is cheaper to manufacture, which matters at the scale of the semiconductor industry~\cite{economy}.
-Logic synthesis addresses this at the technology-independent level: given a Boolean function, find a small circuit that computes it.
-And-Inverter Graphs (AIGs) are the representation used for this step, because AND and NOT are functionally complete---so every Boolean function admits an AIG.
+A circuit that computes a given Boolean function with fewer logic gates occupies less area and is cheaper to manufacture~\cite{economy}.
+Given a Boolean function, logic synthesis methods~\cite{} are used to find a small circuit that computes it.
+Because every Boolean function can be represented with AND and NOT gates only, logic synthesis methods represent circuits with and-inverter graphs (AIGs) which nodes are AND gates and edges can invert incoming bits.
 
-AIG minimization has no known exact algorithm that scales.
+However, finding the smallest AIG encoding a given Boolean function is an open problem.
 It is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard~\cite{nphard}, and which is related to Graph Isomorphism~\cite{graphiso}.
-In practice, AIGs are reduced by applying sequences of local rewriting primitives such as those implemented in \texttt{ABC}~\cite{abc}.
-Choosing the sequence is itself a search problem.
+In practice, AIGs are reduced by applying sequences of heuristics that rewrite the graph while preserving functional equivalence~\cite{}.
+Many such heuristics are implemented in the \texttt{ABC}~\cite{abc} software.
+Choosing the best heuristics sequence is a search problem.
 
-Because no procedure returns optimal AIGs at the sizes of interest, there is no supervision signal in the form of optimal AIGs to imitate, and the sequence has instead been chosen by methods that need only a scalar objective: Bayesian optimization~\cite{bayes}, multi-armed bandits~\cite{flow-bandits}, reinforcement learning~\cite{rl-logic1,rl-gnn1} and Monte Carlo tree search~\cite{gnn-mcts}.
-Contemporarily, graph representation learning has been applied to train models on graph data, and circuits are graphs: encoders built specifically for AIGs are now available~\cite{deepgate,polargate,funcgnn,chipgrl}.
+In the absence of exact solvers, machine learning such as supervised learning has been applied to AIG minimization~\cite{graphbench}. 
+However it suffered from two major weaknesses: first, the supervision signal to train from could be a suboptimal minimal AIG since no exact solver exists, and second, graph generative models are still quite limited~\cite{}.
+Successful machine learning approaches are unsupervised ones that only require a scalar signal (often the size of a given AIG which is cheap to obtain): Bayesian optimization~\cite{bayes}, multi-armed bandits~\cite{flow-bandits}, reinforcement learning (RL)~\cite{rl-logic1,rl-gnn1} and Monte Carlo tree search~\cite{gnn-mcts}.
+Contemporarily, graph representation learning has been applied to train models on graph data, and circuits are graphs: task-agnostic encoders built specifically for AIGs are now available~\cite{deepgate,polargate,funcgnn,chipgrl}.
 The two lines of work have since been combined.
-Several of the methods above encode the current AIG with a graph neural network rather than with a fixed set of summary statistics~\cite{rl-gnn1,gnn-mcts,more-mcts}, and report reductions beyond the expert \texttt{ABC} heuristics.
-The motivation is the same as the one behind the very first deep reinforcement learning algorithm, which was designed specifically for Backgammon~\cite{td-gammon}: the state space of AIG minimization is huge and cannot be enumerated, so the value of a state has to be generalized from other states.
+Several of the methods above encode the current AIG with a graph neural network rather than with a fixed set of summary statistics~\cite{rl-gnn1,gnn-mcts,more-mcts}, and achieve reductions beyond the expert \texttt{ABC} heuristics.
+The motivation is the same as the one behind the very first deep RL algorithm, which was designed specifically for Backgammon~\cite{td-gammon}: the state space of AIG minimization is huge and cannot be enumerated, so the value of a state has to be generalized from other states.
 A learned representation of the circuit should carry structural information that statistics discard, and that is what should allow a deep reinforcement learning algorithm~\cite{ppo} to generalize to unseen circuits: ``I have seen a similar graph before, I should probably edit the AIG in a similar way to get good results''.
 
-What those methods do not report is how much of their performance is attributable to the learned representation rather than to the rest of the pipeline, and we are not aware of a study that isolates the contribution of the AIG encoder to reinforcement learning training.
-This work reports such an ablation, in the fixed-horizon setting that~\citet{rl-gnn1} introduced for this task at MLCAD 2020 and that later work reuses: episodes of exactly twenty \texttt{ABC} primitives applied to one circuit, with no early stopping.
+What those RL methods do not report is how much of their performance is attributable to the learned representation design. 
+We are not aware of a study that isolates the contribution of the AIG encoder to RL training.
+Our work reports such an ablation, in the fixed-horizon setting that~\citet{rl-gnn1} introduced and that later work reuses.
 We keep that pipeline fixed---the Markov decision process, the policy and value heads, the training algorithm and the hyper-parameter grid---and vary only how the AIG is presented to the policy.
+We show the following results.
 
-\paragraph{Contributions:} First, adding a graph convolutional network to the policy does not reduce AIG size beyond a multi-layer perceptron that reads graph statistics (number of nodes, of levels, \dots) and a histogram of past actions, on the ten MLCAD benchmarks under a matched hyper-parameter grid and on eighty further circuits.
-Second, we ask what a representation could express rather than what one training run achieves, and reach the same answer: message passing networks are bounded by the $1$-dimensional Weisfeiler-Leman refinement, and on our datasets that bound is no lower than the one obtained from the statistics the baseline already reads; trained graph models, AIG-specific ones included, do not beat predicting the mean on the same targets.
-These results hold in the fixed-horizon, primitive-level setting described above, and Section~\ref{sec:future} discusses what would have to change for a learned representation to have more to contribute.
+\paragraph{Contributions:} First, we show that adding a graph convolutional network to the policy does not improve AIG reduction beyond a multi-layer perceptron that reads graph statistics (number of nodes, of levels, \dots).
+Second, we derive empirical performance bounds--in terms of AIG value prediction--for message passing networks bounded by the $1$-dimensional Weisfeiler-Leman refinement as well as for AIGs specific models.
 
 
 \section{Related work}\label{sec:relwork}
