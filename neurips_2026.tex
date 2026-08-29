@@ -269,7 +269,7 @@ Next, we formulate AIG minimization as a Markov decision problem.
   \label{fig:mdp}
 \end{figure}
 
-\subsection{And-inverter graphs minimization}
+\subsection{And-inverter graphs minimization}\label{sec:aig-min}
 Given an arbitrary Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, the objective is to find an and-inverter graph that encodes $f$ with as few nodes as possible.
 
 Section 3.2.1 from~\citet{graphbench} states that an and-inverter graph $\mathcal{G}:=(V, E)$ is a directed acyclic graph of in-degree (fanin) at most two.
@@ -283,7 +283,7 @@ AIGs are non-canonical representations of Boolean functions~\cite{fraig}---two d
 Given a Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, we want to find ${\mathcal{G}}^\star \subseteq \underset{\mathcal{G}\in \mathcal{G}_f}{\operatorname{arg\ min}} |V|,$ the AIGs functionally equivalent to $f$ with as few nodes as possible.
 The hardness of this problem is not known: it is an instance of the Minimum Circuit Size Problem~\cite{nphard}, a well-studied problem in NP that is not known to be NP-hard\footnote{\url{https://mcsp.work/index.html}}.
 
-\subsection{Markov decision process}
+\subsection{Markov decision process}\label{sec:mdp-bg}
 AIG minimization can be formulated as a sequential decision making task in which the environment is the current AIG, the actions are edits of that AIG, and the rewards are shaped to favor edits that remove nodes.
 Formally, this is the problem of finding an optimal policy for a Markov decision process (MDP)~\cite{Bellman,puterman}.
 An MDP is a tuple $\mathcal{M} = \langle S, A, R, T, T_0 \rangle$.
@@ -309,39 +309,20 @@ Section~\ref{sec:bounds} turns this into a lower bound on the error of every suc
 
 Next, we present our methodology for studying the effect of MPNNs when using RL to train policies for AIG minimization formulated as an MDP.
 
-\section{Methodology}
-We take the pipeline of~\citet{rl-gnn1}---the MLCAD 2020 formulation that later work reuses---and vary only how the current AIG is presented to the policy.
-Two things differ from their setup, and both make a useful encoder easier to detect rather than harder: we train with PPO~\cite{ppo} rather than REINFORCE~\cite{reinforce}, and we tune every encoder over a common hyper-parameter grid instead of reporting a single configuration.
-Everything else is held fixed across the runs we compare, so the encoder is the only difference between two of them.
+\section{Methodology}\label{sec:method}%
+\label{sec:mdp-instance}\label{sec:features}\label{sec:repr}\label{sec:rl-method}%
+We use the same methdology as~\citet{rl-gnn1} who first combined graph convolutional networks and (deep) reinforcement learning for AIG minimization.
+We use a similar MDP to their's: the actions are the five \texttt{ABC} primitives $\{\texttt{balance},\ \texttt{rewrite},\ \texttt{rewrite -z},\ \texttt{refactor},\ \texttt{refactor -z}\}$, transitions are deterministic and every primitive preserves functional equivalence, so every reachable state stays in $\mathcal{G}_f$, and an episode applies exactly $H = 20$ of them to the AIG $\mathcal{G}_0$ to reduce, which makes the induced optimization a search over flows of length $20$ from a five-letter alphabet.
+The reward differs slightly: writing $n_t$ for the number of AND nodes after $t$ actions, $R(s_t, a_t) = 1 - n_{t+1}/n_0$ is issued at every step, so with $\gamma = 1$ we optimize node count alone---the objective of Section~\ref{sec:aig-min}---and not the multi-objective reward of~\citet{rl-logic1}.
+Unlike~\citet{rl-gnn1}, we use PPO~\cite{ppo} to train policies instead of REINFORCE~\cite{reinforce} since the former is the better more modern learner. 
 
-\subsection{The Markov decision process}\label{sec:mdp-instance}
-We take the MDP of~\citet{rl-gnn1} unchanged, instantiating Definition~\ref{def:mdp} as follows.
-Let $\mathcal{G}_0$ be the AIG to reduce and write $n_t$ and $\ell_t$ for its number of AND nodes and of levels after $t$ actions.
-The five actions are the \texttt{ABC} primitives $\{\texttt{balance},\ \texttt{rewrite},\ \texttt{rewrite -z},\ \texttt{refactor},\ \texttt{refactor -z}\}$, where \texttt{-z} enables zero-cost replacements; transitions are deterministic and every primitive preserves functional equivalence, so every reachable state lies in $\mathcal{G}_{f}$ and the problem of Definition~\ref{def:pbm} is never violated, only under-solved.
-Episodes start from $\mathcal{G}_0$ and last exactly $H = 20$ actions with no early stopping, so the induced optimization is a search over flows of length $20$ from a five-element alphabet.
-The reward $R(s_t, a_t) = 1 - n_{t+1} / n_0$ is issued at every step and is a level rather than a difference, so with $\gamma = 1$ the return is maximized by an agent that keeps the AIG small throughout the episode and not merely at the end.
-Levels do not enter it: unlike the multi-objective reward of~\citet{rl-logic1} we optimize node count alone, which is the objective of Definition~\ref{def:pbm}.
-The agent sees the state through a vector $x_\mathcal{G}$, always present (Section~\ref{sec:features}), and optionally a graph, which is what the encoders under comparison do or do not consume (Section~\ref{sec:repr}).
-Our environment also implements a seven-action variant adding \texttt{resub} and \texttt{resub -z}, and the full \texttt{ABC} action space, neither of which is used below.
-
-\subsection{Engineered graph features}\label{sec:features}
-The vector part of the observation, $x_\mathcal{G} \in \mathbb{R}^{|A| + 5}$, summarizes the current AIG and the recent history of the episode:
-{\small$x_\mathcal{G} = \Big[\underbrace{\tfrac{1}{q}\textstyle\sum_{j=1}^{q}\mathbf{1}[a_{t-j} = a]}_{a \in A},\ \ \frac{n_t}{n_0},\ \frac{\ell_t}{\ell_0},\ \frac{n_{t-1}}{n_0},\ \frac{\ell_{t-1}}{\ell_0},\ \frac{t}{H}\Big].$}
-The first $|A| = 5$ entries are a normalized histogram of the last $q$ actions, with $q = H$, so they summarize the whole flow applied so far; the next four are the AND and level counts of the current and of the previous AIG, each divided by its value in $\mathcal{G}_0$ so that the vector is scale-free across benchmarks of very different sizes; the last is the normalized time step, which makes the finite-horizon problem Markov in the observation.
-It is computed in a single pass over the graph and adds no parameters of its own, and it carries no structural information about the circuit: two AIGs with the same size, depth and history are indistinguishable to it.
-
-\subsection{Graph convolutional networks}\label{sec:repr}
-The graph part of the observation is the AIG itself, as in~\citet{rl-gnn1}: nodes carry a one-hot encoding of their type among the six types \texttt{abc\_py} exposes, a directed edge runs from each fanin to the node it feeds, and edges carry no label, so complementation is visible to the encoder only through node types.
-A graph convolutional network~\cite{gcn} runs a fixed number of the message passing rounds of Section~\ref{sec:mpnn} over it and pools the node embeddings into a graph-level vector, concatenated with $x_\mathcal{G}$ before the policy and value heads.
-We instantiate four such encoders, from $2{,}496$ to $107{,}968$ parameters added to the policy: three at depth three with widths from $12$ to $128$, and one at depth five, so that depth and width are not confounded (Table~\ref{tab:encoders} in Appendix~\ref{app:rl-hp}).
-The baseline drops the graph part, so that the policy reads $x_\mathcal{G}$ alone through a multi-layer perceptron: the encoder is only ever added to the baseline, never substituted for it, and the comparison is between $x_\mathcal{G}$ and $x_\mathcal{G}$ augmented with a learned representation of the circuit.
-
-\subsection{Reinforcement learning}\label{sec:rl-method}
-Policies are trained with PPO~\cite{ppo} on the MDP of Section~\ref{sec:mdp-instance}, rather than with the REINFORCE of~\citet{rl-gnn1}, so that a failure of the graph encoder cannot be attributed to a weak learner.
-The resulting procedure, which we call \textsc{GraphPPO} and state in full as Algorithm~\ref{alg:graphppo} in Appendix~\ref{app:rl-hp}, is ordinary PPO with the encoder made explicit: the encoding of the current AIG is the only place where the five configurations we compare differ, and the encoder is trained end to end with the policy and value heads rather than pre-trained or frozen.
-We use the implementation of \texttt{stable-baselines3}~\cite{sb3} with $\gamma = 1$, the horizon being finite and fixed, and train for $8{,}000$ environment steps, that is $N = 50$ updates; after every update we evaluate the greedy policy for one episode, which is the quantity the learning curves report.
-Each encoder is then tuned over the same grid of learning rates, entropy coefficients and seeds, and encoders are compared only on the grid cells that all of them completed, so that the comparison is between encoders and not between differently tuned systems.
-Appendix~\ref{app:rl-hp} gives the remaining hyper-parameters.
+The policies we train always read a features vector $x_\mathcal{G} \in \mathbb{R}^{|A|+5}$ holding the histogram of the actions taken so far, the AND and level counts of the current and previous AIG relative to $\mathcal{G}_0$, and the normalized time step: this is the same as in ~\citet{rl-logic1,rl-gnn1}.
+This features vector carries no AIG structural information, since two AIGs with the same size, depth and history are indistinguishable to it.
+The key novelty of~\citet{rl-gnn1} is to feed the policy a graph convolutional network~\cite{gcn} reading the AIG and pooling it into a graph-level vector concatenated with the features vector $x_\mathcal{G}$.
+This GCN addition has since then been built upon~\cite{} but never ablated against e.g.~\citet{rl-logic1}.
+Ablating GCN, which is the focus of the following sections, is important because while they might increase performances, they definitely add memory and time overheads. 
+%  we use four such encoders, from $2{,}496$ to $107{,}968$ added parameters, varying depth and width separately, and the baseline is the same policy with the graph part dropped, so the encoder is only ever added, never substituted.
+% Appendix~\ref{app:rl-hp} states the observation, the four encoders, the training procedure (Algorithm~\ref{alg:graphppo}) and the hyper-parameters in full.
 
 \section{Experiments}
 \subsection{Graph reinforcement learning}\label{sec:rl-exp}
@@ -402,7 +383,7 @@ The target is the best of them,$\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s),$ th
 This is a best-of-$M$ estimate: it is an upper bound on $\min$ over the $5^8$ flows of length eight, and it approaches it from above as $M$ grows.
 Producing one dataset therefore costs $1{,}000 \times (L + M \times 8) \approx 8\times 10^{5}$ \texttt{ABC} primitive calls per benchmark and per seed, which is why $M$ is lowered to $10$ on \texttt{C6288}, by far the most expensive circuit of the suite to rewrite.
 
-\paragraph{What the target measures.} $\widehat{V}$ is expressed in AND nodes rather than in returns, so it is ordered the other way round from the value of Definition~\ref{def:mdp-obj}---smaller is better---and it truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments.
+\paragraph{What the target measures.} $\widehat{V}$ is expressed in AND nodes rather than in returns, so it is ordered the other way round from the value $V^\star$ of Section~\ref{sec:mdp-bg}---smaller is better---and it truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments.
 Neither affects the comparison between model classes.
 The map $n \mapsto 1 - n/n_0$ from AND count to the reward of Section~\ref{sec:mdp-instance} is affine and order-reversing, all the errors we report are ratios to the variance of the target and are therefore free of its units, and the rank correlations we report are unchanged up to sign.
 What the truncation does mean is that our targets approximate the value of an eight-step-to-go problem under a best-of-$M$ estimate, not the exact $V^\star$ of the full episode, and the bounds of Section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
@@ -572,8 +553,25 @@ Separately,~\citet{graphbench} report that DAG generative models fail at AIG red
 \section{Hyper-parameters}\label{app:hp}
 
 \subsection{Graph encoders and reinforcement learning}\label{app:rl-hp}
-Table~\ref{tab:encoders} lists the four graph encoders of Section~\ref{sec:repr}.
-The baseline uses no encoder at all and reads $x_\mathcal{G}$ alone.
+
+\paragraph{The environment.}
+The MDP of Section~\ref{sec:method} instantiates the MDP of Section~\ref{sec:mdp-bg} with the five \texttt{ABC} primitives as actions, where \texttt{-z} enables zero-cost replacements.
+Episodes start from $\mathcal{G}_0$ and last exactly $H = 20$ actions with no early stopping.
+Because every primitive preserves functional equivalence, the problem of Section~\ref{sec:aig-min} is never violated, only under-solved.
+The reward is a level rather than a difference, so the return is maximized by an agent that keeps the AIG small throughout the episode and not merely at the end.
+Our environment also implements a seven-action variant adding \texttt{resub} and \texttt{resub -z}, and the full \texttt{ABC} action space, neither of which is used in our experiments.
+
+\paragraph{The observation.}
+Writing $n_t$ and $\ell_t$ for the number of AND nodes and of levels after $t$ actions, the vector part of the observation is
+{\small$$x_\mathcal{G} = \Big[\underbrace{\tfrac{1}{q}\textstyle\sum_{j=1}^{q}\mathbf{1}[a_{t-j} = a]}_{a \in A},\ \ \frac{n_t}{n_0},\ \frac{\ell_t}{\ell_0},\ \frac{n_{t-1}}{n_0},\ \frac{\ell_{t-1}}{\ell_0},\ \frac{t}{H}\Big].$$}
+The first $|A| = 5$ entries are a normalized histogram of the last $q$ actions, with $q = 3$ like in~\citet{rl-gnn1}; the next four are the AND and level counts of the current and of the previous AIG, each divided by its value in $\mathcal{G}_0$ so that the vector is scale-free across benchmarks of very different sizes; the last is the normalized time step, which makes the finite-horizon problem Markov in the observation.
+It is computed in a single pass over the graph and adds no parameters of its own.
+The graph part of the observation is the AIG itself, as in~\citet{rl-gnn1}: nodes carry a one-hot encoding of their type among the six types \texttt{abc\_py} exposes, a directed edge runs from each fanin to the node it feeds, and edges carry no label.
+
+\paragraph{The encoders.}
+Table~\ref{tab:encoders} lists the four graph encoders of Section~\ref{sec:method}: three at depth three with widths from $12$ to $128$, and one at depth five, so that depth and width are not confounded.
+Each runs the message passing rounds of Section~\ref{sec:mpnn} over the AIG and pools the node embeddings into a graph-level vector concatenated with $x_\mathcal{G}$ before the policy and value heads.
+The baseline uses no encoder at all and reads $x_\mathcal{G}$ alone through a multi-layer perceptron.
 
 \begin{table}[h]
   \centering
@@ -591,9 +589,12 @@ The baseline uses no encoder at all and reads $x_\mathcal{G}$ alone.
   \end{tabular}
 \end{table}
 
-Policies are trained with the PPO implementation of \texttt{stable-baselines3}~\cite{sb3}, as stated in Section~\ref{sec:rl-method}.
+\paragraph{Training.}
+Policies are trained with the PPO implementation of \texttt{stable-baselines3}~\cite{sb3} with $\gamma = 1$, the horizon being finite and fixed, and the encoder is trained end to end with the policy and value heads rather than pre-trained or frozen.
 Eight environments run in parallel and each contributes $20$ steps per update, so an update is computed from $160$ transitions and a single episode spans five updates; $8{,}000$ environment steps therefore amount to $N = 50$ updates.
+After every update we evaluate the greedy policy for one episode, which is the quantity the learning curves report.
 The policy and value heads are each two hidden layers of $256$ units and share the encoder of line~\ref{line:encode} of Algorithm~\ref{alg:graphppo}.
+Algorithm~\ref{alg:graphppo} states the resulting procedure, which we call \textsc{GraphPPO}: it is ordinary PPO with the encoder made explicit, the encoding of the current AIG being the only place where the five configurations we compare differ.
 
 \begin{algorithm}[h]
 \caption{\textsc{GraphPPO}. The encoder $f_\theta$ is the only component that varies across the runs we compare; everything else is held fixed.}
