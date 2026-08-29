@@ -325,7 +325,7 @@ Ablating GCN, which is the focus of the following sections, is important because
 % Appendix~\ref{app:rl-hp} states the observation, the four encoders, the training procedure (Algorithm~\ref{alg:graphppo}) and the hyper-parameters in full.
 
 \section{Experiments}
-\subsection{Graph reinforcement learning}\label{sec:rl-exp}
+\subsection{Graph reinforcement learning (\citet{rl-gnn1})}\label{sec:rl-exp}
 
 \begin{figure}[t]
   \centering
@@ -339,32 +339,19 @@ Ablating GCN, which is the focus of the following sections, is important because
 \end{figure}
 
 \paragraph{Setup.}
-The benchmarks are the ten MLCAD circuits \texttt{apex1}, \texttt{bc0},
+We use the same AIGs to minimize as~\citet{rl-gnn1}: \texttt{apex1}, \texttt{bc0},
 \texttt{C1355}, \texttt{C5315}, \texttt{C6288}, \texttt{C7552}, \texttt{dalu},
-\texttt{i10}, \texttt{k2} and \texttt{mainpla}. Each of the five encoders is run
-on each benchmark over a common grid of three learning rates, three entropy
-coefficients and five seeds, for $2{,}250$ runs in total, and every number below
-averages over the $424$ of $450$ (benchmark, learning rate, entropy, seed) cells
-that all five encoders completed. No encoder is therefore given its own best
-hyper-parameters --- tuning each separately would let the selection step, rather
-than the encoder, decide the winner. Appendix~\ref{app:rl-hp} gives the grid and
-the runs we drop. We report the final AND count divided by the AND count of the
-input AIG, so that benchmarks of different sizes can be averaged.
+\texttt{i10}, \texttt{k2} and \texttt{mainpla}. Those AIGs have diverse sizes (from hunreds to hundreds of thousands of nodes) and encode diverse Boolean functions. For each AIG, we run PPO with different policies (no GCN, a small, a medium, a large and a very large GCN).
+For each policy and each AIG, the PPO is tuned and run on multiple seeds. We periodically save and evaluate the greedy PPO policy: we use the policy to minimize an AIG and we report the normalized AND counts after applying $H=20$ \texttt{ABC} primitives (cf. section~\ref{sec:method}).
+All hyperparameters and implementation details are given in appendix~\ref{app:rl-hp}.
 
-\paragraph{Adding a GCN to the policy does not improve AIG minimization
-(Figure~\ref{fig:rl-main}).}
-Every GCN reduces the final AND count by $0.76$--$0.85\%$ relative to the MLP,
-which is less than the $1.23\%$ standard deviation induced by changing the seed
-alone, and a $43\times$ increase in encoder size moves that figure by nothing.
-The encoder is the only component that differs between these runs, so what the
-comparison shows is that we cannot separate its effect from the noise of
-reseeding. Figure~\ref{fig:rl-per-benchmark} in Appendix~\ref{app:curves} breaks
-the same runs down by benchmark.
-
-Appendix~\ref{app:ex} repeats the comparison on \texttt{ex200}--\texttt{ex299},
-a harder suite of larger and more varied circuits; the result appears to carry
-over, with the same difference of well under one percent and no growth with
-circuit size.
+\paragraph{Paying the GCN memory overhead does not improve AIG minimization}
+On figure~\ref{fig:rl-main}, we observe that in average a tuned PPO can train a policy to minimize an AIG, independently of the policy architecture.
+Figure~\ref{fig:rl-per-benchmark} in Appendix~\ref{app:curves} breaks the same runs down by benchmark and this observation holds.
+However, we also observe that for all AIGs benchmarked, adding a GCN to the policy does not significantly improves performance (the improvement is within one seed variance).
+Most importantly, we see on the same figure that this marginal improvments costs orders of magnitude more memory compared to the policy reading only a features vector (cf. section~\ref{sec:method}).
+We repeated this experiment on a the set of 100 AIGs to minimize taken from the 2026 IWLS programming contest\footnote{\url{}}.
+The above conclusion also holds for those AIGs as seen from Appendix~\ref{app:ex}: paying the GCN cost does not significantly improve performances.
 
 \subsection{Value prediction}\label{sec:value}
 The previous section compares encoders inside one algorithm, so a null result there could be a property of that algorithm rather than of the representations.
