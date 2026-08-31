@@ -126,11 +126,11 @@
 \begin{abstract}
 Computer chips ought to be as small as possible for cost efficiency.
 The problem of minimizing chip size while preserving the chip's functionality has been studied through the prism of and-inverter graphs (AIGs), since any Boolean function can be represented by an AIG.
-Because the complexity of AIG size minimization is unknown---it is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard---no procedure returns optimal AIGs at the sizes of interest, and there is therefore no supervision signal in the form of optimal AIGs to imitate.
-Reinforcement learning, and more generally planning, have been used to optimize AIGs in the absence of such a signal.
+Because the complexity of AIG size minimization is unknown---it is an instance of the minimum circuit size problem, which lies in NP but is not known to be NP-hard---no procedure returns optimal AIGs at the sizes of interest, and there is therefore no supervision signal in the form of optimal AIGs to imitate.
+Reinforcement learning, and more generally planning, have been used to minimize AIGs in the absence of such a signal.
 Contemporarily, graph representation learning has been applied to train machine learning models to perform tasks on graph data.
 More recently, those two technologies have been combined and reported to outperform state-of-the-art logic synthesis heuristics, but the relative importance of graph representation learning in those methods remains unknown.
-Is graph representation learning useful when optimizing and-inverter graphs with reinforcement learning? 
+Is graph representation learning useful when minimizing and-inverter graphs with reinforcement learning? 
 \end{abstract}
 
 
@@ -140,7 +140,7 @@ Given a Boolean function, logic synthesis methods~\cite{resub,resyn,rewriting} a
 Because every Boolean function can be represented with AND and NOT gates only, logic synthesis methods represent circuits with and-inverter graphs (AIGs) which nodes are AND gates and edges can invert incoming bits.
 
 However, finding the smallest AIG encoding a given Boolean function is an open problem.
-It is an instance of the Minimum Circuit Size Problem, which lies in NP but is not known to be NP-hard~\cite{nphard}, and which is related to Graph Isomorphism~\cite{graphiso}.
+It is an instance of the minimum circuit size problem, which lies in NP but is not known to be NP-hard~\cite{nphard}, and which is related to Graph Isomorphism~\cite{graphiso}.
 In practice, AIGs are reduced by applying sequences of heuristics that rewrite the graph while preserving functional equivalence.
 Many such heuristics are implemented in the \texttt{ABC}~\cite{abc} software.
 Choosing the best heuristics sequence is a search problem.
@@ -160,8 +160,8 @@ Our work reports such an ablation, in the fixed-horizon setting that~\citet{rl-g
 We keep that pipeline fixed---the Markov decision process, the policy and value heads, the training algorithm and the hyper-parameter grid---and vary only how the AIG is presented to the policy.
 We show the following results.
 
-\paragraph{Contributions:} First, we show that adding a graph convolutional network to the policy does not improve AIG reduction beyond a multi-layer perceptron (MLP) that reads graph statistics (number of nodes, of levels, \dots).
-Second, we give a candidate explanation: we compute, for AIG value prediction, the best error achievable by any model whose separating power is bounded by the $1$-dimensional Weisfeiler-Leman refinement---which covers message passing networks---and find it no better than the one achievable from the graph statistics alone.
+\paragraph{Contributions:} First, we show that adding a graph convolutional network to the policy does not improve AIG minimization beyond a multi-layer perceptron (MLP) that reads graph statistics (number of nodes, of levels, \dots).
+Second, we give a candidate explanation: we compute, for AIG value prediction, the best error achievable by any model whose expressivity is bounded by the $1$-dimensional Weisfeiler-Leman refinement---which covers message passing networks---and find it no better than the one achievable from the graph statistics alone.
 Next, we present existing AIG minimization methods.
 
 \section{Related work}\label{sec:relwork}
