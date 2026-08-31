@@ -389,14 +389,12 @@ We therefore ask a question that does not involve a training algorithm at all: h
 This kind of empirical analysis of graph representations, in particular of MPNNs (cf. section~\ref{sec:mpnn}), has been carried out for graph-level regression tasks other than value prediction in~\citet{graphtester}.
 
 \subsection{Building a dataset}\label{sec:dataset}
-Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of section~\ref{sec:mdp-instance} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
+Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of section~\ref{sec:method} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
 We therefore estimate it by sampling both the states and the continuations from them.
 A state is the AIG obtained by applying to the benchmark $\mathcal{G}_0$ a uniformly random flow of length $L\sim\mathcal{U}\{2,\dots,10\}$; we draw $1{,}000$ such states per benchmark and store each one both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features}, so that every model class of section~\ref{sec:bounds} is evaluated on exactly the same states and the same targets.
 From each state $s$ we then run $M = 100$ independent rollouts of $8$ further uniformly random primitives and keep the best AND count reached, $\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s)$, an upper bound on the minimum over the $5^8$ flows of length eight that approaches it from above as $M$ grows.
-Two differences to $V^\star$ should be kept in mind.
-$\widehat{V}$ counts AND nodes rather than returns, so it is ordered the other way round from the value of section~\ref{sec:mdp-bg}---smaller is better---which leaves the comparison between model classes unchanged (appendix~\ref{app:value-hp}).
-And it truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments, so our targets approximate the value of an eight-step-to-go problem, and the bounds of section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
-The procedure is repeated with ten seeds per benchmark on the same ten MLCAD circuits as in section~\ref{sec:rl-exp}, and the figures of this section report over those ten repetitions.
+A key difference to $V^\star$ should be kept in mind: $\hat{V}$ truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments, so our targets approximate the value of an eight-step-to-go problem, and the bounds of section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
+The procedure is repeated with ten seeds per benchmark on the same ten AIGs as in section~\ref{sec:rl-exp}, and the figures of this section report over those ten repetitions.
 The sampler is degenerate on two of them, reaching only two distinct values of $\widehat{V}$ on \texttt{C6288} and six on \texttt{C1355}: we exclude \texttt{C6288} and report over the remaining nine benchmarks, flagging \texttt{C1355} wherever it appears.
 
 \subsection{Theoretical lower bounds on the prediction error}\label{sec:bounds}
