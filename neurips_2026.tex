@@ -272,9 +272,9 @@ Next, we formulate AIG minimization as a Markov decision problem.
 \subsection{And-inverter graphs minimization}\label{sec:aig-min}
 Given an arbitrary Boolean function $f:\{0, 1\}^n \rightarrow \{0, 1\}^m$, the objective is to find an and-inverter graph that encodes $f$ with as few nodes as possible.
 
-Section 3.2.1 from~\citet{graphbench} states that an and-inverter graph $\mathcal{G}:=(V, E)$ is a directed acyclic graph of in-degree (fanin) at most two.
-The node set is partitioned into input nodes of in-degree $0$, $V^{in} := \{v^{in}_1,\dots,v^{in}_n\}$, AND nodes of in-degree two, $V^{AND}:=\{v^{AND}_1,\dots,v^{AND}_k\}$, and output nodes of in-degree one, $V^{out}:=\{v^{out}_1,\dots,v^{out}_m\}$; AIGs are therefore heterogeneous graphs~\cite{hetero}.
-The edge set is $E\subseteq V\times V \times \{0, 1\}$, with $0$ indicating direct transmission and $1$ indicating input negation (NOT).
+Section 3.2.1 from~\citet{graphbench} states that an and-inverter graph $\mathcal{G}:=(\mathcal{V}, \mathcal{E})$ is a directed acyclic graph of in-degree (fanin) at most two.
+The node set is partitioned into input nodes of in-degree $0$, $\mathcal{V}^{in} := \{v^{in}_1,\dots,v^{in}_n\}$, AND nodes of in-degree two, $\mathcal{V}^{AND}:=\{v^{AND}_1,\dots,v^{AND}_k\}$, and output nodes of in-degree one, $\mathcal{V}^{out}:=\{v^{out}_1,\dots,v^{out}_m\}$; AIGs are therefore heterogeneous graphs~\cite{hetero}.
+The edge set is $\mathcal{E}\subseteq \mathcal{V}\times \mathcal{V} \times \{0, 1\}$, with $0$ indicating direct transmission and $1$ indicating input negation (NOT).
 For an input $\boldsymbol{x}\in \{0, 1\}^n$, values are assigned to input nodes, propagated through gate nodes (applying inversion where specified), and collected at output nodes to yield $\mathcal{G}(\boldsymbol{x})\in \{0, 1\}^m$.
 Because the combination of AND and NOT is functionally complete, any Boolean function can be represented using only these two operations.
 
@@ -302,7 +302,7 @@ $V^\star$ is the quantity a critic is trained to approximate in actor-critic met
 \subsection{Message passing neural networks}\label{sec:mpnn}
 A message passing neural network (MPNN)~\cite{mpnn} attaches a vector $h_v^{(0)}$ to each node $v$, initialized from that node's features, and refines it over $k$ rounds: {\small$h_v^{(t+1)} = \phi^{(t)}\Big(h_v^{(t)}, \textstyle\bigoplus_{u \in \mathcal{N}(v)} \psi^{(t)}\big(h_v^{(t)}, h_u^{(t)}, e_{uv}\big)\Big),$}
 where $\mathcal{N}(v)$ are the neighbours of $v$, $e_{uv}$ is an optional label on the edge between $u$ and $v$, $\bigoplus$ is a permutation-invariant aggregator, and $\phi^{(t)}, \psi^{(t)}$ are learned.
-A graph-level vector is then obtained by pooling $\{h_v^{(k)}\}_{v\in V}$ with a second permutation-invariant readout.
+A graph-level vector is then obtained by pooling $\{h_v^{(k)}\}_{v\in \mathcal{V}}$ with a second permutation-invariant readout.
 Architectures in this family differ only in the choice of $\psi$, $\bigoplus$ and $\phi$: GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage} are instances, and so are the AIG-specific encoders of appendix~\ref{app:trained}.
 They also share a limitation. After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman refinement assign the same color carry the same embedding~\cite{gin,wlgnn,graphtester}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
 Section~\ref{sec:bounds} turns this into a lower bound on the error of every such encoder.
