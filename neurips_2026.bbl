@@ -1,4 +1,4 @@
-\begin{thebibliography}{51}
+\begin{thebibliography}{48}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -97,15 +97,6 @@ Antoine Grosnit, Cedric Malherbe, Rasul Tutunov, Xingchen Wan, Jun Wang, and
 \newblock In \emph{Design, Automation, Test in Europe Conference, 2022}, pages
   1193--1196, 2022.
 \newblock \doi{10.23919/DATE54114.2022.9774632}.
-
-\bibitem[Haaswijk et~al.(2018)Haaswijk, Collins, Seguin, Soeken, Kaplan,
-  Süsstrunk, and De~Micheli]{rl-generalization1}
-Winston Haaswijk, Edo Collins, Benoit Seguin, Mathias Soeken, Frédéric
-  Kaplan, Sabine Süsstrunk, and Giovanni De~Micheli.
-\newblock Deep learning for logic optimization algorithms.
-\newblock In \emph{2018 IEEE International Symposium on Circuits and Systems
-  (ISCAS)}, pages 1--4, 2018.
-\newblock \doi{10.1109/ISCAS.2018.8351885}.
 
 \bibitem[Hagberg et~al.(2008)Hagberg, Schult, and Swart]{networkx}
 Aric~A. Hagberg, Daniel~A. Schult, and Pieter~J. Swart.
@@ -312,12 +303,6 @@ Timo Stoll, Chendi Qian, Ben Finkelshtein, Ali Parviz, Darius Weber, Fabrizio
 \newblock Graphbench: Next-generation graph learning benchmarking, 2026.
 \newblock URL \url{https://arxiv.org/abs/2512.04475}.
 
-\bibitem[Sutton and Barto(2018)]{sutton}
-Richard~S. Sutton and Andrew~G. Barto.
-\newblock \emph{Reinforcement Learning: An Introduction}.
-\newblock A Bradford Book, Cambridge, MA, USA, 2018.
-\newblock ISBN 0262039249.
-
 \bibitem[Sutton et~al.(1999)Sutton, McAllester, Singh, and Mansour]{pg_sutton}
 Richard~S Sutton, David McAllester, Satinder Singh, and Yishay Mansour.
 \newblock Policy gradient methods for reinforcement learning with function
@@ -371,16 +356,6 @@ Ronald~J. Williams.
 Keyulu Xu, Weihua Hu, Jure Leskovec, and Stefanie Jegelka.
 \newblock How powerful are graph neural networks?
 \newblock In \emph{International Conference on Learning Representations}, 2019.
-
-\bibitem[Yang et~al.(2012)Yang, Wang, and Mishchenko]{lms}
-Wenlong Yang, Lingli Wang, and Alan Mishchenko.
-\newblock Lazy man's logic synthesis.
-\newblock In \emph{Proceedings of the International Conference on
-  Computer-Aided Design}, ICCAD '12, page 597–604, New York, NY, USA, 2012.
-  Association for Computing Machinery.
-\newblock ISBN 9781450315739.
-\newblock \doi{10.1145/2429384.2429513}.
-\newblock URL \url{https://doi.org/10.1145/2429384.2429513}.
 
 \bibitem[Zhao(2025)]{funcgnn}
 Qiyun Zhao.
