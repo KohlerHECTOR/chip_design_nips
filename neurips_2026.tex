@@ -328,7 +328,7 @@ Ablating the GCN, which is the focus of the following sections, matters because 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_gcn_main.pdf}
-  \caption{PPO on the ten benchmarks from~\citet{rl-gnn1} with five observation encoders, each tuned (cf. appendix~\ref{sec:app-rl} for more details). (a) AND count averaged over the ten
+  \caption{PPO on the ten benchmarks from~\citet{rl-gnn1} with five observation encoders, each tuned (cf. appendix~\ref{app:rl-hp} for more details). (a) AND count averaged over the ten
   benchmarks; (b) change in final AND count against the no-GCN policy, per
   benchmark and pooled over the ten (\emph{all 10}), the grey band being the
   no-GCN policy's own spread over its five seeds; (c) the pooled change against
@@ -356,9 +356,9 @@ implementation details are given in appendix~\ref{app:rl-hp}.
   \input{tables/table_gcn_ablation}
   \caption{Mean AND count after $H=20$ \texttt{ABC} primitives, over the five
   seeds of each configuration's best hyper-parameter cell, $\pm$ one standard
-  deviation across those seeds. \emph{input} is the AND count of the benchmark
+  deviation across those seeds. \emph{Starting nodes} is the AND count of the benchmark
   before any primitive is applied; \texttt{resyn2} is deterministic and has no
-  spread. Benchmarks are ordered by input size.}
+  spread. AIGs are ordered by input size.}
   \label{tab:rl-ands}
 \end{table}
 
@@ -462,7 +462,7 @@ This is not a statement about graph representation learning for logic synthesis 
 Appendix~\ref{app:trained} reports a preliminary attempt to train actual graph models and AIG-specific models on these datasets; the models do not fit their training set, so we draw no conclusion from it.
 
 \section{Future work}\label{sec:future}
-Our results are restricted to the setting used by past work: a policy gradient algorithm, five \texttt{ABC} primitives as actions, and the fixed horizon of section~\ref{sec:mdp-instance}.
+Our results are restricted to the setting used: a policy gradient algorithm, five \texttt{ABC} primitives as actions, and the fixed horizon of section~\ref{sec:mdp-instance}.
 Two of those choices---the algorithm and the action space---bear directly on how much a learned representation of the circuit could contribute, and relaxing them is where we would look next.
 
 \paragraph{Other reinforcement learning algorithms.}
@@ -476,7 +476,7 @@ Five primitives give the policy little to decide, and the states it can reach ar
 With more primitives, reachable states might differ from one another in more ways, and a representation that sees the circuit rather than its summary would have correspondingly more to distinguish.
 Rerunning both the ablation of section~\ref{sec:rl-exp} and the bounds of section~\ref{sec:bounds} over that action space would say whether our negative result is a property of AIG reduction itself or of the small action space it is usually given.
 
-To conclude, we have proposed the first empirical study of graph representation learning in RL-based logic synthesis. We hope our work will help research design better RL algorithms for AIG minimization by choosing the right representations that help policies accurately distinguish valuable AIG states.
+To conclude, we have proposed the first empirical study of graph representation learning in RL-based logic synthesis. We hope our work will help researchers design better RL algorithms for AIG minimization by choosing the right representations that help policies accurately distinguish valuable AIG states.
 
 \bibliographystyle{plainnat}
 \bibliography{neurips_2026}

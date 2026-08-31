@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  31 AUG 2026 21:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  31 AUG 2026 22:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -989,14 +989,13 @@ File: figures/fig_gcn_main.pdf Graphic file (type pdf)
 <use figures/fig_gcn_main.pdf>
 Package pdftex.def Info: figures/fig_gcn_main.pdf  used on input line 330.
 (pdftex.def)             Requested size: 397.48499pt x 148.65637pt.
+(./tables/table_gcn_ablation.tex)
+Overfull \hbox (4.06808pt too wide) in paragraph at lines 3--361
+ [][] 
+ []
 
-LaTeX Warning: Reference `sec:app-rl' on page 5 undefined on input line 336.
-
-
-LaTeX Warning: Reference `sec:app-rl' on page 5 undefined on input line 336.
-
-(./tables/table_gcn_ablation.tex) [5 <./figures/fig_gcn_main.pdf>] [6]
-<figures/fig_value_bounds.pdf, id=406, 630.06485pt x 349.64566pt>
+[5 <./figures/fig_gcn_main.pdf>] [6]
+<figures/fig_value_bounds.pdf, id=408, 630.06485pt x 349.64566pt>
 File: figures/fig_value_bounds.pdf Graphic file (type pdf)
 <use figures/fig_value_bounds.pdf>
 Package pdftex.def Info: figures/fig_value_bounds.pdf  used on input line 413.
@@ -1023,7 +1022,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [13
 
 ]
-<figures/fig_gcn_per_benchmark.pdf, id=595, 529.74597pt x 263.96591pt>
+<figures/fig_gcn_per_benchmark.pdf, id=597, 529.74597pt x 263.96591pt>
 File: figures/fig_gcn_per_benchmark.pdf Graphic file (type pdf)
 <use figures/fig_gcn_per_benchmark.pdf>
 Package pdftex.def Info: figures/fig_gcn_per_benchmark.pdf  used on input line 
@@ -1033,18 +1032,18 @@ Package pdftex.def Info: figures/fig_gcn_per_benchmark.pdf  used on input line
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [14 <./figures/fig_gcn_per_benchmark.pdf>]
-<figures/fig_gcn_ex_main.pdf, id=655, 518.30002pt x 222.3625pt>
+<figures/fig_gcn_ex_main.pdf, id=657, 518.30002pt x 222.3625pt>
 File: figures/fig_gcn_ex_main.pdf Graphic file (type pdf)
 <use figures/fig_gcn_ex_main.pdf>
 Package pdftex.def Info: figures/fig_gcn_ex_main.pdf  used on input line 589.
 (pdftex.def)             Requested size: 397.48499pt x 170.53427pt.
-<figures/fig_gcn_ex_size.pdf, id=658, 537.4642pt x 169.65231pt>
+<figures/fig_gcn_ex_size.pdf, id=660, 537.4642pt x 169.65231pt>
 File: figures/fig_gcn_ex_size.pdf Graphic file (type pdf)
 <use figures/fig_gcn_ex_size.pdf>
 Package pdftex.def Info: figures/fig_gcn_ex_size.pdf  used on input line 600.
 (pdftex.def)             Requested size: 397.48499pt x 125.47084pt.
  [15 <./figures/fig_gcn_ex_main.pdf> <./figures/fig_gcn_ex_size.pdf>]
-<figures/fig_mpnn_depth.pdf, id=766, 497.21759pt x 348.20853pt>
+<figures/fig_mpnn_depth.pdf, id=768, 497.21759pt x 348.20853pt>
 File: figures/fig_mpnn_depth.pdf Graphic file (type pdf)
 <use figures/fig_mpnn_depth.pdf>
 Package pdftex.def Info: figures/fig_mpnn_depth.pdf  used on input line 634.
@@ -1100,7 +1099,7 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 (hyperref)                removing `math shift' on input line 640.
 
-<figures/fig_trained_models.pdf, id=858, 559.81963pt x 341.69733pt>
+<figures/fig_trained_models.pdf, id=860, 559.81963pt x 341.69733pt>
 File: figures/fig_trained_models.pdf Graphic file (type pdf)
 <use figures/fig_trained_models.pdf>
 Package pdftex.def Info: figures/fig_trained_models.pdf  used on input line 667
@@ -1109,7 +1108,7 @@ Package pdftex.def Info: figures/fig_trained_models.pdf  used on input line 667
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figures/fig_training_curves.pdf, id=861, 555.91441pt x 401.68832pt>
+<figures/fig_training_curves.pdf, id=863, 555.91441pt x 401.68832pt>
 File: figures/fig_training_curves.pdf Graphic file (type pdf)
 <use figures/fig_training_curves.pdf>
 Package pdftex.def Info: figures/fig_training_curves.pdf  used on input line 67
@@ -1126,19 +1125,15 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `neurips_2026.out' has not changed.
 (rerunfilecheck)             Checksum: 4BDEC409967AF9375D242655721B1F24;5722.
  ) 
 Here is how much of TeX's memory you used:
- 26429 strings out of 474222
- 480251 string characters out of 5748733
- 1953975 words of memory out of 5000000
- 47809 multiletter control sequences out of 15000+600000
- 630826 words of font info for 295 fonts, out of 8000000 for 9000
+ 26431 strings out of 474222
+ 480269 string characters out of 5748733
+ 1952975 words of memory out of 5000000
+ 47808 multiletter control sequences out of 15000+600000
+ 631051 words of font info for 297 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,87p,1009b,906s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr
@@ -1168,10 +1163,10 @@ mf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/font
 s/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/tim
 es/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
 
-Output written on neurips_2026.pdf (19 pages, 746059 bytes).
+Output written on neurips_2026.pdf (19 pages, 746015 bytes).
 PDF statistics:
- 1168 PDF objects out of 1200 (max. 8388607)
- 688 compressed objects within 7 object streams
+ 1170 PDF objects out of 1200 (max. 8388607)
+ 689 compressed objects within 7 object streams
  125 named destinations out of 1000 (max. 500000)
  62741 words of extra memory for PDF output out of 74296 (max. 10000000)
 
