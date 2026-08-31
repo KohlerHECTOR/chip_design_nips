@@ -161,7 +161,7 @@ We keep that pipeline fixed---the Markov decision process, the policy and value 
 We show the following results.
 
 \paragraph{Contributions:} First, we show that adding a graph convolutional network to the policy does not improve AIG reduction beyond a multi-layer perceptron that reads graph statistics (number of nodes, of levels, \dots).
-Second, we derive empirical performance bounds--in terms of AIG value prediction--for message passing networks bounded by the $1$-dimensional Weisfeiler-Leman refinement as well as for AIGs specific models.
+Second, we give a candidate explanation: we compute, for AIG value prediction, the best error achievable by any model whose separating power is bounded by the $1$-dimensional Weisfeiler-Leman refinement---which covers message passing networks---and find it no better than the one achievable from the graph statistics alone.
 Next, we present existing AIG minimization methods.
 
 \section{Related work}\label{sec:relwork}
@@ -303,7 +303,7 @@ $V^\star$ is the quantity a critic is trained to approximate in actor-critic met
 A message passing neural network (MPNN)~\cite{mpnn} attaches a vector $h_v^{(0)}$ to each node $v$, initialized from that node's features, and refines it over $k$ rounds: {\small$h_v^{(t+1)} = \phi^{(t)}\Big(h_v^{(t)}, \textstyle\bigoplus_{u \in \mathcal{N}(v)} \psi^{(t)}\big(h_v^{(t)}, h_u^{(t)}, e_{uv}\big)\Big),$}
 where $\mathcal{N}(v)$ are the neighbours of $v$, $e_{uv}$ is an optional label on the edge between $u$ and $v$, $\bigoplus$ is a permutation-invariant aggregator, and $\phi^{(t)}, \psi^{(t)}$ are learned.
 A graph-level vector is then obtained by pooling $\{h_v^{(k)}\}_{v\in V}$ with a second permutation-invariant readout.
-Architectures in this family differ only in the choice of $\psi$, $\bigoplus$ and $\phi$: GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage} are instances, and so are the AIG-specific encoders we evaluate in section~\ref{sec:trained}.
+Architectures in this family differ only in the choice of $\psi$, $\bigoplus$ and $\phi$: GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage} are instances, and so are the AIG-specific encoders of appendix~\ref{app:trained}.
 They also share a limitation. After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman refinement assign the same color carry the same embedding~\cite{gin,wlgnn,graphtester}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
 Section~\ref{sec:bounds} turns this into a lower bound on the error of every such encoder.
 
@@ -381,7 +381,7 @@ This empirical analyses of graphs representation, in particular of MPNNs (cf. se
 \subsection{Building a dataset}\label{sec:dataset}
 Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of section~\ref{sec:mdp-instance} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
 We therefore estimate it by sampling both the states and the continuations from them.
-A state is the AIG obtained by applying to the benchmark $\mathcal{G}_0$ a uniformly random flow of length $L\sim\mathcal{U}\{2,\dots,10\}$; we draw $1{,}000$ such states per benchmark and store each one both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features}, so that the graph models and the MLP of sections~\ref{sec:bounds} and~\ref{sec:trained} are evaluated on exactly the same states and the same targets.
+A state is the AIG obtained by applying to the benchmark $\mathcal{G}_0$ a uniformly random flow of length $L\sim\mathcal{U}\{2,\dots,10\}$; we draw $1{,}000$ such states per benchmark and store each one both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features}, so that the graph models and the MLP of section~\ref{sec:bounds} are evaluated on exactly the same states and the same targets.
 From each state $s$ we then run $M = 100$ independent rollouts of $8$ further uniformly random primitives and keep the best AND count reached, $\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s)$, an upper bound on the minimum over the $5^8$ flows of length eight that approaches it from above as $M$ grows.
 Two differences to $V^\star$ should be kept in mind.
 $\widehat{V}$ counts AND nodes rather than returns, so it is ordered the other way round from the value of section~\ref{sec:mdp-bg}---smaller is better---which leaves the comparison between model classes unchanged (appendix~\ref{app:value-hp}).
@@ -429,64 +429,32 @@ eight of ten for \texttt{dalu} and \texttt{C7552}. For ranking the two classes
 are indistinguishable --- weighted Kendall $\tau \geq 0.97$ for both on every
 benchmark, with $x_\mathcal{G}$ ahead by at most $0.014$ --- while size and
 depth alone reach only $0.60$--$0.99$.
-This is possible because $x_\mathcal{G}$ is not a coarsening of the graph: it
-carries the episode history described above, which no encoder of the current
-AIG can reconstruct.
 Depth is irrelevant --- the bound moves by at most $1.1\times10^{-3}$ between
 $k=1$ and $k=50$, and edge direction and inverter bits change it by less than
 $10^{-6}$ (Appendix~\ref{app:depth}). \texttt{C6288} is excluded: its target
-takes two distinct values.
+takes only two distinct values.
 
-\paragraph{Limitations of the bounds.} Four restrictions should be read with the numbers above.
+\paragraph{Limitations of the bounds.} Three restrictions should be read with the numbers above.
 First, they hold over the state distribution of section~\ref{sec:dataset}---AIGs reached by uniformly random flows of length two to ten---and not over the states a trained policy visits, which are fewer and more correlated; a representation could be uninformative on the former and useful on the latter.
-Second, each dataset descends from a single benchmark, so what is bounded is the ability to tell apart states \emph{of one circuit}, whereas the argument for learned encoders in section~\ref{sec:repr} is transfer \emph{across} circuits; our experiment does not test that claim, and a cross-circuit dataset could behave differently.
-Third, $\widehat{V}$ is a Monte-Carlo estimate, so part of its variance is sampling noise that no representation can predict.
+second, $\widehat{V}$ is a Monte-Carlo estimate, so part of its variance is sampling noise that no representation can predict.
 That noise raises every bound by roughly the same amount and therefore compresses the ratios between classes towards one, which works in favor of the negative conclusion we draw; the $1$-WL and $x_\mathcal{G}$ bounds being close is evidence that message passing adds little, but not proof that the noise floor is not what they are both close to.
-Fourth, the $1$-WL argument covers message passing networks whose input is the AIG with node-type features, which is the setting of section~\ref{sec:repr} and of~\citet{rl-gnn1}.
+Third, the $1$-WL argument covers message passing networks whose input is the AIG with node-type features, which is the setting of section~\ref{sec:repr} and of~\citet{rl-gnn1}.
 It does not cover higher-order architectures, models given node identifiers or positional encodings, nor encoders whose node features are not a function of the graph alone---the simulation-derived features used by some AIG-specific models are an example, and for those the bound of figure~\ref{fig:bounds} is not binding.
 
-In the next section, we train models to predict the target values of section~\ref{sec:dataset}.
+\section{Discussion}\label{sec:discussion}
+In section~\ref{sec:rl-exp}, we observe that training graphs representations in the form of a GCN policy did not improve RL-based AIG minimization compared to using only an MLP reading graphs statistics and last few actions.
+In section~\ref{sec:bounds}, we approximated an upper bound for the performances of MPNNs predicting the optimal states values in the AIG minimization MDP of section~\ref{sec:method}. 
+The bounds give a candidate explanation for a gap that small: for predicting $\widehat{V}$, the statistics $x_\mathcal{G}$ the MLP reads are as expressive as any message passing network on the states of section~\ref{sec:dataset}.
+On eight of the nine benchmarks the error achievable from $x_\mathcal{G}$ is the lower of the two, and for ranking states the two classes are indistinguishable, at weighted Kendall $\tau \geq 0.97$ for both.
+Nothing a GCN could extract from the graph would then improve the value estimate the policy is trained against, and the reduction it buys would stay of the order we measure.
 
-\section{Empirical performances of AIG-specific models on value prediction}\label{sec:trained}
-The bounds of section~\ref{sec:bounds} say what a representation \emph{could} express.
-This section asks what models actually trained on the same datasets achieve, which is the quantity a critic in Algorithm~\ref{alg:graphppo} would reach.
+The bounds do show that message passing separates states far better than size and depth alone, so the result is about the specific comparison with $x_\mathcal{G}$, not about message passing being uninformative.
 
-\subsection{Setup} We train eight regressors on the datasets of section~\ref{sec:dataset}.
-Four are generic message passing networks---GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage}---taken from \texttt{PyTorch Geometric}~\cite{pyg}.
-Three are AIG-specific: DeepGate~\cite{deepgate}, PolarGate~\cite{polargate} and FuncGNN~\cite{funcgnn}, each run from its authors' implementation.
-The eighth is the MLP of section~\ref{sec:features}, which reads $x_\mathcal{G}$ and no graph at all, and is the baseline the graph models have to beat.
-All eight share the same head so that only the encoder differs: node embeddings are mean-pooled into one vector per AIG, which a two-layer ReLU network maps to a scalar.
-GCN, GIN and GraphSAGE consume the six-way one-hot node type of section~\ref{sec:repr}; GAT, PolarGate and FuncGNN consume the three-way type (input, AND, inverter) of the DeepGate reader, with the inverter bit exposed as a signed edge feature, so that the models that were designed to use complementation receive it.
-DeepGate is the one exception to end-to-end training: we load the pretrained encoder, freeze it, and train only the head on its mean-pooled functional embeddings, which is how it is meant to be used as a general-purpose circuit encoder.
+The practical consequence is that a graph encoder should not be assumed to pay for its parameters here: in this pipeline it buys under $1\%$ of AND count, and the statistics baseline should be run before it is adopted.
+This is not a statement about graph representation learning for logic synthesis in general.
+Our evidence covers one policy gradient algorithm, five \texttt{ABC} primitives, a fixed horizon.
+Appendix~\ref{app:trained} reports a preliminary attempt to train graph models on these datasets; the models do not fit their training set, so we draw no conclusion from it.
 
-Targets are $\widehat{V}$ divided by the AND count of the benchmark's initial AIG, so they lie in $(0, 1]$ and are comparable across circuits.
-Each dataset of $1{,}000$ states is split $80/10/10$ into training, validation and test sets by a permutation seeded by the run seed.
-Models are trained for $1{,}000$ epochs with Adam~\cite{adam} on the mean squared error.
-Each architecture is given its own grid of $36$ configurations, and $12$ for DeepGate, whose frozen encoder leaves only the head to tune.
-The grid is run at seed $0$, the configuration with the lowest final validation error is selected, and that configuration alone is then rerun on the ten seeds we report; the seed selects the dataset, the split and the initialization together, so the ten repetitions are independent in all three.
-Appendix~\ref{app:value-hp} gives the grids.
-We report test error normalized by the variance of the test targets, so that $1.0$ is the error of predicting the mean.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.85\linewidth]{figures/fig_trained_models.pdf}
-  \caption{Test error of eight trained models, normalized by the variance of the
-  target so that $1.0$ is the error of predicting the mean. Violet ticks: the
-  $1$-WL bound of figure~\ref{fig:bounds}.}
-  \label{fig:trained}
-\end{figure}
-
-\subsection{Results}
-All seven graph models land between $0.90$ and $1.74$ times the target variance --- at or
-above the constant predictor --- while the MLP reaches $0.47$ at the median.
-Their training error is also $\approx 1$, so this is a failure to fit rather
-than to generalize, and it leaves them two to three orders of magnitude above
-the bound of figure~\ref{fig:bounds} that their own architecture class admits.
-The per-dataset validation curves of figure~\ref{fig:curves} in
-appendix~\ref{app:curves} show the graph models settling at the level of the
-constant predictor early in training and staying there.
-
-\section{}
 \section{Future work}\label{sec:future}
 Our results are restricted to the setting used by past work: a policy gradient algorithm, five \texttt{ABC} primitives as actions, and the fixed horizon of section~\ref{sec:mdp-instance}.
 Two of those choices---the algorithm and the action space---bear directly on how much a learned representation of the circuit could contribute, and relaxing them is where we would look next.
@@ -501,8 +469,6 @@ Five primitives give the policy little to decide, and the states it can reach ar
 \texttt{ABC} exposes many more primitives, and our environment already implements that larger action space (Section~\ref{sec:mdp-instance}) even though the experiments above do not use it.
 With more primitives, reachable states would differ from one another in more ways, and a representation that sees the circuit rather than its summary would have correspondingly more to distinguish.
 Rerunning both the ablation of section~\ref{sec:rl-exp} and the bounds of section~\ref{sec:bounds} over that action space would say whether our negative result is a property of AIG reduction itself or of the small action space it is usually given.
-
-\section*{References}
 
 \bibliographystyle{plainnat}
 \bibliography{neurips_2026}
@@ -610,7 +576,7 @@ Producing one dataset costs $1{,}000 \times (L + M \times 8) \approx 8\times 10^
 Each of the ten seeds ($0$ to $9$) draws its own $1{,}000$ states and its own rollouts, and each resulting dataset is split at random into training, validation and test sets.
 That the target is expressed in AND nodes rather than in returns does not affect the comparison between model classes: the map $n \mapsto 1 - n/n_0$ from AND count to the reward of section~\ref{sec:mdp-instance} is affine and order-reversing, all the errors we report are ratios to the variance of the target and are therefore free of its units, and the rank correlations we report are unchanged up to sign.
 
-\paragraph{Training.} The models of section~\ref{sec:trained} are trained in mini-batches of $16$ unless the batch size is itself searched over.
+\paragraph{Training.} The models of appendix~\ref{app:trained} are trained in mini-batches of $16$ unless the batch size is itself searched over.
 Each architecture's grid of $36$ configurations crosses three learning rates ($10^{-3}$, $5\times10^{-4}$, $10^{-4}$) with a width and a depth, or with the number of attention heads for GAT and the polarity weight for PolarGate.
 DeepGate is the exception, with $12$ configurations: its pretrained encoder is frozen, so only the two-layer head is tuned.
 
@@ -663,8 +629,8 @@ The bound moves by at most $1.1\times10^{-3}$ between $k = 1$ and $k = 50$, and 
 \end{figure}
 
 \clearpage
-\section{Per-dataset curves}\label{app:curves}
-Figure~\ref{fig:rl-per-benchmark} resolves the aggregate of figure~\ref{fig:rl-main}(a) into one learning curve per benchmark, and figure~\ref{fig:curves} shows validation error over training for the value prediction models of figure~\ref{fig:trained}.
+\section{Per-benchmark learning curves}\label{app:curves}
+Figure~\ref{fig:rl-per-benchmark} resolves the aggregate of figure~\ref{fig:rl-main}(a) into one learning curve per benchmark.
 
 \begin{figure}[h]
   \centering
@@ -672,6 +638,41 @@ Figure~\ref{fig:rl-per-benchmark} resolves the aggregate of figure~\ref{fig:rl-m
   \caption{Per-benchmark learning curves for the runs aggregated in
   figure~\ref{fig:rl-main}(a). Dashed line: \texttt{resyn2}.}
   \label{fig:rl-per-benchmark}
+\end{figure}
+
+\clearpage
+\section{Preliminary results: training models to predict $\widehat{V}$}\label{app:trained}
+The bounds of section~\ref{sec:bounds} say what a representation \emph{could} express.
+This appendix reports what models actually trained on the same datasets achieve.
+We report it as preliminary: the graph models do not fit their training set, and we have not established whether this comes from the models, from our training protocol, or from the task itself, so none of the claims of the paper rest on it.
+
+\paragraph{Setup.} We train eight regressors on the datasets of section~\ref{sec:dataset}.
+Four are generic message passing networks---GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage}---taken from \texttt{PyTorch Geometric}~\cite{pyg}.
+Three are AIG-specific: DeepGate~\cite{deepgate}, PolarGate~\cite{polargate} and FuncGNN~\cite{funcgnn}, each run from its authors' implementation.
+The eighth is the MLP of section~\ref{sec:features}, which reads $x_\mathcal{G}$ and no graph at all, and is the baseline the graph models have to beat.
+All eight share the same head so that only the encoder differs: node embeddings are mean-pooled into one vector per AIG, which a two-layer ReLU network maps to a scalar.
+GCN, GIN and GraphSAGE consume the six-way one-hot node type of section~\ref{sec:repr}; GAT, PolarGate and FuncGNN consume the three-way type (input, AND, inverter) of the DeepGate reader, with the inverter bit exposed as a signed edge feature, so that the models that were designed to use complementation receive it.
+DeepGate is the one exception to end-to-end training: we load the pretrained encoder, freeze it, and train only the head on its mean-pooled functional embeddings, which is how it is meant to be used as a general-purpose circuit encoder.
+
+Targets are $\widehat{V}$ divided by the AND count of the benchmark's initial AIG, so they lie in $(0, 1]$ and are comparable across circuits.
+Each dataset of $1{,}000$ states is split $80/10/10$ into training, validation and test sets by a permutation seeded by the run seed.
+Models are trained for $1{,}000$ epochs with Adam~\cite{adam} on the mean squared error.
+Each architecture is given its own grid of $36$ configurations, and $12$ for DeepGate, whose frozen encoder leaves only the head to tune; the grids are in appendix~\ref{app:value-hp}.
+The grid is run at seed $0$, the configuration with the lowest final validation error is selected, and that configuration alone is then rerun on the ten seeds we report; the seed selects the dataset, the split and the initialization together, so the ten repetitions are independent in all three.
+We report test error normalized by the variance of the test targets, so that $1.0$ is the error of predicting the mean.
+
+\paragraph{Results.} All seven graph models land between $0.90$ and $1.74$ times the target variance---at or above the constant predictor---while the MLP reaches $0.47$ at the median.
+Their training error is also $\approx 1$, so this is a failure to fit rather than to generalize, and it leaves them two to three orders of magnitude above the bound of figure~\ref{fig:bounds} that their own architecture class admits.
+The per-dataset validation curves of figure~\ref{fig:curves} show the graph models settling at the level of the constant predictor early in training and staying there.
+A gap of that size between what the class can express and what training reaches is what makes us treat these runs as preliminary rather than as a result about the architectures.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.85\linewidth]{figures/fig_trained_models.pdf}
+  \caption{Test error of eight trained models, normalized by the variance of the
+  target so that $1.0$ is the error of predicting the mean. Violet ticks: the
+  $1$-WL bound of figure~\ref{fig:bounds}.}
+  \label{fig:trained}
 \end{figure}
 
 \begin{figure}[h]
