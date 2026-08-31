@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  31 AUG 2026 21:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  31 AUG 2026 21:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -989,18 +989,24 @@ File: figures/fig_gcn_main.pdf Graphic file (type pdf)
 <use figures/fig_gcn_main.pdf>
 Package pdftex.def Info: figures/fig_gcn_main.pdf  used on input line 330.
 (pdftex.def)             Requested size: 397.48499pt x 148.65637pt.
+
+LaTeX Warning: Reference `sec:app-rl' on page 5 undefined on input line 336.
+
+
+LaTeX Warning: Reference `sec:app-rl' on page 5 undefined on input line 336.
+
 (./tables/table_gcn_ablation.tex) [5 <./figures/fig_gcn_main.pdf>] [6]
-<figures/fig_value_bounds.pdf, id=406, 630.06485pt x 349.64566pt>
+<figures/fig_value_bounds.pdf, id=408, 630.06485pt x 349.64566pt>
 File: figures/fig_value_bounds.pdf Graphic file (type pdf)
 <use figures/fig_value_bounds.pdf>
-Package pdftex.def Info: figures/fig_value_bounds.pdf  used on input line 417.
+Package pdftex.def Info: figures/fig_value_bounds.pdf  used on input line 415.
 (pdftex.def)             Requested size: 357.73405pt x 198.51582pt.
+ [7]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Underfull \vbox (badness 1960) has occurred while \output is active []
-
- [7 <./figures/fig_value_bounds.pdf>] [8]
+ [8 <./figures/fig_value_bounds.pdf>]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 479.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 477.
  (./neurips_2026.bbl
 Underfull \hbox (badness 1377) in paragraph at lines 27--36
 \T1/ptm/m/n/10 (+20) dharth Garg.  Retrieval-guided re-in-force-ment learn-ing 
@@ -1009,128 +1015,133 @@ for boolean cir-cuit min-i-miza-
 
 [9] [10] [11]) [12]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 540.
+put line 538.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [13
 
-] [14]
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 585.
-<figures/fig_gcn_ex_main.pdf, id=608, 518.30002pt x 222.3625pt>
-File: figures/fig_gcn_ex_main.pdf Graphic file (type pdf)
-<use figures/fig_gcn_ex_main.pdf>
-Package pdftex.def Info: figures/fig_gcn_ex_main.pdf  used on input line 593.
-(pdftex.def)             Requested size: 397.48499pt x 170.53427pt.
-<figures/fig_gcn_ex_size.pdf, id=611, 537.4642pt x 169.65231pt>
-File: figures/fig_gcn_ex_size.pdf Graphic file (type pdf)
-<use figures/fig_gcn_ex_size.pdf>
-Package pdftex.def Info: figures/fig_gcn_ex_size.pdf  used on input line 604.
-(pdftex.def)             Requested size: 397.48499pt x 125.47084pt.
- [15
-
- <./figures/fig_gcn_ex_main.pdf> <./figures/fig_gcn_ex_size.pdf>]
-[16
-
 ]
-<figures/fig_mpnn_depth.pdf, id=724, 497.21759pt x 348.20853pt>
-File: figures/fig_mpnn_depth.pdf Graphic file (type pdf)
-<use figures/fig_mpnn_depth.pdf>
-Package pdftex.def Info: figures/fig_mpnn_depth.pdf  used on input line 627.
-(pdftex.def)             Requested size: 397.48499pt x 278.3759pt.
- [17
-
- <./figures/fig_mpnn_depth.pdf>]
-<figures/fig_gcn_per_benchmark.pdf, id=793, 529.74597pt x 263.96591pt>
+<figures/fig_gcn_per_benchmark.pdf, id=598, 529.74597pt x 263.96591pt>
 File: figures/fig_gcn_per_benchmark.pdf Graphic file (type pdf)
 <use figures/fig_gcn_per_benchmark.pdf>
 Package pdftex.def Info: figures/fig_gcn_per_benchmark.pdf  used on input line 
-638.
+576.
 (pdftex.def)             Requested size: 397.48499pt x 198.0706pt.
- [18
 
- <./figures/fig_gcn_per_benchmark.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 645.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\setbox' on input line 645.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\z@' on input line 645.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\hbox' on input line 645.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\mathsurround' on input line 645.
+ [14 <./figures/fig_gcn_per_benchmark.pdf>]
+<figures/fig_gcn_ex_main.pdf, id=658, 518.30002pt x 222.3625pt>
+File: figures/fig_gcn_ex_main.pdf Graphic file (type pdf)
+<use figures/fig_gcn_ex_main.pdf>
+Package pdftex.def Info: figures/fig_gcn_ex_main.pdf  used on input line 590.
+(pdftex.def)             Requested size: 397.48499pt x 170.53427pt.
+<figures/fig_gcn_ex_size.pdf, id=661, 537.4642pt x 169.65231pt>
+File: figures/fig_gcn_ex_size.pdf Graphic file (type pdf)
+<use figures/fig_gcn_ex_size.pdf>
+Package pdftex.def Info: figures/fig_gcn_ex_size.pdf  used on input line 601.
+(pdftex.def)             Requested size: 397.48499pt x 125.47084pt.
+ [15 <./figures/fig_gcn_ex_main.pdf> <./figures/fig_gcn_ex_size.pdf>]
+<figures/fig_mpnn_depth.pdf, id=769, 497.21759pt x 348.20853pt>
+File: figures/fig_mpnn_depth.pdf Graphic file (type pdf)
+<use figures/fig_mpnn_depth.pdf>
+Package pdftex.def Info: figures/fig_mpnn_depth.pdf  used on input line 635.
+(pdftex.def)             Requested size: 397.48499pt x 278.3759pt.
 
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\z@' on input line 645.
+LaTeX Warning: `h' float specifier changed to `ht'.
 
+[16
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 645.
-
+] [17 <./figures/fig_mpnn_depth.pdf>]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\textstyle' on input line 645.
+(hyperref)                removing `math shift' on input line 641.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 645.
+(hyperref)                removing `\setbox' on input line 641.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\mathaccent' on input line 645.
+(hyperref)                removing `\z@' on input line 641.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 645.
+(hyperref)                removing `\hbox' on input line 641.
 
-<figures/fig_trained_models.pdf, id=864, 559.81963pt x 341.69733pt>
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\mathsurround' on input line 641.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\z@' on input line 641.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 641.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\textstyle' on input line 641.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 641.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\mathaccent' on input line 641.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 641.
+
+<figures/fig_trained_models.pdf, id=861, 559.81963pt x 341.69733pt>
 File: figures/fig_trained_models.pdf Graphic file (type pdf)
 <use figures/fig_trained_models.pdf>
-Package pdftex.def Info: figures/fig_trained_models.pdf  used on input line 672
+Package pdftex.def Info: figures/fig_trained_models.pdf  used on input line 668
 .
 (pdftex.def)             Requested size: 337.86465pt x 206.22438pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figures/fig_training_curves.pdf, id=867, 555.91441pt x 401.68832pt>
+<figures/fig_training_curves.pdf, id=864, 555.91441pt x 401.68832pt>
 File: figures/fig_training_curves.pdf Graphic file (type pdf)
 <use figures/fig_training_curves.pdf>
-Package pdftex.def Info: figures/fig_training_curves.pdf  used on input line 68
-1.
+Package pdftex.def Info: figures/fig_training_curves.pdf  used on input line 67
+7.
 (pdftex.def)             Requested size: 397.48499pt x 287.21109pt.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[19
+[18
 
-] [20 <./figures/fig_trained_models.pdf> <./figures/fig_training_curves.pdf>] (
+] [19 <./figures/fig_trained_models.pdf> <./figures/fig_training_curves.pdf>] (
 ./neurips_2026.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `neurips_2026.out' has not changed.
-(rerunfilecheck)             Checksum: FF774023F3FAC1FEAB2219624F55D701;5426.
+(rerunfilecheck)             Checksum: 4BDEC409967AF9375D242655721B1F24;5722.
  ) 
 Here is how much of TeX's memory you used:
- 26436 strings out of 474222
- 480318 string characters out of 5748733
- 1952975 words of memory out of 5000000
- 47811 multiletter control sequences out of 15000+600000
- 631364 words of font info for 298 fonts, out of 8000000 for 9000
+ 26432 strings out of 474222
+ 480278 string characters out of 5748733
+ 1953975 words of memory out of 5000000
+ 47809 multiletter control sequences out of 15000+600000
+ 631051 words of font info for 297 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,12n,87p,1009b,906s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr
@@ -1155,15 +1166,15 @@ e1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
 ic/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/sy
 mbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt0800.pfb></u
-sr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb></usr/share/texmf/fonts
-/type1/public/cm-super/sftt1200.pfb></usr/share/texlive/texmf-dist/fonts/type1/
-urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
-mb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on neurips_2026.pdf (20 pages, 772373 bytes).
+sr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/font
+s/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/tim
+es/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+
+Output written on neurips_2026.pdf (19 pages, 746247 bytes).
 PDF statistics:
- 1178 PDF objects out of 1200 (max. 8388607)
- 696 compressed objects within 7 object streams
- 126 named destinations out of 1000 (max. 500000)
- 63253 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 1171 PDF objects out of 1200 (max. 8388607)
+ 691 compressed objects within 7 object streams
+ 125 named destinations out of 1000 (max. 500000)
+ 62741 words of extra memory for PDF output out of 74296 (max. 10000000)
 

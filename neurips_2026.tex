@@ -328,8 +328,7 @@ Ablating the GCN, which is the focus of the following sections, matters because 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/fig_gcn_main.pdf}
-  \caption{PPO on the ten MLCAD benchmarks with five observation encoders, each
-  at its own best hyper-parameters. (a) AND count averaged over the ten
+  \caption{PPO on the ten benchmarks from~\citet{rl-gnn1} with five observation encoders, each tuned (cf. appendix~\ref{sec:app-rl} for more details). (a) AND count averaged over the ten
   benchmarks; (b) change in final AND count against the no-GCN policy, per
   benchmark and pooled over the ten (\emph{all 10}), the grey band being the
   no-GCN policy's own spread over its five seeds; (c) the pooled change against
@@ -346,8 +345,7 @@ AND gates and encode diverse Boolean functions. For each AIG we run PPO with
 five policies: no GCN, and a small, medium, large and very large GCN. Every
 (AIG, policy) pair is tuned over the same grid---three learning rates by three
 entropy coefficients, five seeds each---and we report the cell with the lowest
-mean final AND count over its five seeds, discarding cells in which a seed did
-not complete. Each policy therefore receives the same tuning budget and is shown
+mean final AND count over its five seeds. Each policy therefore receives the same tuning budget and is shown
 at its own optimum. We periodically save and evaluate the greedy PPO policy: we
 use it to minimize an AIG and report the AND count after applying $H=20$
 \texttt{ABC} primitives (cf. section~\ref{sec:method}). All hyper-parameters and
@@ -366,14 +364,14 @@ implementation details are given in appendix~\ref{app:rl-hp}.
 
 \subsection{Results}
 Figure~\ref{fig:rl-main}(a) shows that a tuned PPO learns to minimize an AIG
-independently of the policy architecture, reaching a median performance $6\%$ below
-\texttt{resyn2}~\cite{resyn}.
+independently of the policy architecture, reaching a median performance $6\%$ below the
+\texttt{resyn2} logic synthesis heuristic~\cite{resyn}.
 Figure~\ref{fig:rl-per-benchmark} in appendix~\ref{app:curves} breaks the same runs down by benchmark and the observation holds, and
 table~\ref{tab:rl-ands} reports the AND counts those runs reach.
 Pooled over the ten benchmarks, last row of figure~\ref{fig:rl-main}(b), the GCN policies do end between
 $0.74\%$ and $0.96\%$ below the MLP policy with confidence intervals excluding zero, and
 the best GCN policies produce the smaller circuits on eight to nine benchmarks out of
-ten. The effect is nonetheless marginal: it is barely larger than what
+ten. The effect is nonetheless marginal: it is not larger than what
 re-running the baseline with different seeds produces (grey band), only six of the
 forty encoder-benchmark comparisons have a confidence interval entirely below zero,
 and in absolute terms the best GCN saves a median of $11$ AND gates per benchmark,
@@ -383,12 +381,12 @@ We repeated the experiment on the $100$ AIGs ($106$ to $46{,}977$ AND gates) of 
 contest\footnote{\url{https://github.com/alanminko/iwls2026-ls-contest/}}. The picture there is the same in sign and magnitude,
 $0.3\%$ to $0.7\%$ below the MLP (appendix~\ref{app:ex}).
 
-Next, we ask why the gains from GCN policies are so marginal, despite the GCN being a representation specialized for graphs and the MLP reading only graph statistics.
+Next, we ask why the gains from GCN policies are so marginal, despite the GCN being a representation specialized for graphs and the MLP reading only graph statistics and a short history of recent actions.
 
 \section{Why does graph representation learning improve so little over MLPs?}\label{sec:value}
 The previous section compares encoders inside one algorithm, so a null result there could be a property of that algorithm rather than of the representations.
 We therefore ask a question that does not involve a training algorithm at all: how well can the optimal value $V^\star$ of a state (cf. section~\ref{sec:mdp-bg}) be predicted from what a given class of models is able to see?
-This kind of empirical analysis of graph representations, in particular of MPNNs (cf. section~\ref{sec:mpnn}), has been carried out for graph-level regression tasks other than value prediction by~\citet{graphtester}.
+This kind of empirical analysis of graph representations, in particular of MPNNs (cf. section~\ref{sec:mpnn}), has been carried out for graph-level regression tasks other than value prediction in~\citet{graphtester}.
 
 \subsection{Building a dataset}\label{sec:dataset}
 Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of section~\ref{sec:mdp-instance} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
@@ -490,7 +488,7 @@ Rerunning both the ablation of section~\ref{sec:rl-exp} and the bounds of sectio
 \appendix
 
 \clearpage
-\section{Hyper-parameters}\label{app:hp}
+\section{Additional details for graph reinforcement learning}\label{app:hp}
 
 \subsection{Graph encoders and reinforcement learning}\label{app:rl-hp}
 
@@ -570,19 +568,18 @@ Algorithm~\ref{alg:graphppo} states the resulting procedure, which we call \text
 The grid of section~\ref{sec:rl-exp} crosses three learning rates ($10^{-4}$, $10^{-5}$, $10^{-6}$), three entropy coefficients ($0$, $0.01$, $0.1$) and five seeds, which with five encoders and ten benchmarks gives the $2{,}250$ runs reported there.
 Twenty-six of those runs (eighteen \texttt{small}, eight \texttt{v.\,large}) stopped before the fiftieth update; we drop them rather than pad them, and requiring all five encoders to have completed a given (benchmark, learning rate, entropy, seed) cell leaves $424$ of the $450$ cells.
 
-\subsection{Value prediction}\label{app:value-hp}
-\paragraph{The datasets.} The states of section~\ref{sec:dataset} are drawn by sampling $L$ primitives independently and uniformly from the five-element action set and running them in order; the graph models read the stored \texttt{.aig} file and the MLP reads the statistics $x_\mathcal{G}$ recorded at that point of the flow.
-The state is reloaded between the $M$ rollouts.
-Producing one dataset costs $1{,}000 \times (L + M \times 8) \approx 8\times 10^{5}$ \texttt{ABC} primitive calls per benchmark and per seed, which is why $M$ is lowered to $10$ on \texttt{C6288}, by far the most expensive circuit of the suite to rewrite.
-Each of the ten seeds ($0$ to $9$) draws its own $1{,}000$ states and its own rollouts, and each resulting dataset is split at random into training, validation and test sets.
-That the target is expressed in AND nodes rather than in returns does not affect the comparison between model classes: the map $n \mapsto 1 - n/n_0$ from AND count to the reward of section~\ref{sec:mdp-instance} is affine and order-reversing, all the errors we report are ratios to the variance of the target and are therefore free of its units, and the rank correlations we report are unchanged up to sign.
+\subsection{Per-benchmark learning curves}\label{app:curves}
+Figure~\ref{fig:rl-per-benchmark} resolves the aggregate of figure~\ref{fig:rl-main}(a) into one learning curve per benchmark.
 
-\paragraph{Training.} The models of appendix~\ref{app:trained} are trained in mini-batches of $16$ unless the batch size is itself searched over.
-Each architecture's grid of $36$ configurations crosses three learning rates ($10^{-3}$, $5\times10^{-4}$, $10^{-4}$) with a width and a depth, or with the number of attention heads for GAT and the polarity weight for PolarGate.
-DeepGate is the exception, with $12$ configurations: its pretrained encoder is frozen, so only the two-layer head is tuned.
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figures/fig_gcn_per_benchmark.pdf}
+  \caption{Per-benchmark learning curves for the runs aggregated in
+  figure~\ref{fig:rl-main}(a). Dashed line: \texttt{resyn2}.}
+  \label{fig:rl-per-benchmark}
+\end{figure}
 
-\clearpage
-\section{The \texttt{ex200}--\texttt{ex299} suite}\label{app:ex}
+\section{The IWLS programming contest}\label{app:ex}
 We repeat the comparison of section~\ref{sec:rl-exp} on \texttt{ex200}--\texttt{ex299}, a suite spanning $106$ to $46{,}977$ input AND gates and therefore both larger and more varied than the ten MLCAD circuits.
 Each encoder ran at its own baseline hyper-parameters here instead of over the matched grid.
 The three GCNs reduce the final AND count by $0.33$--$0.71\%$ against a reseed standard deviation of $0.54\%$ (figure~\ref{fig:rl-ex}), and the difference is flat across two and a half orders of magnitude of circuit size (figure~\ref{fig:rl-ex-size}), so the conclusion of section~\ref{sec:rl-exp} appears to hold here as well.
@@ -608,7 +605,19 @@ The MLP runs were executed on CPU and did not finish on the largest circuits, wh
 \end{figure}
 
 \clearpage
-\section{Computing the bounds}\label{app:bounds}
+\section{Value prediction details}\label{app:value-hp}
+\paragraph{The datasets.} The states of section~\ref{sec:dataset} are drawn by sampling $L$ primitives independently and uniformly from the five-element action set and running them in order; the graph models read the stored \texttt{.aig} file and the MLP reads the statistics $x_\mathcal{G}$ recorded at that point of the flow.
+The state is reloaded between the $M$ rollouts.
+Producing one dataset costs $1{,}000 \times (L + M \times 8) \approx 8\times 10^{5}$ \texttt{ABC} primitive calls per benchmark and per seed, which is why $M$ is lowered to $10$ on \texttt{C6288}, by far the most expensive circuit of the suite to rewrite.
+Each of the ten seeds ($0$ to $9$) draws its own $1{,}000$ states and its own rollouts, and each resulting dataset is split at random into training, validation and test sets.
+That the target is expressed in AND nodes rather than in returns does not affect the comparison between model classes: the map $n \mapsto 1 - n/n_0$ from AND count to the reward of section~\ref{sec:mdp-instance} is affine and order-reversing, all the errors we report are ratios to the variance of the target and are therefore free of its units, and the rank correlations we report are unchanged up to sign.
+
+\paragraph{Training.} The models of appendix~\ref{app:trained} are trained in mini-batches of $16$ unless the batch size is itself searched over.
+Each architecture's grid of $36$ configurations crosses three learning rates ($10^{-3}$, $5\times10^{-4}$, $10^{-4}$) with a width and a depth, or with the number of attention heads for GAT and the polarity weight for PolarGate.
+DeepGate is the exception, with $12$ configurations: its pretrained encoder is frozen, so only the two-layer head is tuned.
+
+
+\subsection{Computing the bounds}\label{app:bounds}
 For the size and the size-and-depth classes of section~\ref{sec:bounds} the partition is by exact equality of the descriptors.
 For $x_\mathcal{G}$, the full feature vector is snapped to a grid of spacing $10^{-8}$ and states are grouped by equality of the snapped vector, so the model we bound and the MLP baseline of section~\ref{sec:method} see the same thing.
 For message passing, we group states by their $1$-WL graph hash, computed with \texttt{networkx}'s~\cite{networkx} \texttt{weisfeiler\_lehman\_graph\_hash} at every number of iterations $k = 1, \dots, 50$, with each node labeled by its type.\footnote{The hash is a $16$-byte \texttt{blake2b} digest. A collision would merge two groups that $1$-WL separates and can only raise the reported value, so the bound would become conservative rather than optimistic; at $1{,}000$ graphs per dataset the probability of one is negligible.}
@@ -617,8 +626,7 @@ Errors are divided by $\max(1, \operatorname{Var}\widehat{V})$; in AND-node unit
 Rank correlations are computed at $k = 50$ refinement iterations.
 The permutation control uses $25$ permutations per dataset, $8$ on \texttt{mainpla} and \texttt{C6288}, and is applied to the rank correlations as well, where the null is the correlation between $\widehat{V}$ and a random permutation of itself.
 
-\clearpage
-\section{The message passing bound against depth}\label{app:depth}
+\subsection{The message passing bound against depth}\label{app:depth}
 Figure~\ref{fig:depth} plots the message passing bound of section~\ref{sec:bounds} against the number of refinement iterations $k$, for the four views of the AIG bounded there.
 The bound moves by at most $1.1\times10^{-3}$ between $k = 1$ and $k = 50$, and labeling edges with direction or with the complement bit changes it by less than $10^{-6}$, so neither deeper refinement nor a richer view of the graph brings a message passing network closer to $\widehat{V}$.
 
@@ -627,18 +635,6 @@ The bound moves by at most $1.1\times10^{-3}$ between $k = 1$ and $k = 50$, and 
   \includegraphics[width=\linewidth]{figures/fig_mpnn_depth.pdf}
   \caption{The MPNN bound as a function of depth $k$.}
   \label{fig:depth}
-\end{figure}
-
-\clearpage
-\section{Per-benchmark learning curves}\label{app:curves}
-Figure~\ref{fig:rl-per-benchmark} resolves the aggregate of figure~\ref{fig:rl-main}(a) into one learning curve per benchmark.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_gcn_per_benchmark.pdf}
-  \caption{Per-benchmark learning curves for the runs aggregated in
-  figure~\ref{fig:rl-main}(a). Dashed line: \texttt{resyn2}.}
-  \label{fig:rl-per-benchmark}
 \end{figure}
 
 \clearpage
