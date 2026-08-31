@@ -393,7 +393,7 @@ Computing $V^\star$ exactly is out of reach: the tree of flows over the five pri
 We therefore estimate it by sampling both the states and the continuations from them.
 A state is the AIG obtained by applying to the benchmark $\mathcal{G}_0$ a uniformly random flow of length $L\sim\mathcal{U}\{2,\dots,10\}$; we draw $1{,}000$ such states per benchmark and store each one both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features}, so that every model class of section~\ref{sec:bounds} is evaluated on exactly the same states and the same targets.
 From each state $s$ we then run $M = 100$ independent rollouts of $8$ further uniformly random primitives and keep the best AND count reached, $\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s)$, an upper bound on the minimum over the $5^8$ flows of length eight that approaches it from above as $M$ grows.
-A key difference to $V^\star$ should be kept in mind: $\hat{V}$ truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments, so our targets approximate the value of an eight-step-to-go problem, and the bounds of section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
+A key difference to $V^\star$ should be kept in mind: $\widehat{V}$ truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments, so our targets approximate the value of an eight-step-to-go problem, and the bounds of section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
 The procedure is repeated with ten seeds per benchmark on the same ten AIGs as in section~\ref{sec:rl-exp}, and the figures of this section report over those ten repetitions.
 The sampler is degenerate on two of them, reaching only two distinct values of $\widehat{V}$ on \texttt{C6288} and six on \texttt{C1355}: we exclude \texttt{C6288} and report over the remaining nine benchmarks, flagging \texttt{C1355} wherever it appears.
 
@@ -442,25 +442,24 @@ $k=1$ and $k=50$, and edge direction and inverter bits change it by less than
 $10^{-6}$ (appendix~\ref{app:depth}). \texttt{C6288} is excluded: its target
 takes only two distinct values.
 
-\paragraph{Limitations of the bounds.} Three restrictions should be read with the numbers above.
+\paragraph{Limitations of the bounds.} Two restrictions should be read with the numbers above.
 First, they hold over the state distribution of section~\ref{sec:dataset}---AIGs reached by uniformly random flows of length two to ten---and not over the states a trained policy visits, which are fewer and more correlated; a representation could be uninformative on the former and useful on the latter.
-Second, $\widehat{V}$ is a Monte-Carlo estimate, so part of its variance is sampling noise that no representation can predict.
-That noise raises every bound by roughly the same amount and therefore compresses the ratios between classes towards one, which works in favor of the negative conclusion we draw; the $1$-WL and $x_\mathcal{G}$ bounds being close is evidence that message passing adds little, but not proof that the noise floor is not what they are both close to.
-Third, the $1$-WL argument covers message passing networks whose input is the AIG with node-type features, which is the setting of section~\ref{sec:repr} and of~\citet{rl-gnn1}.
+% Second, $\widehat{V}$ is a Monte-Carlo estimate, so part of its variance is sampling noise that no representation can predict.
+% That noise raises every bound by roughly the same amount and therefore compresses the ratios between classes towards one, which works in favor of the negative conclusion we draw; the $1$-WL and $x_\mathcal{G}$ bounds being close is evidence that message passing adds little, but not proof that the noise floor is not what they are both close to.
+Second, the $1$-WL argument covers message passing networks whose input is the AIG with node-type features, which is the setting of section~\ref{sec:repr} and of~\citet{rl-gnn1}.
 It does not cover higher-order architectures, models given node identifiers or positional encodings, nor encoders whose node features are not a function of the graph alone---the simulation-derived features used by some AIG-specific models are an example, and for those the bound of figure~\ref{fig:bounds} is not binding.
 
 \section{Discussion}\label{sec:discussion}
-In section~\ref{sec:rl-exp}, we observe that training a graph representation in the form of a GCN policy does not improve RL-based AIG minimization over an MLP reading graph statistics and the last few actions.
-In section~\ref{sec:bounds}, we estimate an upper bound on the performance of any MPNN predicting the state values $\widehat{V}$ of section~\ref{sec:dataset}.
+In section~\ref{sec:rl-exp}, we observed that training a graph representation in the form of a GCN policy does not improve RL-based AIG minimization over an MLP reading graph statistics and the last few actions.
+In section~\ref{sec:bounds}, we approximated an upper bound on the performance of any MPNN predicting the state values $\widehat{V}$ of section~\ref{sec:dataset}.
 Those bounds give a candidate explanation for that null result: for predicting $\widehat{V}$, the statistics $x_\mathcal{G}$ the MLP reads are as expressive as any MPNN on the states we sample.
 On eight of the nine benchmarks the error achievable from $x_\mathcal{G}$ is the lower of the two, and for ranking states the two classes are indistinguishable, at weighted Kendall $\tau \geq 0.97$ for both.
 Nothing a GCN could extract from the graph would then improve the value estimate the policy is trained against, and the reduction it buys would stay of the order we measure.
 The bounds do show that message passing separates states far better than size and depth alone, so this is a statement about the specific comparison with $x_\mathcal{G}$, not about message passing being uninformative.
 
 The practical consequence is that a graph encoder should not be assumed to pay for its parameters here: in this pipeline it buys under $1\%$ of AND count, and the statistics baseline should be run before it is adopted.
-This is not a statement about graph representation learning for logic synthesis in general.
-Our evidence covers one policy gradient algorithm, five \texttt{ABC} primitives and a fixed horizon.
-Appendix~\ref{app:trained} reports a preliminary attempt to train graph models on these datasets; the models do not fit their training set, so we draw no conclusion from it.
+This is not a statement about graph representation learning for logic synthesis in general: our evidence covers one policy gradient algorithm, five \texttt{ABC} primitives and a fixed horizon.
+Appendix~\ref{app:trained} reports a preliminary attempt to train actual graph models and AIG-specific models on these datasets; the models do not fit their training set, so we draw no conclusion from it.
 
 \section{Future work}\label{sec:future}
 Our results are restricted to the setting used by past work: a policy gradient algorithm, five \texttt{ABC} primitives as actions, and the fixed horizon of section~\ref{sec:mdp-instance}.
@@ -473,9 +472,11 @@ If the representation is the bottleneck anywhere, it should be there, and our ex
 
 \paragraph{The full \texttt{ABC} action space.}
 Five primitives give the policy little to decide, and the states it can reach are the images of a handful of short sequences, which may be why the statistics of section~\ref{sec:features} suffice to tell them apart.
-\texttt{ABC} exposes many more primitives, and our environment already implements that larger action space (section~\ref{sec:mdp-instance}) even though the experiments above do not use it.
-With more primitives, reachable states would differ from one another in more ways, and a representation that sees the circuit rather than its summary would have correspondingly more to distinguish.
+\texttt{ABC} exposes many more primitives.
+With more primitives, reachable states might differ from one another in more ways, and a representation that sees the circuit rather than its summary would have correspondingly more to distinguish.
 Rerunning both the ablation of section~\ref{sec:rl-exp} and the bounds of section~\ref{sec:bounds} over that action space would say whether our negative result is a property of AIG reduction itself or of the small action space it is usually given.
+
+To conclude, we have proposed the first empirical study of graph representation learning in RL-based logic synthesis. We hope our work will help research design better RL algorithms for AIG minimization by choosing the right representations that help policies accurately distinguish valuable AIG states.
 
 \bibliographystyle{plainnat}
 \bibliography{neurips_2026}
