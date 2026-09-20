@@ -1,0 +1,35 @@
+\relax 
+\citation{rl-gnn1}
+\citation{rl-gnn1,rl-logic1,flow-bandits}
+\citation{graphbench}
+\citation{economy}
+\citation{nphard}
+\citation{abc}
+\citation{rewriting}
+\citation{rl-gnn1}
+\citation{ppo}
+\citation{resyn}
+\citation{graphtester}
+\citation{deepgate}
+\bibstyle{plainnat}
+\bibdata{poster}
+\bibcite{graphtester}{{1}{2023}{{Akbiyik et~al.}}{{Akbiyik, Gr\"otschla, Egressy, and Wattenhofer}}}
+\bibcite{abc}{{2}{2010}{{Brayton and Mishchenko}}{{}}}
+\bibcite{rl-logic1}{{3}{2020}{{Hosny et~al.}}{{Hosny, Hashemi, Shalan, and Reda}}}
+\bibcite{nphard}{{4}{2000}{{Kabanets and Cai}}{{}}}
+\bibcite{deepgate}{{5}{2022}{{Li et~al.}}{{Li, Khan, Shi, Wang, Yu, and Xu}}}
+\bibcite{rewriting}{{6}{2006}{{Mishchenko et~al.}}{{Mishchenko, Chatterjee, and Brayton}}}
+\bibcite{flow-bandits}{{7}{2023}{{Neto et~al.}}{{Neto, Li, Gaillardon, and Yu}}}
+\bibcite{economy}{{8}{2024}{{Ou et~al.}}{{Ou, Yang, and Liu}}}
+\bibcite{resyn}{{9}{1998}{{Panda and Najm}}{{}}}
+\bibcite{ppo}{{10}{2017}{{Schulman et~al.}}{{Schulman, Wolski, Dhariwal, Radford, and Klimov}}}
+\bibcite{graphbench}{{11}{2026}{{Stoll et~al.}}{{Stoll, Qian, Finkelshtein, Parviz, Weber, Frasca, Shavit, Siraudin, Mielke, Anastacio, Müller, Bechler-Speicher, Bronstein, Galkin, Hoos, Niepert, Perozzi, Tönshoff, and Morris}}}
+\bibcite{rl-gnn1}{{12}{2020}{{Zhu et~al.}}{{Zhu, Liu, Chen, Zhao, and Pan}}}
+\pgfsyspdfmark {pgfid1}{1654339}{671299}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces A trajectory on the AIGs of $f$. A state is an AIG, an action is one \texttt  {ABC} primitive applied to the whole graph, and the reward is the drop in \textit  {AND} count: the agent is paid for shrinking the circuit (green) and penalized for growing it (red). Primitives preserve functional equivalence, so every reachable state still computes $f$.}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Two functionally equivalent AIGs of $f(x_1,x_2,x_3) = (\overline  {x_1}\land x_2,\ x_2 \land x_3)$, of different size.}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces (a) \textit  {AND} count averaged over the ten benchmarks; (b) change in final \textit  {AND} count against the no-GCN policy, per benchmark and pooled (\emph  {all 10}), the grey band being the no-GCN policy's own spread over its five seeds; (c) the pooled change against the parameters the encoder adds. Intervals are $95\%$ bootstrap confidence intervals over five seeds.}}{2}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Mean \textit  {AND} count after $H=20$ \texttt  {ABC} primitives, over the five seeds of each configuration's best hyper-parameter cell, $\pm $ one standard deviation across those seeds. \emph  {Starting nodes} is the count before any primitive is applied; \texttt  {resyn2} is deterministic and has no spread. AIGs are ordered by input size.}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Building the value prediction dataset. A uniformly random flow of length $L\sim \mathcal  {U}\{2,\dots  ,10\}$ turns the benchmark $\mathcal  {G}_0$ into a state $G_0^i$; its target is the smallest \textit  {AND} count reached by $M=100$ rollouts of eight further random primitives. Each state is stored both as an \texttt  {.aig} file and as the statistics $x_\mathcal  {G}$, so every model class sees the same states and targets. Repeated for $1{,}000$ states per benchmark, on ten AIGs and ten seeds.}}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Best error (a) and best ranking (b) achievable by each model class on $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}$, over nine benchmarks and ten dataset seeds. \texttt  {C6288} is excluded, its target taking only two distinct values; $^{*}$\texttt  {C1355} has only six.}}{2}{}\protected@file@percent }
+\gdef \@abspage@last{1}

@@ -1,0 +1,5 @@
+[0] Config.pm:307> INFO - This is Biber 2.19
+[0] Config.pm:310> INFO - Logfile is 'neurips_2026.tex.blg'
+[76] biber:340> INFO - === lun. août 31, 2026, 21:59:46
+[265] Utils.pm:399> ERROR - Cannot find 'neurips_2026.tex.bcf'!
+[266] Biber.pm:136> INFO - ERRORS: 1

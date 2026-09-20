@@ -110,23 +110,26 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Building a dataset}{6}{subsection.6.1}\protected@file@percent }
 \newlabel{sec:dataset}{{6.1}{6}{Building a dataset}{subsection.6.1}{}}
 \citation{graphtester}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Best error (a) and best ranking (b) achievable by each model class on $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}$, over nine benchmarks and ten dataset seeds. Each class is replaced by the optimal predictor for the information it can distinguish, so the value shown cannot be beaten by any model in that class. $^{*}$\texttt  {C1355} has only six distinct targets.}}{7}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:bounds}{{3}{7}{Best error (a) and best ranking (b) achievable by each model class on $\widehat {V}$, over nine benchmarks and ten dataset seeds. Each class is replaced by the optimal predictor for the information it can distinguish, so the value shown cannot be beaten by any model in that class. $^{*}$\texttt {C1355} has only six distinct targets}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Building the value prediction dataset. Applying to the benchmark $\mathcal  {G}_0$ a uniformly random flow $a_1,\dots  ,a_L$ of \texttt  {ABC} primitives gives a state $G_0^i$, an AIG functionally equivalent to $\mathcal  {G}_0$ but in general of a different size; the length $L$ of the flow is itself drawn at random, so the states sit at varying distances from $\mathcal  {G}_0$. The target of a state is the smallest AND count $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}(G_0^i)$ reached by $M=100$ independent rollouts of eight further uniformly random primitives from it. The two dashed columns are the resulting supervised regression dataset: each state is an input, stored both as an \texttt  {.aig} file and as the statistics $x_\mathcal  {G}$ of section~\ref {sec:features} so that every model class of section~\ref {sec:bounds} sees the same states, and $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}(G_0^i)$ is its target. The procedure is repeated for $1{,}000$ states per benchmark, on ten AIGs and ten seeds.}}{7}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:dataset}{{3}{7}{Building the value prediction dataset. Applying to the benchmark $\mathcal {G}_0$ a uniformly random flow $a_1,\dots ,a_L$ of \texttt {ABC} primitives gives a state $G_0^i$, an AIG functionally equivalent to $\mathcal {G}_0$ but in general of a different size; the length $L$ of the flow is itself drawn at random, so the states sit at varying distances from $\mathcal {G}_0$. The target of a state is the smallest AND count $\widehat {V}(G_0^i)$ reached by $M=100$ independent rollouts of eight further uniformly random primitives from it. The two dashed columns are the resulting supervised regression dataset: each state is an input, stored both as an \texttt {.aig} file and as the statistics $x_\mathcal {G}$ of section~\ref {sec:features} so that every model class of section~\ref {sec:bounds} sees the same states, and $\widehat {V}(G_0^i)$ is its target. The procedure is repeated for $1{,}000$ states per benchmark, on ten AIGs and ten seeds}{figure.caption.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Theoretical lower bounds on the prediction error}{7}{subsection.6.2}\protected@file@percent }
 \newlabel{sec:bounds}{{6.2}{7}{Theoretical lower bounds on the prediction error}{subsection.6.2}{}}
 \citation{rl-gnn1}
-\citation{watkins1992q,dqn}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Best error (a) and best ranking (b) achievable by each model class on $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}$, over nine benchmarks and ten dataset seeds. Each class is replaced by the optimal predictor for the information it can distinguish, so the value shown cannot be beaten by any model in that class. $^{*}$\texttt  {C1355} has only six distinct targets.}}{8}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:bounds}{{4}{8}{Best error (a) and best ranking (b) achievable by each model class on $\widehat {V}$, over nine benchmarks and ten dataset seeds. Each class is replaced by the optimal predictor for the information it can distinguish, so the value shown cannot be beaten by any model in that class. $^{*}$\texttt {C1355} has only six distinct targets}{figure.caption.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Results}{8}{subsection.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Limitations of the bounds.}{8}{section*.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{8}{section.7}\protected@file@percent }
-\newlabel{sec:discussion}{{7}{8}{Discussion}{section.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Future work}{8}{section.8}\protected@file@percent }
-\newlabel{sec:future}{{8}{8}{Future work}{section.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{Other reinforcement learning algorithms.}{8}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Limitations of the bounds.}{8}{section*.8}\protected@file@percent }
+\citation{watkins1992q,dqn}
 \bibstyle{plainnat}
 \bibdata{neurips_2026}
 \bibcite{graphtester}{{1}{2023}{{Akbiyik et~al.}}{{Akbiyik, Gr\"otschla, Egressy, and Wattenhofer}}}
 \bibcite{graphiso}{{2}{2017}{{Allender and Das}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{9}{section.7}\protected@file@percent }
+\newlabel{sec:discussion}{{7}{9}{Discussion}{section.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Future work}{9}{section.8}\protected@file@percent }
+\newlabel{sec:future}{{8}{9}{Future work}{section.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Other reinforcement learning algorithms.}{9}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The full \texttt  {ABC} action space.}{9}{section*.10}\protected@file@percent }
 \bibcite{more-mcts}{{3}{2024}{{Basak~Chowdhury et~al.}}{{Basak~Chowdhury, Romanelli, Tan, Karri, and Garg}}}
 \bibcite{Bellman}{{4}{1957}{{Bellman}}{{}}}
 \bibcite{abc}{{5}{2010}{{Brayton and Mishchenko}}{{}}}
@@ -135,7 +138,6 @@
 \bibcite{graphrl}{{8}{2024}{{Darvariu et~al.}}{{Darvariu, Hailes, and Musolesi}}}
 \bibcite{pyg}{{9}{2019}{{Fey and Lenssen}}{{}}}
 \bibcite{mpnn}{{10}{2017}{{Gilmer et~al.}}{{Gilmer, Schoenholz, Riley, Vinyals, and Dahl}}}
-\@writefile{toc}{\contentsline {paragraph}{The full \texttt  {ABC} action space.}{9}{section*.9}\protected@file@percent }
 \bibcite{bayes}{{11}{2022}{{Grosnit et~al.}}{{Grosnit, Malherbe, Tutunov, Wan, Wang, and Ammar}}}
 \bibcite{networkx}{{12}{2008}{{Hagberg et~al.}}{{Hagberg, Schult, and Swart}}}
 \bibcite{graphsage}{{13}{2017}{{Hamilton et~al.}}{{Hamilton, Ying, and Leskovec}}}
@@ -177,40 +179,40 @@
 \citation{rl-gnn1}
 \citation{rl-gnn1}
 \citation{sb3}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Additional details for graph reinforcement learning}{13}{appendix.A}\protected@file@percent }
-\newlabel{app:hp}{{A}{13}{Additional details for graph reinforcement learning}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Graph encoders and reinforcement learning}{13}{subsection.A.1}\protected@file@percent }
-\newlabel{app:rl-hp}{{A.1}{13}{Graph encoders and reinforcement learning}{subsection.A.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{The environment.}{13}{section*.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{The observation.}{13}{section*.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{The encoders.}{13}{section*.13}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The four graph encoders. Depth is the number of message passing rounds, width the hidden dimension, and output the dimension of the pooled vector concatenated with $x_\mathcal  {G}$.}}{13}{table.caption.14}\protected@file@percent }
-\newlabel{tab:encoders}{{2}{13}{The four graph encoders. Depth is the number of message passing rounds, width the hidden dimension, and output the dimension of the pooled vector concatenated with $x_\mathcal {G}$}{table.caption.14}{}}
-\@writefile{toc}{\contentsline {paragraph}{Training.}{13}{section*.15}\protected@file@percent }
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces \textsc  {GraphPPO}. The encoder $f_\theta $ is the only component that varies across the runs we compare; everything else is held fixed.}}{14}{algorithm.1}\protected@file@percent }
-\newlabel{alg:graphppo}{{1}{14}{\textsc {GraphPPO}. The encoder $f_\theta $ is the only component that varies across the runs we compare; everything else is held fixed}{algorithm.1}{}}
-\newlabel{line:encode}{{7}{14}{\textsc {GraphPPO}. The encoder $f_\theta $ is the only component that varies across the runs we compare; everything else is held fixed}{algorithm.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Per-benchmark learning curves}{14}{subsection.A.2}\protected@file@percent }
-\newlabel{app:curves}{{A.2}{14}{Per-benchmark learning curves}{subsection.A.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Per-benchmark learning curves for the runs aggregated in figure~\ref {fig:rl-main}(a). Dashed line: \texttt  {resyn2}.}}{14}{figure.caption.16}\protected@file@percent }
-\newlabel{fig:rl-per-benchmark}{{4}{14}{Per-benchmark learning curves for the runs aggregated in figure~\ref {fig:rl-main}(a). Dashed line: \texttt {resyn2}}{figure.caption.16}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}The IWLS programming contest}{15}{appendix.B}\protected@file@percent }
-\newlabel{app:ex}{{B}{15}{The IWLS programming contest}{appendix.B}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The comparison of figure~\ref {fig:rl-main} on \texttt  {ex200}--\texttt  {ex299}, where each encoder ran at its own baseline hyper-parameters instead of the matched grid. Restricted to the $390$ of $500$ (benchmark, seed) cells all four encoders completed, covering $80$ benchmarks.}}{15}{figure.caption.17}\protected@file@percent }
-\newlabel{fig:rl-ex}{{5}{15}{The comparison of figure~\ref {fig:rl-main} on \texttt {ex200}--\texttt {ex299}, where each encoder ran at its own baseline hyper-parameters instead of the matched grid. Restricted to the $390$ of $500$ (benchmark, seed) cells all four encoders completed, covering $80$ benchmarks}{figure.caption.17}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reduction against the MLP as a function of input circuit size on \texttt  {ex200}--\texttt  {ex299}. Line: mean over size quartiles.}}{15}{figure.caption.18}\protected@file@percent }
-\newlabel{fig:rl-ex-size}{{6}{15}{Reduction against the MLP as a function of input circuit size on \texttt {ex200}--\texttt {ex299}. Line: mean over size quartiles}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Additional details for graph reinforcement learning}{14}{appendix.A}\protected@file@percent }
+\newlabel{app:hp}{{A}{14}{Additional details for graph reinforcement learning}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Graph encoders and reinforcement learning}{14}{subsection.A.1}\protected@file@percent }
+\newlabel{app:rl-hp}{{A.1}{14}{Graph encoders and reinforcement learning}{subsection.A.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{The environment.}{14}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The observation.}{14}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The encoders.}{14}{section*.14}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The four graph encoders. Depth is the number of message passing rounds, width the hidden dimension, and output the dimension of the pooled vector concatenated with $x_\mathcal  {G}$.}}{14}{table.caption.15}\protected@file@percent }
+\newlabel{tab:encoders}{{2}{14}{The four graph encoders. Depth is the number of message passing rounds, width the hidden dimension, and output the dimension of the pooled vector concatenated with $x_\mathcal {G}$}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {paragraph}{Training.}{14}{section*.16}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces \textsc  {GraphPPO}. The encoder $f_\theta $ is the only component that varies across the runs we compare; everything else is held fixed.}}{15}{algorithm.1}\protected@file@percent }
+\newlabel{alg:graphppo}{{1}{15}{\textsc {GraphPPO}. The encoder $f_\theta $ is the only component that varies across the runs we compare; everything else is held fixed}{algorithm.1}{}}
+\newlabel{line:encode}{{7}{15}{\textsc {GraphPPO}. The encoder $f_\theta $ is the only component that varies across the runs we compare; everything else is held fixed}{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Per-benchmark learning curves}{15}{subsection.A.2}\protected@file@percent }
+\newlabel{app:curves}{{A.2}{15}{Per-benchmark learning curves}{subsection.A.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Per-benchmark learning curves for the runs aggregated in figure~\ref {fig:rl-main}(a). Dashed line: \texttt  {resyn2}.}}{15}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:rl-per-benchmark}{{5}{15}{Per-benchmark learning curves for the runs aggregated in figure~\ref {fig:rl-main}(a). Dashed line: \texttt {resyn2}}{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}The IWLS programming contest}{16}{appendix.B}\protected@file@percent }
+\newlabel{app:ex}{{B}{16}{The IWLS programming contest}{appendix.B}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces The comparison of figure~\ref {fig:rl-main} on \texttt  {ex200}--\texttt  {ex299}, where each encoder ran at its own baseline hyper-parameters instead of the matched grid. Restricted to the $390$ of $500$ (benchmark, seed) cells all four encoders completed, covering $80$ benchmarks.}}{16}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:rl-ex}{{6}{16}{The comparison of figure~\ref {fig:rl-main} on \texttt {ex200}--\texttt {ex299}, where each encoder ran at its own baseline hyper-parameters instead of the matched grid. Restricted to the $390$ of $500$ (benchmark, seed) cells all four encoders completed, covering $80$ benchmarks}{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Reduction against the MLP as a function of input circuit size on \texttt  {ex200}--\texttt  {ex299}. Line: mean over size quartiles.}}{16}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:rl-ex-size}{{7}{16}{Reduction against the MLP as a function of input circuit size on \texttt {ex200}--\texttt {ex299}. Line: mean over size quartiles}{figure.caption.19}{}}
 \citation{networkx}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Value prediction details}{16}{appendix.C}\protected@file@percent }
-\newlabel{app:value-hp}{{C}{16}{Value prediction details}{appendix.C}{}}
-\@writefile{toc}{\contentsline {paragraph}{The datasets.}{16}{section*.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Training.}{16}{section*.20}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Computing the bounds}{16}{subsection.C.1}\protected@file@percent }
-\newlabel{app:bounds}{{C.1}{16}{Computing the bounds}{subsection.C.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}The message passing bound against depth}{16}{subsection.C.2}\protected@file@percent }
-\newlabel{app:depth}{{C.2}{16}{The message passing bound against depth}{subsection.C.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces The MPNN bound as a function of depth $k$.}}{17}{figure.caption.21}\protected@file@percent }
-\newlabel{fig:depth}{{7}{17}{The MPNN bound as a function of depth $k$}{figure.caption.21}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Value prediction details}{17}{appendix.C}\protected@file@percent }
+\newlabel{app:value-hp}{{C}{17}{Value prediction details}{appendix.C}{}}
+\@writefile{toc}{\contentsline {paragraph}{The datasets.}{17}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Training.}{17}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.1}Computing the bounds}{17}{subsection.C.1}\protected@file@percent }
+\newlabel{app:bounds}{{C.1}{17}{Computing the bounds}{subsection.C.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {C.2}The message passing bound against depth}{17}{subsection.C.2}\protected@file@percent }
+\newlabel{app:depth}{{C.2}{17}{The message passing bound against depth}{subsection.C.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The MPNN bound as a function of depth $k$.}}{18}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:depth}{{8}{18}{The MPNN bound as a function of depth $k$}{figure.caption.22}{}}
 \citation{gcn}
 \citation{gin}
 \citation{gat}
@@ -220,12 +222,12 @@
 \citation{polargate}
 \citation{funcgnn}
 \citation{adam}
-\@writefile{toc}{\contentsline {section}{\numberline {D}Preliminary results: training models to predict $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}$}{18}{appendix.D}\protected@file@percent }
-\newlabel{app:trained}{{D}{18}{Preliminary results: training models to predict $\widehat {V}$}{appendix.D}{}}
-\@writefile{toc}{\contentsline {paragraph}{Setup.}{18}{section*.22}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Results.}{18}{section*.23}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Test error of eight trained models, normalized by the variance of the target so that $1.0$ is the error of predicting the mean. Violet ticks: the $1$-WL bound of figure~\ref {fig:bounds}.}}{19}{figure.caption.24}\protected@file@percent }
-\newlabel{fig:trained}{{8}{19}{Test error of eight trained models, normalized by the variance of the target so that $1.0$ is the error of predicting the mean. Violet ticks: the $1$-WL bound of figure~\ref {fig:bounds}}{figure.caption.24}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Validation error over training for the configurations of figure~\ref {fig:trained}, one panel per benchmark.}}{19}{figure.caption.25}\protected@file@percent }
-\newlabel{fig:curves}{{9}{19}{Validation error over training for the configurations of figure~\ref {fig:trained}, one panel per benchmark}{figure.caption.25}{}}
-\gdef \@abspage@last{19}
+\@writefile{toc}{\contentsline {section}{\numberline {D}Preliminary results: training models to predict $\setbox \z@ \hbox {\mathsurround \z@ $\textstyle V$}\mathaccent "0362{V}$}{19}{appendix.D}\protected@file@percent }
+\newlabel{app:trained}{{D}{19}{Preliminary results: training models to predict $\widehat {V}$}{appendix.D}{}}
+\@writefile{toc}{\contentsline {paragraph}{Setup.}{19}{section*.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Results.}{19}{section*.24}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Test error of eight trained models, normalized by the variance of the target so that $1.0$ is the error of predicting the mean. Violet ticks: the $1$-WL bound of figure~\ref {fig:bounds}.}}{20}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:trained}{{9}{20}{Test error of eight trained models, normalized by the variance of the target so that $1.0$ is the error of predicting the mean. Violet ticks: the $1$-WL bound of figure~\ref {fig:bounds}}{figure.caption.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Validation error over training for the configurations of figure~\ref {fig:trained}, one panel per benchmark.}}{20}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:curves}{{10}{20}{Validation error over training for the configurations of figure~\ref {fig:trained}, one panel per benchmark}{figure.caption.26}{}}
+\gdef \@abspage@last{20}

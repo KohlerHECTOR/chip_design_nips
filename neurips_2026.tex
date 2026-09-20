@@ -389,8 +389,52 @@ We therefore ask a question that does not involve a training algorithm at all: h
 This kind of empirical analysis of graph representations, in particular of MPNNs (cf. section~\ref{sec:mpnn}), has been carried out for graph-level regression tasks other than value prediction in~\citet{graphtester}.
 
 \subsection{Building a dataset}\label{sec:dataset}
+\begin{figure}[t]
+  \centering
+  \resizebox{\linewidth}{!}{\begin{tikzpicture}[
+      aig/.style={draw,circle,inner sep=1.6pt,fill=black!12},
+      state/.style={draw,thick,circle,inner sep=1.6pt,fill=teal!20},
+      leaf/.style={draw=gray,circle,inner sep=1.1pt,fill=gray!60},
+      act/.style={font=\tiny,inner sep=1.5pt},
+      roll/.style={gray,->},
+      panel/.style={draw,dashed,rounded corners,thick}]
+    % the two columns of the supervised dataset, drawn first so they sit behind
+    \draw[panel,teal,fill=teal!8]     (5.9,-4.0) rectangle (6.95,3.5);
+    \draw[panel,violet,fill=violet!8] (12.35,-4.0) rectangle (14.25,3.5);
+    \node[teal] at (6.4,3.9) {features};
+    \node[violet] at (13.3,3.9) {targets};
+    \node[draw,thick,circle,inner sep=2pt] (g0) at (0,0) {$\mathcal{G}_0$};
+    % states: a uniformly random flow of length L, one row per length
+    \foreach \y/\n/\i in {2.6/2/1, 0/5/2, -2.6/7/3}{
+      \pgfmathsetmacro{\dx}{6.4/\n}
+      \pgfmathtruncatemacro{\m}{\n-1}
+      \draw[->] (g0) to[out=0,in=180] node[act,above,pos=0.92] {$a_1$} ({\dx},\y);
+      \foreach \k in {2,...,\n}{
+        \pgfmathsetmacro{\xa}{(\k-1)*\dx}
+        \draw[->] ({\xa},\y) -- node[act,above,pos=0.3] {$a_{\k}$} ({\xa+\dx},\y);}
+      \foreach \k in {1,...,\m}{\node[aig] at ({\k*\dx},\y) {};}
+      \node[state] (s\i) at (6.4,\y) {$G_0^\i$};
+      \coordinate (v\i) at (12.3,\y);
+      \node at (13.3,\y) {$\widehat{V}(G_0^\i)$};
+      % M rollouts of eight uniformly random primitives
+      \foreach \o in {0.8,0,-0.8}{
+        \draw[roll] (s\i) -- ({11},{\y+\o})
+          \foreach \p in {0.16,0.28,...,0.88} {node[leaf,pos=\p]{}};
+        \node[leaf] at (11,{\y+\o}) {};
+        \draw[roll] (11.15,{\y+\o}) to[out=0,in=180] (v\i);}
+    }
+    \node at (2.6,4.6) {random flow, $L\sim\mathcal{U}\{2,\dots,10\}$};
+    \node at (9.4,4.6) {$M$ Monte-Carlo MDP rollouts};
+    \node at (6.4,-3.5) {$\vdots$};
+    \node at (13.3,-3.5) {$\vdots$};
+    \node at (6.4,-4.6) {$1{,}000$ states per benchmark};
+    \node at (13.3,-4.6) {$\widehat{V}(G_0^i) = \min_{j\leq M} n^{(j)}(G_0^i)$};
+  \end{tikzpicture}}
+  \caption{Building the value prediction dataset. Applying to the benchmark $\mathcal{G}_0$ a uniformly random flow $a_1,\dots,a_L$ of \texttt{ABC} primitives gives a state $G_0^i$, an AIG functionally equivalent to $\mathcal{G}_0$ but in general of a different size; the length $L$ of the flow is itself drawn at random, so the states sit at varying distances from $\mathcal{G}_0$. The target of a state is the smallest AND count $\widehat{V}(G_0^i)$ reached by $M=100$ independent rollouts of eight further uniformly random primitives from it. The two dashed columns are the resulting supervised regression dataset: each state is an input, stored both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features} so that every model class of section~\ref{sec:bounds} sees the same states, and $\widehat{V}(G_0^i)$ is its target. The procedure is repeated for $1{,}000$ states per benchmark, on ten AIGs and ten seeds.}
+  \label{fig:dataset}
+\end{figure}
 Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of section~\ref{sec:method} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
-We therefore estimate it by sampling both the states and the continuations from them.
+We therefore estimate it by sampling both the states and the continuations from them, as shown in figure~\ref{fig:dataset}.
 A state is the AIG obtained by applying to the benchmark $\mathcal{G}_0$ a uniformly random flow of length $L\sim\mathcal{U}\{2,\dots,10\}$; we draw $1{,}000$ such states per benchmark and store each one both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features}, so that every model class of section~\ref{sec:bounds} is evaluated on exactly the same states and the same targets.
 From each state $s$ we then run $M = 100$ independent rollouts of $8$ further uniformly random primitives and keep the best AND count reached, $\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s)$, an upper bound on the minimum over the $5^8$ flows of length eight that approaches it from above as $M$ grows.
 A key difference to $V^\star$ should be kept in mind: $\widehat{V}$ truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments, so our targets approximate the value of an eight-step-to-go problem, and the bounds of section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
