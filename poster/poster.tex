@@ -1,23 +1,24 @@
 \documentclass[a0paper,portrait]{baposter}
 
-\usepackage{wrapfig}
 \usepackage{lmodern}
-\usepackage{lipsum,graphicx}
+\usepackage{graphicx}
 \usepackage[utf8]{inputenc} %unicode support
 \usepackage[T1]{fontenc}
 \usepackage{tikz}
-\usepackage{amsmath}
-\usepackage{caption}
-\usepackage{algorithm2e}
-
-% allow algorithm2e's float environment inside baposter's minipage-based headerboxes
-\makeatletter
-\newcommand{\removelatexerror}{\let\@latex@error\@gobble}
-\makeatother
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[round]{natbib}
 
 \selectcolormodel{cmyk}
 
-\graphicspath{{figures/}{../../slides_soutenance/}{../../images/images_part1/}} % Directories in which figures are stored
+% Figures live in the paper directory, one level up.
+\graphicspath{{figures/}{../figures/}{../}{Kit_logo_web_horizontal/}}
+
+% baposter boxes are minipages, so the float environments figure and table are
+% not available inside them: graphics go in this centred block instead.
+\newenvironment{posterfigure}
+  {\par\smallskip\begin{center}}
+  {\end{center}\par\smallskip}
 
 \newcommand{\compresslist}{%
 \setlength{\itemsep}{0pt}%
@@ -38,6 +39,7 @@
 \begin{poster}
 {
 grid=false,
+columns=3, % A0 portrait: three columns
 headerborder=open, % Adds a border around the header of content boxes
 colspacing=1em, % Column spacing
 bgColorOne=white, % Background color for the gradient on the left side of the poster
@@ -49,11 +51,13 @@ headerFontColor=white, % Text color for the header text in the content boxes
 boxColorOne=white, % Background color of the content boxes
 textborder=rounded, %rectangle, % Format of the border around content boxes, can be: none, bars, coils, triangles, rectangle, rounded, roundedsmall, roundedright or faded
 eyecatcher=false, % Set to false for ignoring the left logo in the title and move the title left
-headerheight=0.11\textheight, % Height of the header
+headerheight=0.085\textheight, % Height of the title banner
 headershape=rounded, % Specify the rounded corner in the content box headers, can be: rectangle, small-rounded, roundedright, roundedleft or rounded
 headershade=plain,
-headerfont=\Large\textsf, % Large, bold and sans serif font in the headers of content boxes
-%textfont={\setlength{\parindent}{1.5em}}, % Uncomment for paragraph indentation
+% baposter typesets the box title as a single non-wrapping node, so keep the
+% titles short and the header font moderate.
+headerfont=\large\sffamily,
+textfont={\footnotesize}, % Body font inside the content boxes
 linewidth=2pt % Width of the border lines around content boxes
 }
 {}
@@ -62,31 +66,28 @@ linewidth=2pt % Width of the border lines around content boxes
 %	TITLE AND AUTHOR NAME
 %----------------------------------------------------------------------------------------
 %
-{
-\textsf %Sans Serif
-{
-{Understanding graph representation learning in RL-based logic synthesis}
-}
-} % Poster title
-% {\vspace{0.2em} Add Author Name, Add another author name\\ 
-% {\small \vspace{0.7em} School of Enterprise Computing and Digital Transformation, TU Dublin, Tallaght, Dublin, Ireland}} 
-{\sf\vspace{0.2em}\\
-Hector Kohler, Johannes Lutzeyer, Jesse Read  % Author name
+% The class wraps the title in \Huge; the size given here overrides it so the
+% title stays clear of the logo.
+{\sffamily\LARGE Understanding graph representation learning\\ in RL-based logic synthesis} % Poster title
+{\sffamily\vspace{0.2em}\\
+Hector Kohler, Johannes Lutzeyer, Jesse Read  % Author names
 \vspace{0.2em}\\
 \small{LIX, Ecole Polytechnique, CNRS, Institut Polytechnique de Paris}
 }
-{\includegraphics[width=.25\linewidth]{Kit_logo_web_horizontal/CMJN.png}} % TU Dublin logo
+{\includegraphics[width=.25\linewidth]{CMJN.png}} % Institution logo
 
 
 %----------------------------------------------------------------------------------------
-%	1. DECISION TREE POLICIES FOR MDPS
+%	1. LOGIC SYNTHESIS WITH AND-INVERTER GRAPHS
 %----------------------------------------------------------------------------------------
-\headerbox{1. Logic synthesis with and-inverter graphs}{name=introduction,column=0,row=0,span=1}{
-Finding the smallest circuit size to encode some Boolean function is key in the chip design industry. This is done in practice with and-inverter graphs (AIGs) which are DAGs where nodes are \textit{AND} gates (in-degrees 2, out-degrees 1) and edge labels are \textit{NOT} signals: any Boolean function can be encoded by such an AIG. Finding the smallest AIG encoding a Boolean function is an instance of minimum circuit size problem which is NP but not yet known to be NP-hard.
-\begin{figure}
-\begin{subfigure}[b]{0.45\textwidth}
+\headerbox{1. Logic synthesis with AIGs}{name=introduction,column=0,row=0,span=1}{
+Chip design needs the smallest circuit encoding a given Boolean function, which in practice means the smallest and-inverter graph (AIG): a DAG whose nodes are \textit{AND} gates and whose edge labels are \textit{NOT} signals.
+Below are two functionally equivalent AIGs of $f(x_1, x_2, x_3) = (\overline{x_1}\land x_2,\ x_2 \land x_3)$ with different numbers of nodes; \texttt{ABC} primitives rewrite an AIG locally to reduce the \textit{AND} count while preserving equivalence~\citep{rewriting}.
+
+\begin{posterfigure}
+\begin{minipage}[b]{0.48\linewidth}
     \centering
-    \begin{tikzpicture}[scale=0.7]
+    \begin{tikzpicture}[scale=0.42]
         \draw
             (0, 0) node[draw,circle] (0){$x_1$}
             (2, 0) node[draw,circle] (1){$x_2$}
@@ -106,14 +107,16 @@ Finding the smallest circuit size to encode some Boolean function is key in the 
             \draw (4) to (6);
             \draw (5) to (7);
         \end{scope}
-        \end{tikzpicture}
-        \subcaption*{$\mathcal{G}_1$: 8 nodes, 4 levels.}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \begin{tikzpicture}[scale=0.7]
-        \draw<2->
+    \end{tikzpicture}
+
+    \smallskip
+    {\small $\mathcal{G}_1$: 8 nodes, 4 levels.}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.48\linewidth}
+    \centering
+    \begin{tikzpicture}[scale=0.42]
+        \draw
             (0, 0) node[draw,circle] (0){$x_1$}
             (2, 0) node[draw,circle] (1){$x_2$}
             (4, 0) node[draw,circle] (2){$x_3$}
@@ -122,43 +125,48 @@ Finding the smallest circuit size to encode some Boolean function is key in the 
             (3, 4) node[draw,circle] (6){\tiny $f_2(\boldsymbol{x})$}
             (1, 4) node[draw,circle] (7){\tiny $f_1(\boldsymbol{x})$};
         \begin{scope}[->]
-            \draw<2-> (0) to node[] {\tiny NOT} (3);
-            \draw<2-> (1) to (3);
-            \draw<2-> (1) to (4);
-            \draw<2-> (2) to (4);
-            \draw<2-> (3) to (7);
-            \draw<2-> (4) to (6);
+            \draw (0) to node[] {\tiny NOT} (3);
+            \draw (1) to (3);
+            \draw (1) to (4);
+            \draw (2) to (4);
+            \draw (3) to (7);
+            \draw (4) to (6);
         \end{scope}
-        \end{tikzpicture}
-        \subcaption*{$\mathcal{G}_2$: 7 nodes, 3 levels.}
-    \end{subfigure}
-    \begin{subfigure}
-    \includegraphics[width=0.7\textwidth]{../aig_rewriting.png}
-\end{subfigure}
-\end{figure}
-\begin{center}
-Two functionally equivalent AIGs with different number of nodes for the Boolean function $f(x_1, x_2, x_3) = (\overline{x_1}\land x_2, x_2 \land x_3)$. On the right, one of \textttt{ABC} primitive that apply local AIG modifications while preserving functional equivalence and reducing the number of \textit{AND} nodes~\cite{rewriting}.
-\end{center}
+    \end{tikzpicture}
+
+    \smallskip
+    {\small $\mathcal{G}_2$: 7 nodes, 3 levels.}
+\end{minipage}
+
+\end{posterfigure}
 }
 
 %----------------------------------------------------------------------------------------
-%	2. IMITATION VS DIRECT RL
+%	2. AIG REDUCTION AS AN MDP
 %----------------------------------------------------------------------------------------
-\headerbox{2. AIG reduction as a Markov decision process}{name=how,column=2,row=0,span=2}{
-\begin{figure}[h]
-  \centering
-  \resizebox{\linewidth}{!}{\begin{tikzpicture}[scale=0.7]
+\headerbox{2. AIG reduction as an MDP}{name=how,column=1,row=0,span=2}{
+Each action is one \texttt{ABC} primitive applied to the whole graph and the reward grows as the number of \textit{AND} nodes drops; since the primitives preserve functional equivalence, every state reachable from $\mathcal{G}_0$ still computes $f$.
+Most reinforcement learning (RL) and other machine learning-based searches for logic synthesis act at this granularity~\citep{rl-gnn1,rl-logic1,flow-bandits}.
+DAG generative models fail to generate functionally equivalent AIGs~\cite{graphbench}.
+\begin{posterfigure}
+  % The picture is scaled to the box width, so the gates are given a large share
+  % of the drawing to keep their labels legible at poster distance.
+  \resizebox{\linewidth}{!}{\begin{tikzpicture}[scale=0.8,
+        gate/.style={draw,thick,circle,minimum size=9mm,inner sep=1pt,font=\small},
+        wire/.style={->,thick},
+        wirelbl/.style={font=\small},
+        mdpstep/.style={->,very thick}]
         \draw
-            (0, 0) node[draw,circle] (0){$x_1$}
-            (2, 0) node[draw,circle] (1){$x_2$}
-            (4, 0) node[draw,circle] (2){$x_3$}
-            (1, 2) node[draw,circle] (3){\tiny AND}
-            (3, 2) node[draw,circle] (4){\tiny AND}
-            (1.5, 4) node[draw,circle] (5){\tiny AND}
-            (3, 4) node[draw,circle] (6){\tiny $f_2(\boldsymbol{x})$}
-            (1.5, 6) node[draw,circle] (7){\tiny $f_1(\boldsymbol{x})$};
-        \begin{scope}[->]
-            \draw (0) to node[] {\tiny NOT} (3);
+            (0, 0) node[gate] (0){$x_1$}
+            (2, 0) node[gate] (1){$x_2$}
+            (4, 0) node[gate] (2){$x_3$}
+            (1, 2) node[gate] (3){AND}
+            (3, 2) node[gate] (4){AND}
+            (1.5, 4) node[gate] (5){AND}
+            (3, 4) node[gate] (6){$f_2(\boldsymbol{x})$}
+            (1.5, 6) node[gate] (7){$f_1(\boldsymbol{x})$};
+        \begin{scope}[wire]
+            \draw (0) to node[wirelbl] {NOT} (3);
             \draw (1) to (3);
             \draw (1) to (5);
             \draw (1) to (4);
@@ -168,82 +176,85 @@ Two functionally equivalent AIGs with different number of nodes for the Boolean 
             \draw (5) to (7);
         \end{scope}
         \draw
-            (7, 0) node[draw,circle] (8){$x_1$}
-            (9, 0) node[draw,circle] (9){$x_2$}
-            (11, 0) node[draw,circle] (10){$x_3$}
-            (8, 2) node[draw,circle] (11){\tiny AND}
-            (10, 2) node[draw,circle] (12){\tiny AND}
-            (10, 4) node[draw,circle] (13){\tiny $f_2(\boldsymbol{x})$}
-            (8, 4) node[draw,circle] (14){\tiny $f_1(\boldsymbol{x})$};
-        \begin{scope}[->]
-            \draw (8) to node[] {\tiny NOT} (11);
+            (7, 0) node[gate] (8){$x_1$}
+            (9, 0) node[gate] (9){$x_2$}
+            (11, 0) node[gate] (10){$x_3$}
+            (8, 2) node[gate] (11){AND}
+            (10, 2) node[gate] (12){AND}
+            (10, 4) node[gate] (13){$f_2(\boldsymbol{x})$}
+            (8, 4) node[gate] (14){$f_1(\boldsymbol{x})$};
+        \begin{scope}[wire]
+            \draw (8) to node[wirelbl] {NOT} (11);
             \draw (9) to (11);
             \draw (9) to (12);
             \draw (10) to (12);
             \draw (11) to (14);
             \draw (12) to (13);
         \end{scope}
-        \draw[thick, ->] (4.1,3) to[bend left=30] node[midway, above] {$a_t$, \textcolor{teal}{$\boldsymbol{r}_t$}} (6.9,3);
-        \draw[thick, ->] (-2.9,3) to[bend left=30] node[midway, above] {$a_{t-1}, r_{t-1}$} (-0.1,3);
-        \draw[thick, ->] (18.8,3) to[bend left=30] node[midway, above] {$a_{t+2}, r_{t+2}$} (21.6,3);
-        \draw[thick, ->] (11.1,3) to[bend left=30] node[midway, above] {$a_{t+1}$, \textcolor{red}{$\boldsymbol{r}_{t+1}$}} (13.9,3);
+        \draw[mdpstep] (4.1,3) to[bend left=30] node[midway, above] {$a_t$, \textcolor{teal}{$\boldsymbol{r}_t$}} (6.9,3);
+        \draw[mdpstep] (-2.9,3) to[bend left=30] node[midway, above] {$a_{t-1}, r_{t-1}$} (-0.1,3);
+        \draw[mdpstep] (18.8,3) to[bend left=30] node[midway, above] {$a_{t+2}, r_{t+2}$} (21.6,3);
+        \draw[mdpstep] (11.1,3) to[bend left=30] node[midway, above] {$a_{t+1}$, \textcolor{red}{$\boldsymbol{r}_{t+1}$}} (13.9,3);
         \draw
-            (14, 0) node[draw,circle] (8){$x_1$}
-            (16, 0) node[draw,circle] (9){$x_2$}
-            (18, 0) node[draw,circle] (10){$x_3$}
-            (15, 2) node[draw,circle] (11){\tiny AND}
-            (17, 2) node[draw,circle] (12){\tiny AND}
-            (17, 6) node[draw,circle] (13){\tiny $f_2(\boldsymbol{x})$}
-            (18, 4) node[draw,circle] (99){\tiny AND}
-            (15, 4) node[draw,circle] (14){\tiny $f_1(\boldsymbol{x})$};
-        \begin{scope}[->]
-            \draw (8) to node[] {\tiny NOT} (11);
-            \draw (9) to (11);
-            \draw (9) to (12);
-            \draw (10) to (99);
-            \draw (10) to (12);
-            \draw (12) to (99);
-            \draw (11) to (14);
-            \draw (99) to (13);
+            (14, 0) node[gate] (15){$x_1$}
+            (16, 0) node[gate] (16){$x_2$}
+            (18, 0) node[gate] (17){$x_3$}
+            (15, 2) node[gate] (18){AND}
+            (17, 2) node[gate] (19){AND}
+            (17, 6) node[gate] (20){$f_2(\boldsymbol{x})$}
+            (18, 4) node[gate] (99){AND}
+            (15, 4) node[gate] (21){$f_1(\boldsymbol{x})$};
+        \begin{scope}[wire]
+            \draw (15) to node[wirelbl] {NOT} (18);
+            \draw (16) to (18);
+            \draw (16) to (19);
+            \draw (17) to (99);
+            \draw (17) to (19);
+            \draw (19) to (99);
+            \draw (18) to (21);
+            \draw (99) to (20);
         \end{scope}
   \end{tikzpicture}}
-  \caption{A trajectory in a generic MDP for AIG reduction, on AIGs of the Boolean function $f(x_1, x_2, x_3) = (\bar{x_1}\land x_2,\ x_2 \land x_3)$. A policy gets more reward for reducing the number of \textit{AND} nodes in an AIG. Most reinforcement learning (RL) and other machine learning-based search for logic synthesis~\cite{rl-gnn1,rl-logic1,flow-bandits} that efficiently reduce AIGs act at this granularity: each action is one \texttt{ABC} primitive applied to the whole graph. Those primitives preserve functional equivalence by construction, so every state reachable from $\mathcal{G}_0$ still computes $f$. DAG generative models have been used to generate reduced AIGs when given some AIGs but those fail completely~\cite{graphbench}.}
-\end{figure}
+\end{posterfigure}
+\vspace{1em}
 }
 
-\headerbox{3. Graph representation and reinforcement learning~\citet{rl-gnn1}}{name=ibmdp,column=0,below=introduction,span=2}{
-We train \textbf{tuned} PPO agents to reduce some standards AIGs encoding different Boolean functions. We focus on performance differences between GCN policies and graph statistics (current \# nodes, \# edges, last few graph edits taken, current time steps) policies.
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_gcn_main.pdf}
-  \caption{PPO on the ten benchmarks from~\citet{rl-gnn1} with five observation encoders, each tuned (cf. appendix~\ref{app:rl-hp} for more details). (a) AND count averaged over the ten
-  benchmarks; (b) change in final AND count against the no-GCN policy, per
-  benchmark and pooled over the ten (\emph{all 10}), the grey band being the
-  no-GCN policy's own spread over its five seeds; (c) the pooled change against
-  the parameters the encoder adds to the policy. All intervals are 95\%
-  bootstrap confidence intervals over five seeds.}
-  \label{fig:rl-main}
-\end{figure}
+%----------------------------------------------------------------------------------------
+%	3. GRAPH REPRESENTATION AND RL
+%----------------------------------------------------------------------------------------
+\headerbox{3. Graph representation and RL}{name=ibmdp,column=0,below=introduction,span=2}{
+\begin{minipage}[c]{0.29\linewidth}
+We train \textbf{tuned} PPO agents on the ten benchmarks of~\citet{rl-gnn1} and compare GCN policies against policies that only see graph statistics (current \# nodes, \# edges, last few graph edits taken, current time step).
+Adding a GCN changes the final AND count by about one percent whatever the size of the encoder, and per benchmark that change mostly stays inside the no-GCN policy's own spread over seeds (grey band).
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.71\linewidth}
+  \includegraphics[width=\linewidth]{fig_gcn_main.pdf}
+\end{minipage}
 }
+
+%----------------------------------------------------------------------------------------
+%	4. FINAL AIG SIZES
+%----------------------------------------------------------------------------------------
 \headerbox{4. Final AIG sizes}{name=triad,column=2,below=how,span=1}{
-\begin{table}[t]
-  \centering\small
-  \caption{Mean AND count after $H=20$ \texttt{ABC} primitives, over the five
-  seeds of each configuration's best hyper-parameter cell, $\pm$ one standard
-  deviation across those seeds. \emph{Starting nodes} is the AND count of the benchmark
-  before any primitive is applied; \texttt{resyn2} is deterministic and has no
-  spread. AIGs are ordered by input size.}
-  \label{tab:rl-ands}
-  \input{../tables/table_gcn_ablation}
-\end{table}
+Mean AND count after $H=20$ \texttt{ABC} primitives, over the five seeds of each configuration's best hyper-parameter cell, $\pm$ one standard deviation.
+All five encoders land within a few nodes of each other, and all of them below the \texttt{resyn2} baseline.
+
+\begin{posterfigure}
+  \resizebox{\linewidth}{!}{\input{../tables/table_gcn_ablation}}
+\end{posterfigure}
 }
 
-% %----------------------------------------------------------------------------------------
-% %	4. GROUND TRUTH: OPTIMAL TREES ARE KNOWN
-% %----------------------------------------------------------------------------------------
-\headerbox{5. Why don't graph representation significantly improve RL-based logic synthesis?}{name=optimal,column=0,below=ibmdp,span=2}{
-\begin{figure}[t]
-  \centering
+%----------------------------------------------------------------------------------------
+%	5. WHY GRAPH REPRESENTATIONS DO NOT HELP
+%----------------------------------------------------------------------------------------
+\headerbox{5. Why don't graph representations help?}{name=optimal,column=0,below=ibmdp,span=2}{
+\begin{minipage}[c]{0.43\linewidth}
+Computing $V^\star$ exactly is out of reach, so we estimate it: a random flow of \texttt{ABC} primitives applied to a benchmark $\mathcal{G}_0$ gives a state $G_0^i$, whose target $\widehat{V}(G_0^i)$ is the smallest AND count reached by $M=100$ rollouts of eight further random primitives.
+We build this supervised dataset in order to study the predictive power of message passing networks (1-WL) on AIGs with \texttt{Graphtester}~\citep{graphtester}.
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.55\linewidth}
   \resizebox{\linewidth}{!}{\begin{tikzpicture}[
       aig/.style={draw,circle,inner sep=1.6pt,fill=black!12},
       state/.style={draw,thick,circle,inner sep=1.6pt,fill=teal!20},
@@ -283,120 +294,71 @@ We train \textbf{tuned} PPO agents to reduce some standards AIGs encoding differ
     \node at (6.4,-4.6) {$1{,}000$ states per benchmark};
     \node at (13.3,-4.6) {$\widehat{V}(G_0^i) = \min_{j\leq M} n^{(j)}(G_0^i)$};
   \end{tikzpicture}}
-  \caption{Building the value prediction dataset. Applying to the benchmark $\mathcal{G}_0$ a uniformly random flow $a_1,\dots,a_L$ of \texttt{ABC} primitives gives a state $G_0^i$, an AIG functionally equivalent to $\mathcal{G}_0$ but in general of a different size; the length $L$ of the flow is itself drawn at random, so the states sit at varying distances from $\mathcal{G}_0$. The target of a state is the smallest AND count $\widehat{V}(G_0^i)$ reached by $M=100$ independent rollouts of eight further uniformly random primitives from it. The two dashed columns are the resulting supervised regression dataset: each state is an input, stored both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features} so that every model class of section~\ref{sec:bounds} sees the same states, and $\widehat{V}(G_0^i)$ is its target. The procedure is repeated for $1{,}000$ states per benchmark, on ten AIGs and ten seeds.}
-  \label{fig:dataset}
-\end{figure}
-Computing $V^\star$ exactly is out of reach: the tree of flows over the five primitives of section~\ref{sec:method} has $5^H$ leaves, and every edge of it costs one \texttt{ABC} call on the full circuit.
-We therefore estimate it by sampling both the states and the continuations from them, as shown in figure~\ref{fig:dataset}.
-A state is the AIG obtained by applying to the benchmark $\mathcal{G}_0$ a uniformly random flow of length $L\sim\mathcal{U}\{2,\dots,10\}$; we draw $1{,}000$ such states per benchmark and store each one both as an \texttt{.aig} file and as the statistics $x_\mathcal{G}$ of section~\ref{sec:features}, so that every model class of section~\ref{sec:bounds} is evaluated on exactly the same states and the same targets.
-From each state $s$ we then run $M = 100$ independent rollouts of $8$ further uniformly random primitives and keep the best AND count reached, $\widehat{V}(s) = \min_{j \leq M} n^{(j)}(s)$, an upper bound on the minimum over the $5^8$ flows of length eight that approaches it from above as $M$ grows.
-A key difference to $V^\star$ should be kept in mind: $\widehat{V}$ truncates the horizon at eight steps instead of the $H=20$ of the reinforcement learning experiments, so our targets approximate the value of an eight-step-to-go problem, and the bounds of section~\ref{sec:bounds} are lower bounds on the error of predicting \emph{that} quantity.
-The procedure is repeated with ten seeds per benchmark on the same ten AIGs as in section~\ref{sec:rl-exp}, and the figures of this section report over those ten repetitions.
-The sampler is degenerate on two of them, reaching only two distinct values of $\widehat{V}$ on \texttt{C6288} and six on \texttt{C1355}: we exclude \texttt{C6288} and report over the remaining nine benchmarks, flagging \texttt{C1355} wherever it appears.
+\end{minipage}
+}
 
-}
-\headerbox{6. 1-WL representation for AIGs~\citet{graphtester}}{name=asym,column=2,below=triad,span=1}{
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.9\linewidth]{figures/fig_value_bounds.pdf}
-  \caption{Best error (a) and best ranking (b) achievable by each model class on
-  $\widehat{V}$, over nine benchmarks and ten dataset seeds. Each class is replaced
-  by the optimal predictor for the information it can distinguish, so the value
-  shown cannot be beaten by any model in that class. $^{*}$\texttt{C1355} has
-  only six distinct targets.}
-  \label{fig:bounds}
-\end{figure}
-}
 %----------------------------------------------------------------------------------------
-%	5. RL FAILS, EVEN ASYMMETRIC RL
+%	6. 1-WL REPRESENTATION FOR AIGS
 %----------------------------------------------------------------------------------------
-\headerbox{7. Preliminary results for AIG-specific models for value predictions}{name=results,column=0,below=optimal,span=1}{
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_training_curves.pdf}
-  \caption{Validation error over training for tuned AIG-specific models~\cite{deepgate} and generic graph representation models}
-  \label{fig:curves}
-\end{figure}
-}
-\headerbox{8. Additional results}{name=results,column=0,below=optimal,span=1}{
-Figure~\ref{fig:depth} plots the message passing bound of section~\ref{sec:bounds} against the number of refinement iterations $k$, for the four views of the AIG bounded there.
-The bound moves by at most $1.1\times10^{-3}$ between $k = 1$ and $k = 50$, and labeling edges with direction or with the complement bit changes it by less than $10^{-6}$, so neither deeper refinement nor a richer view of the graph brings a message passing network closer to $\widehat{V}$.
+\headerbox{6. 1-WL representations for AIGs}{name=asym,column=2,below=triad,span=1}{
+Best error (a) and best ranking (b) achievable on $\widehat{V}$ by each model class, over nine benchmarks and ten seeds: each class is replaced by the optimal predictor for what it can distinguish~\citep{graphtester}, so no model in that class can do better.
+$^{*}$\texttt{C1355} has only six distinct targets.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_mpnn_depth.pdf}
-  \caption{The MPNN bound as a function of depth $k$.}
-  \label{fig:depth}
-\end{figure}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figures/fig_gcn_ex_size.pdf}
-  \caption{Reduction against the MLP as a function of input circuit size on
-  \texttt{ex200}--\texttt{ex299}. Line: mean over size quartiles.}
-  \label{fig:rl-ex-size}
-\end{figure}
+\begin{posterfigure}
+  \includegraphics[width=0.95\linewidth]{fig_value_bounds.pdf}
+\end{posterfigure}
 }
-\headerbox{9. Future work}{name=results,column=0,below=optimal,span=1}{
-\begin{itemize}
-    \item Extend our analysis to non 1-WL representation (some AIG-specific models might not be 1-WL)
-    \item Extend our analysis to larger AIG primitive operations (the standard \texttt{ABC} software has way more than 5 primitive implemented but there is no search method considering the complete action space available). More actions in the AIG reduction MDP means more varied states which is where graph representation learning could bring significantly
+
+%----------------------------------------------------------------------------------------
+%	7. AIG-SPECIFIC VALUE MODELS
+%----------------------------------------------------------------------------------------
+\headerbox{7. AIG-specific value models}{name=results,column=0,below=optimal,span=1}{
+Validation error over training when predicting $\widehat{V}$ with tuned AIG-specific models~\citep{deepgate} and with generic graph representation models.
+
+\begin{posterfigure}
+  \includegraphics[width=0.62\linewidth]{fig_training_curves.pdf}
+\end{posterfigure}
+}
+
+%----------------------------------------------------------------------------------------
+%	8. ADDITIONAL RESULTS
+%----------------------------------------------------------------------------------------
+\headerbox{Additional results}{name=extra,column=1,below=optimal,span=1,above=bottom}{
+The message passing bound moves by at most $1.1\times10^{-3}$ between $k = 1$ and $k = 50$ refinement iterations, and labeling edges with direction or with the complement bit changes it by less than $10^{-6}$.
+
+\begin{posterfigure}
+  \includegraphics[width=0.68\linewidth]{fig_mpnn_depth.pdf}
+\end{posterfigure}
+
+Reduction against the MLP as a function of input circuit size on \texttt{ex200}--\texttt{ex299}, the line being the mean over size quartiles.
+
+\begin{posterfigure}
+  \includegraphics[width=0.68\linewidth]{fig_gcn_ex_size.pdf}
+\end{posterfigure}
+}
+
+%----------------------------------------------------------------------------------------
+%	9. FUTURE WORK
+%----------------------------------------------------------------------------------------
+\headerbox{8. Future work}{name=future,column=0,below=results,span=1,above=bottom}{
+\begin{itemize}\compresslist
+    \item Extend the analysis to non 1-WL representations, since some AIG-specific models might not be 1-WL.
+    \item \texttt{ABC} implements many more than 5 primitives, but no search method uses them all. More actions would mean more varied states, which could be where graph representation learning helps.
 \end{itemize}
-\bibliographystyle{plainnat}
-\bibliography{neurips_2026}
 }
 
-% %----------------------------------------------------------------------------------------
-% %	6. ABLATING PARTIAL OBSERVABILITY
-% %----------------------------------------------------------------------------------------
-% \headerbox{6. Ablation: removing partial observability}{name=ablation,column=0,below=results,span=2,above=bottom}{
-% \begin{center}
-% \begin{tabular}{cc}
-% \scalebox{0.95}{\begin{tikzpicture}[
-%         decision/.style={circle, draw, thick, fill=blue!20, text width=2.5em, text centered, minimum height=2.5em, font=\small},
-%         edge_label/.style={font=\footnotesize, midway}
-%     ]
-%         % Classification task as a downstream MDP
-%         \draw[fill=green!40] (0, 0) rectangle (1,2);
-%         \draw[fill=red!40] (1, 0) rectangle (2,2);
-%         \draw[draw, thick] (0,0) grid (2,2);
-%         \draw[thick, ->] (0,0) -- (2.5,0) node[right] {$x$};
-%         \draw[thick, ->] (0,0) -- (0,2.5) node[above] {$y$};
-%         \foreach \x in {0,1,2} {
-%             \draw[thick] (\x,0) -- (\x,-0.1) node[below] {$\x$};
-%         }
-%         \foreach \y in {0,1,2} {
-%             \draw[thick] (0,\y) -- (-0.1,\y) node[left] {$\y$};
-%         }
+%----------------------------------------------------------------------------------------
+%	REFERENCES
+%----------------------------------------------------------------------------------------
+\headerbox{Key references}{name=refs,column=2,below=asym,span=1,above=bottom}{
+{\tiny
+% The box header replaces the heading that the .bbl file would print.
+\renewcommand{\section}[2]{}
+\setlength{\bibsep}{0pt}
+\bibliographystyle{abbrvnat}
+\bibliography{poster}
+}}
 
-%         % Optimal depth-1 tree classifier
-%         \node[decision] (croot) at (5,2) {$x \leq 1$};
-%         \node[rectangle, draw, thick, fill=green!40, text width=2em, text centered, rounded corners, minimum height=2em, font=\small] (cleft) at (4,0) {};
-%         \node[rectangle, draw, thick, fill=red!40, text width=2em, text centered, rounded corners, minimum height=2em, font=\small] (cright) at (6,0) {};
-%         \draw[->] (croot) -- (cleft) node[edge_label, above left] {True};
-%         \draw[->] (croot) -- (cright) node[edge_label, above right] {False};
-%     \end{tikzpicture}}
-% &
-% \includegraphics[width=0.45\linewidth]{tree_distributions_merged.pdf}
-% \end{tabular}
-% \end{center}
-% \small
-% When the downstream MDP has uniform transitions---e.g. it encodes a \textbf{classification task} (left)---the POIBMDP is fully observable.
-% Standard RL then \textbf{consistently} trains optimal decision trees (right): \textbf{partial observability is the culprit}.
-% }
-
-% %----------------------------------------------------------------------------------------
-% %	7. TAKEAWAYS
-% %----------------------------------------------------------------------------------------
-% \headerbox{7. Takeaways}{name=takeaways,column=2,below=results,span=1,above=bottom}{
-% \begin{itemize}\compresslist
-%     \item Training a decision tree policy directly with RL $\equiv$ solving a POMDP with a \textbf{deterministic memoryless} policy: a deadly triad.
-%     \item Even dedicated asymmetric RL cannot consistently retrieve the known optimal depth-1 tree of a $2\times2$ grid world.
-%     \item Remove partial observability and the same algorithms succeed consistently.
-% \end{itemize}
-% \medskip
-
-% \small Code: \texttt{github.com/KohlerHECTOR/poibmdps}
-% }
 \end{poster}
 
 \end{document}

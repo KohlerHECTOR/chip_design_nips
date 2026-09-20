@@ -1,46 +1,46 @@
 This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: poster.aux
-The style file: plainnat.bst
+The style file: abbrvnat.bst
 Database file #1: poster.bib
-You've used 12 entries,
+You've used 7 entries,
             2773 wiz_defined-function locations,
-            668 strings with 7687 characters,
-and the built_in function-call counts, 7506 in all, are:
-= -- 633
-> -- 567
-< -- 8
-+ -- 189
-- -- 177
-* -- 640
-:= -- 1136
-add.period$ -- 42
-call.type$ -- 12
-change.case$ -- 95
-chr.to.int$ -- 12
-cite$ -- 24
-duplicate$ -- 307
-empty$ -- 532
-format.name$ -- 195
-if$ -- 1591
+            635 strings with 6501 characters,
+and the built_in function-call counts, 5118 in all, are:
+= -- 420
+> -- 426
+< -- 4
++ -- 142
+- -- 135
+* -- 455
+:= -- 775
+add.period$ -- 25
+call.type$ -- 7
+change.case$ -- 66
+chr.to.int$ -- 7
+cite$ -- 14
+duplicate$ -- 193
+empty$ -- 334
+format.name$ -- 142
+if$ -- 1081
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 11
-newline$ -- 74
-num.names$ -- 48
-pop$ -- 204
+missing$ -- 6
+newline$ -- 47
+num.names$ -- 28
+pop$ -- 145
 preamble$ -- 1
-purify$ -- 83
+purify$ -- 59
 quote$ -- 0
-skip$ -- 272
+skip$ -- 182
 stack$ -- 0
-substring$ -- 228
-swap$ -- 63
-text.length$ -- 5
+substring$ -- 157
+swap$ -- 49
+text.length$ -- 4
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 132
+type$ -- 77
 warning$ -- 0
-while$ -- 52
+while$ -- 31
 width$ -- 0
-write$ -- 171
+write$ -- 104

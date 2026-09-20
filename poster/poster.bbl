@@ -1,4 +1,4 @@
-\begin{thebibliography}{12}
+\begin{thebibliography}{7}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -7,34 +7,21 @@
 
 \bibitem[Akbiyik et~al.(2023)Akbiyik, Gr\"otschla, Egressy, and
   Wattenhofer]{graphtester}
-Eren Akbiyik, Florian Gr\"otschla, B\'eni Egressy, and Roger Wattenhofer.
+E.~Akbiyik, F.~Gr\"otschla, B.~Egressy, and R.~Wattenhofer.
 \newblock {Graphtester: Exploring Theoretical Boundaries of GNNs on Graph
   Datasets}.
 \newblock In \emph{{Data-centric Machine Learning Research (DMLR) Workshop at
   ICML 2023, Honolulu, Hawaii}}, July 2023.
 
-\bibitem[Brayton and Mishchenko(2010)]{abc}
-Robert~K. Brayton and Alan Mishchenko.
-\newblock Abc: An academic industrial-strength verification tool.
-\newblock In \emph{International Conference on Computer Aided Verification},
-  2010.
-\newblock URL \url{https://api.semanticscholar.org/CorpusID:1251520}.
-
 \bibitem[Hosny et~al.(2020)Hosny, Hashemi, Shalan, and Reda]{rl-logic1}
-Abdelrahman Hosny, Soheil Hashemi, Mohamed Shalan, and Sherief Reda.
+A.~Hosny, S.~Hashemi, M.~Shalan, and S.~Reda.
 \newblock Drills: Deep reinforcement learning for logic synthesis.
 \newblock In \emph{2020 25th Asia and South Pacific Design Automation
   Conference (ASP-DAC)}, pages 581--586, 2020.
 \newblock \doi{10.1109/ASP-DAC47756.2020.9045559}.
 
-\bibitem[Kabanets and Cai(2000)]{nphard}
-Valentine Kabanets and Jin-Yi Cai.
-\newblock Circuit minimization problem.
-\newblock In \emph{Proceedings of the thirty-second annual ACM symposium on
-  Theory of computing}, pages 73--79, 2000.
-
 \bibitem[Li et~al.(2022)Li, Khan, Shi, Wang, Yu, and Xu]{deepgate}
-Min Li, Sadaf Khan, Zhengyuan Shi, Naixing Wang, Huang Yu, and Qiang Xu.
+M.~Li, S.~Khan, Z.~Shi, N.~Wang, H.~Yu, and Q.~Xu.
 \newblock Deepgate: Learning neural representations of logic gates.
 \newblock In \emph{Proceedings of the 59th ACM/IEEE Design Automation
   Conference}, pages 667--672, 2022.
@@ -48,44 +35,25 @@ A.~Mishchenko, S.~Chatterjee, and R.~Brayton.
 \newblock \doi{10.1145/1146909.1147048}.
 
 \bibitem[Neto et~al.(2023)Neto, Li, Gaillardon, and Yu]{flow-bandits}
-Walter~Lau Neto, Yingjie Li, Pierre-Emmanuel Gaillardon, and Cunxi Yu.
+W.~L. Neto, Y.~Li, P.-E. Gaillardon, and C.~Yu.
 \newblock Flowtune: End-to-end automatic logic optimization exploration via
   domain-specific multiarmed bandit.
 \newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
   Circuits and Systems}, 42\penalty0 (6):\penalty0 1912--1925, 2023.
 \newblock \doi{10.1109/TCAD.2022.3213611}.
 
-\bibitem[Ou et~al.(2024)Ou, Yang, and Liu]{economy}
-Suhua Ou, Qingshan Yang, and Jian Liu.
-\newblock The global production pattern of the semiconductor industry: an
-  empirical research based on trade network.
-\newblock \emph{Humanities and Social Sciences Communications}, 11\penalty0
-  (1):\penalty0 1--13, 2024.
-
-\bibitem[Panda and Najm(1998)]{resyn}
-Rajendran Panda and Farid~N. Najm.
-\newblock Post-mapping transformations for low-power synthesis.
-\newblock \emph{VLSI Design}, 7:\penalty0 289--301, 1998.
-\newblock URL \url{https://api.semanticscholar.org/CorpusID:6811282}.
-
-\bibitem[Schulman et~al.(2017)Schulman, Wolski, Dhariwal, Radford, and
-  Klimov]{ppo}
-John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
-\newblock Proximal policy optimization algorithms.
-\newblock \emph{arXiv preprint arXiv:1707.06347}, 2017.
-
 \bibitem[Stoll et~al.(2026)Stoll, Qian, Finkelshtein, Parviz, Weber, Frasca,
   Shavit, Siraudin, Mielke, Anastacio, Müller, Bechler-Speicher, Bronstein,
   Galkin, Hoos, Niepert, Perozzi, Tönshoff, and Morris]{graphbench}
-Timo Stoll, Chendi Qian, Ben Finkelshtein, Ali Parviz, Darius Weber, Fabrizio
-  Frasca, Hadar Shavit, Antoine Siraudin, Arman Mielke, Marie Anastacio, Erik
-  Müller, Maya Bechler-Speicher, Michael Bronstein, Mikhail Galkin, Holger
-  Hoos, Mathias Niepert, Bryan Perozzi, Jan Tönshoff, and Christopher Morris.
+T.~Stoll, C.~Qian, B.~Finkelshtein, A.~Parviz, D.~Weber, F.~Frasca, H.~Shavit,
+  A.~Siraudin, A.~Mielke, M.~Anastacio, E.~Müller, M.~Bechler-Speicher,
+  M.~Bronstein, M.~Galkin, H.~Hoos, M.~Niepert, B.~Perozzi, J.~Tönshoff, and
+  C.~Morris.
 \newblock Graphbench: Next-generation graph learning benchmarking, 2026.
 \newblock URL \url{https://arxiv.org/abs/2512.04475}.
 
 \bibitem[Zhu et~al.(2020)Zhu, Liu, Chen, Zhao, and Pan]{rl-gnn1}
-Keren Zhu, Mingjie Liu, Hao Chen, Zheng Zhao, and David~Z. Pan.
+K.~Zhu, M.~Liu, H.~Chen, Z.~Zhao, and D.~Z. Pan.
 \newblock Exploring logic optimizations with reinforcement learning and graph
   convolutional network.
 \newblock In \emph{2020 ACM/IEEE 2nd Workshop on Machine Learning for CAD
