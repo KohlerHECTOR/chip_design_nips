@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  20 SEP 2026 19:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.3.21)  22 SEP 2026 10:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -745,42 +745,37 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 77.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 142.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 142.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-42.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
+44.
 
+(/usr/share/texmf/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 144.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 144.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <9> on input line 144.
+
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
+Missing character: There is no ; in font nullfont!
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 2
+24.
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 142.
-
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-
-Underfull \hbox (badness 1496) in paragraph at lines 234--234
-\T1/lmr/m/n/8 # edges, last few graph ed-its
- []
-
 <../figures/fig_gcn_main.pdf, id=9, 594.57257pt x 222.3625pt>
 File: ../figures/fig_gcn_main.pdf Graphic file (type pdf)
 <use ../figures/fig_gcn_main.pdf>
-Package pdftex.def Info: ../figures/fig_gcn_main.pdf  used on input line 234.
-(pdftex.def)             Requested size: 309.46948pt x 115.73773pt.
+Package pdftex.def Info: ../figures/fig_gcn_main.pdf  used on input line 232.
+(pdftex.def)             Requested size: 435.86841pt x 163.00865pt.
 
-Overfull \hbox (1.8889pt too wide) in paragraph at lines 234--234
-[]$[]$  $[]$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 234--234
+Underfull \hbox (badness 10000) in paragraph at lines 232--232
 
  []
 
@@ -791,58 +786,65 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
+
+Underfull \hbox (badness 1122) in paragraph at lines 296--296
+[]\T1/lmr/m/n/8 Computing $\OML/lmm/m/it/8 V[]$ \T1/lmr/m/n/8 ex-actly is in-
+ []
+
+
+Underfull \hbox (badness 2073) in paragraph at lines 296--296
+[]\T1/lmr/m/n/8 With this su-per-vised dataset
+ []
+
+
+Underfull \hbox (badness 2376) in paragraph at lines 296--296
+\T1/lmr/m/n/8 we can study the pre-dic-tive
+ []
+
+
+Underfull \hbox (badness 1354) in paragraph at lines 296--296
+\T1/lmr/m/n/8 works (1-WL) on AIGs with
+ []
+
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 <../figures/fig_value_bounds.pdf, id=10, 630.06485pt x 349.64566pt>
 File: ../figures/fig_value_bounds.pdf Graphic file (type pdf)
 <use ../figures/fig_value_bounds.pdf>
-Package pdftex.def Info: ../figures/fig_value_bounds.pdf  used on input line 31
-0.
-(pdftex.def)             Requested size: 197.53685pt x 109.6161pt.
+Package pdftex.def Info: ../figures/fig_value_bounds.pdf  used on input line 30
+9.
+(pdftex.def)             Requested size: 207.9342pt x 115.38875pt.
+<../figures/fig_mpnn_depth.pdf, id=11, 497.21759pt x 348.20853pt>
+File: ../figures/fig_mpnn_depth.pdf Graphic file (type pdf)
+<use ../figures/fig_mpnn_depth.pdf>
+Package pdftex.def Info: ../figures/fig_mpnn_depth.pdf  used on input line 309.
+
+(pdftex.def)             Requested size: 207.9342pt x 145.61961pt.
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
-<../figures/fig_training_curves.pdf, id=11, 555.91441pt x 401.68832pt>
+<../figures/fig_training_curves.pdf, id=12, 555.91441pt x 401.68832pt>
 File: ../figures/fig_training_curves.pdf Graphic file (type pdf)
 <use ../figures/fig_training_curves.pdf>
 Package pdftex.def Info: ../figures/fig_training_curves.pdf  used on input line
- 321.
-(pdftex.def)             Requested size: 128.91818pt x 93.15253pt.
+ 318.
+(pdftex.def)             Requested size: 207.9342pt x 150.2466pt.
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
-<../figures/fig_mpnn_depth.pdf, id=12, 497.21759pt x 348.20853pt>
-File: ../figures/fig_mpnn_depth.pdf Graphic file (type pdf)
-<use ../figures/fig_mpnn_depth.pdf>
-Package pdftex.def Info: ../figures/fig_mpnn_depth.pdf  used on input line 338.
-
-(pdftex.def)             Requested size: 141.39372pt x 99.02261pt.
 <../figures/fig_gcn_ex_size.pdf, id=13, 537.4642pt x 169.65231pt>
 File: ../figures/fig_gcn_ex_size.pdf Graphic file (type pdf)
 <use ../figures/fig_gcn_ex_size.pdf>
-Package pdftex.def Info: ../figures/fig_gcn_ex_size.pdf  used on input line 338
+Package pdftex.def Info: ../figures/fig_gcn_ex_size.pdf  used on input line 330
 .
-(pdftex.def)             Requested size: 141.39372pt x 44.63147pt.
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 3
-48.
-(/usr/share/texmf/tex/latex/lm/ts1lmr.fd
-File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
+(pdftex.def)             Requested size: 207.9342pt x 65.63603pt.
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 (./poster.bbl
-Underfull \hbox (badness 1292) in paragraph at lines 38--44
-[]\T1/lmr/m/n/5 W. L. Neto, Y. Li, P.-E. Gail-lar-don, and C. Yu.  Flow-tune:
- []
-
-
-Underfull \hbox (badness 4899) in paragraph at lines 48--54
-\T1/lmr/m/n/5 M. Bechler-Speicher, M. Bron-stein, M. Galkin, H. Hoos,
+Underfull \hbox (badness 1810) in paragraph at lines 39--45
+[]\T1/lmr/m/n/5 T. Stoll, C. Qian, B. Finkelshtein, A. Parviz, D. We-ber,
  []
 
 )
@@ -852,12 +854,12 @@ Missing character: There is no ; in font nullfont!
 [2
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/
-dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/sha
-re/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-m
-athsy.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/share/texmf/
-fonts/enc/dvips/lm/lm-ts1.enc} <./Kit_logo_web_horizontal/CMJN.png> <../figures
-/fig_gcn_main.pdf> <../figures/fig_value_bounds.pdf> <../figures/fig_training_c
-urves.pdf> <../figures/fig_mpnn_depth.pdf> <../figures/fig_gcn_ex_size.pdf>]
+dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/
+texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-
+rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fon
+ts/enc/dvips/lm/lm-mathex.enc} <./Kit_logo_web_horizontal/CMJN.png> <../figures
+/fig_gcn_main.pdf> <../figures/fig_value_bounds.pdf> <../figures/fig_mpnn_depth
+.pdf> <../figures/fig_training_curves.pdf> <../figures/fig_gcn_ex_size.pdf>]
 (./poster.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
@@ -865,11 +867,11 @@ L3 programming layer <2024-01-22>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 17413 strings out of 474222
- 344793 string characters out of 5748733
- 2028975 words of memory out of 5000000
- 39304 multiletter control sequences out of 15000+600000
- 647879 words of font info for 99 fonts, out of 8000000 for 9000
+ 17328 strings out of 474222
+ 342914 string characters out of 5748733
+ 2020975 words of memory out of 5000000
+ 39218 multiletter control sequences out of 15000+600000
+ 648198 words of font info for 100 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  117i,15n,121p,408b,1625s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx8.pfb></usr/share/texmf/fonts/typ
@@ -886,11 +888,11 @@ lm/lmss9.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/t
 exmf/fonts/type1/public/lm/lmsy5.pfb></usr/share/texmf/fonts/type1/public/lm/lm
 sy6.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fon
 ts/type1/public/lm/lmsy9.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt8.pfb>
-
-Output written on poster.pdf (1 page, 586123 bytes).
+</usr/share/texmf/fonts/type1/public/lm/lmtt9.pfb>
+Output written on poster.pdf (1 page, 598100 bytes).
 PDF statistics:
- 440 PDF objects out of 1000 (max. 8388607)
- 150 compressed objects within 2 object streams
+ 445 PDF objects out of 1000 (max. 8388607)
+ 153 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  49 words of extra memory for PDF output out of 10000 (max. 10000000)
 

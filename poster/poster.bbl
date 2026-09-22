@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -18,13 +18,6 @@ A.~Hosny, S.~Hashemi, M.~Shalan, and S.~Reda.
 \newblock Drills: Deep reinforcement learning for logic synthesis.
 \newblock In \emph{2020 25th Asia and South Pacific Design Automation
   Conference (ASP-DAC)}, pages 581--586, 2020.
-\newblock \doi{10.1109/ASP-DAC47756.2020.9045559}.
-
-\bibitem[Li et~al.(2022)Li, Khan, Shi, Wang, Yu, and Xu]{deepgate}
-M.~Li, S.~Khan, Z.~Shi, N.~Wang, H.~Yu, and Q.~Xu.
-\newblock Deepgate: Learning neural representations of logic gates.
-\newblock In \emph{Proceedings of the 59th ACM/IEEE Design Automation
-  Conference}, pages 667--672, 2022.
 
 \bibitem[Mishchenko et~al.(2006)Mishchenko, Chatterjee, and Brayton]{rewriting}
 A.~Mishchenko, S.~Chatterjee, and R.~Brayton.
@@ -32,7 +25,6 @@ A.~Mishchenko, S.~Chatterjee, and R.~Brayton.
   synthesis.
 \newblock In \emph{2006 43rd ACM/IEEE Design Automation Conference}, pages
   532--535, 2006.
-\newblock \doi{10.1145/1146909.1147048}.
 
 \bibitem[Neto et~al.(2023)Neto, Li, Gaillardon, and Yu]{flow-bandits}
 W.~L. Neto, Y.~Li, P.-E. Gaillardon, and C.~Yu.
@@ -40,7 +32,6 @@ W.~L. Neto, Y.~Li, P.-E. Gaillardon, and C.~Yu.
   domain-specific multiarmed bandit.
 \newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
   Circuits and Systems}, 42\penalty0 (6):\penalty0 1912--1925, 2023.
-\newblock \doi{10.1109/TCAD.2022.3213611}.
 
 \bibitem[Stoll et~al.(2026)Stoll, Qian, Finkelshtein, Parviz, Weber, Frasca,
   Shavit, Siraudin, Mielke, Anastacio, Müller, Bechler-Speicher, Bronstein,
@@ -58,6 +49,5 @@ K.~Zhu, M.~Liu, H.~Chen, Z.~Zhao, and D.~Z. Pan.
   convolutional network.
 \newblock In \emph{2020 ACM/IEEE 2nd Workshop on Machine Learning for CAD
   (MLCAD)}, pages 145--150, 2020.
-\newblock \doi{10.1145/3380446.3430622}.
 
 \end{thebibliography}

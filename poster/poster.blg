@@ -3,44 +3,49 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: poster.aux
 The style file: abbrvnat.bst
 Database file #1: poster.bib
-You've used 7 entries,
+"{" immediately follows a field name---line 38 of file poster.bib
+ : @book
+ :      {sutton,
+I'm skipping whatever remains of this entry
+You've used 6 entries,
             2773 wiz_defined-function locations,
-            635 strings with 6501 characters,
-and the built_in function-call counts, 5118 in all, are:
-= -- 420
-> -- 426
-< -- 4
-+ -- 142
-- -- 135
-* -- 455
-:= -- 775
-add.period$ -- 25
-call.type$ -- 7
-change.case$ -- 66
-chr.to.int$ -- 7
-cite$ -- 14
-duplicate$ -- 193
-empty$ -- 334
-format.name$ -- 142
-if$ -- 1081
+            625 strings with 6172 characters,
+and the built_in function-call counts, 4290 in all, are:
+= -- 341
+> -- 369
+< -- 3
++ -- 123
+- -- 117
+* -- 383
+:= -- 653
+add.period$ -- 18
+call.type$ -- 6
+change.case$ -- 57
+chr.to.int$ -- 6
+cite$ -- 12
+duplicate$ -- 160
+empty$ -- 280
+format.name$ -- 123
+if$ -- 901
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 6
-newline$ -- 47
-num.names$ -- 28
-pop$ -- 145
+missing$ -- 5
+newline$ -- 38
+num.names$ -- 24
+pop$ -- 128
 preamble$ -- 1
-purify$ -- 59
+purify$ -- 51
 quote$ -- 0
-skip$ -- 182
+skip$ -- 151
 stack$ -- 0
-substring$ -- 157
-swap$ -- 49
-text.length$ -- 4
+substring$ -- 123
+swap$ -- 38
+text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 77
+type$ -- 66
 warning$ -- 0
-while$ -- 31
+while$ -- 25
 width$ -- 0
-write$ -- 104
+write$ -- 83
+(There was 1 error message)

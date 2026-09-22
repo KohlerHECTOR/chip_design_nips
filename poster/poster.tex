@@ -7,7 +7,7 @@
 \usepackage{tikz}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
-\usepackage[round]{natbib}
+\usepackage[numbers]{natbib}
 
 \selectcolormodel{cmyk}
 
@@ -81,9 +81,10 @@ Hector Kohler, Johannes Lutzeyer, Jesse Read  % Author names
 %	1. LOGIC SYNTHESIS WITH AND-INVERTER GRAPHS
 %----------------------------------------------------------------------------------------
 \headerbox{1. Logic synthesis with AIGs}{name=introduction,column=0,row=0,span=1}{
-Chip design needs the smallest circuit encoding a given Boolean function, which in practice means the smallest and-inverter graph (AIG): a DAG whose nodes are \textit{AND} gates and whose edge labels are \textit{NOT} signals.
-Below are two functionally equivalent AIGs of $f(x_1, x_2, x_3) = (\overline{x_1}\land x_2,\ x_2 \land x_3)$ with different numbers of nodes; \texttt{ABC} primitives rewrite an AIG locally to reduce the \textit{AND} count while preserving equivalence~\citep{rewriting}.
-
+  \begin{itemize}
+    \item Chip design needs the smallest circuit encoding a given Boolean function (NP).
+    \item In practice means the smallest and-inverter graph (AIG): nodes are \textit{AND} gates and edge labels are \textit{NOT} signals.
+  \end{itemize}
 \begin{posterfigure}
 \begin{minipage}[b]{0.48\linewidth}
     \centering
@@ -139,15 +140,18 @@ Below are two functionally equivalent AIGs of $f(x_1, x_2, x_3) = (\overline{x_1
 \end{minipage}
 
 \end{posterfigure}
+Two functionally equivalent AIGs of $f(x_1, x_2, x_3) = (\overline{x_1}\land x_2,\ x_2 \land x_3)$ with different numbers of nodes.
 }
 
 %----------------------------------------------------------------------------------------
 %	2. AIG REDUCTION AS AN MDP
 %----------------------------------------------------------------------------------------
-\headerbox{2. AIG reduction as an MDP}{name=how,column=1,row=0,span=2}{
-Each action is one \texttt{ABC} primitive applied to the whole graph and the reward grows as the number of \textit{AND} nodes drops; since the primitives preserve functional equivalence, every state reachable from $\mathcal{G}_0$ still computes $f$.
-Most reinforcement learning (RL) and other machine learning-based searches for logic synthesis act at this granularity~\citep{rl-gnn1,rl-logic1,flow-bandits}.
-DAG generative models fail to generate functionally equivalent AIGs~\cite{graphbench}.
+\headerbox{2. AIG reduction as a Markov decision process}{name=how,column=1,row=0,span=2}{
+  \begin{itemize}
+    \item Each action is one \texttt{ABC}primitive applied to the whole graph~\citep{rewriting} and the reward grows as the number of \textit{AND} nodes drops; primitives preserve functional equivalence.
+    \item Most RL and other machine learning-based searches act at this granularity~\citep{rl-gnn1,rl-logic1,flow-bandits}.
+    \item DAG generative models fail to generate functionally equivalent AIGs~\citep{graphbench}.
+  \end{itemize}
 \begin{posterfigure}
   % The picture is scaled to the box width, so the gates are given a large share
   % of the drawing to keep their labels legible at poster distance.
@@ -216,29 +220,21 @@ DAG generative models fail to generate functionally equivalent AIGs~\cite{graphb
         \end{scope}
   \end{tikzpicture}}
 \end{posterfigure}
-\vspace{1em}
+\vspace{-0.5em}
 }
 
 %----------------------------------------------------------------------------------------
 %	3. GRAPH REPRESENTATION AND RL
 %----------------------------------------------------------------------------------------
 \headerbox{3. Graph representation and RL}{name=ibmdp,column=0,below=introduction,span=2}{
-\begin{minipage}[c]{0.29\linewidth}
 We train \textbf{tuned} PPO agents on the ten benchmarks of~\citet{rl-gnn1} and compare GCN policies against policies that only see graph statistics (current \# nodes, \# edges, last few graph edits taken, current time step).
-Adding a GCN changes the final AND count by about one percent whatever the size of the encoder, and per benchmark that change mostly stays inside the no-GCN policy's own spread over seeds (grey band).
-\end{minipage}
-\hfill
-\begin{minipage}[c]{0.71\linewidth}
-  \includegraphics[width=\linewidth]{fig_gcn_main.pdf}
-\end{minipage}
+\includegraphics[width=\linewidth]{fig_gcn_main.pdf}
 }
 
 %----------------------------------------------------------------------------------------
 %	4. FINAL AIG SIZES
 %----------------------------------------------------------------------------------------
 \headerbox{4. Final AIG sizes}{name=triad,column=2,below=how,span=1}{
-Mean AND count after $H=20$ \texttt{ABC} primitives, over the five seeds of each configuration's best hyper-parameter cell, $\pm$ one standard deviation.
-All five encoders land within a few nodes of each other, and all of them below the \texttt{resyn2} baseline.
 
 \begin{posterfigure}
   \resizebox{\linewidth}{!}{\input{../tables/table_gcn_ablation}}
@@ -248,13 +244,15 @@ All five encoders land within a few nodes of each other, and all of them below t
 %----------------------------------------------------------------------------------------
 %	5. WHY GRAPH REPRESENTATIONS DO NOT HELP
 %----------------------------------------------------------------------------------------
-\headerbox{5. Why don't graph representations help?}{name=optimal,column=0,below=ibmdp,span=2}{
-\begin{minipage}[c]{0.43\linewidth}
-Computing $V^\star$ exactly is out of reach, so we estimate it: a random flow of \texttt{ABC} primitives applied to a benchmark $\mathcal{G}_0$ gives a state $G_0^i$, whose target $\widehat{V}(G_0^i)$ is the smallest AND count reached by $M=100$ rollouts of eight further random primitives.
-We build this supervised dataset in order to study the predictive power of message passing networks (1-WL) on AIGs with \texttt{Graphtester}~\citep{graphtester}.
+\headerbox{5. Why don't graph representation help?}{name=optimal,column=0,below=ibmdp,span=2}{
+\begin{minipage}[c]{0.33\linewidth}
+\begin{itemize}
+  \item Computing $V^\star$ exactly is intractable, so we estimate it.
+  \item With this supervised dataset we can study the predictive power of message passing networks (1-WL) on AIGs with \texttt{Graphtester}~\citep{graphtester}.
+\end{itemize}
 \end{minipage}
 \hfill
-\begin{minipage}[c]{0.55\linewidth}
+\begin{minipage}[c]{0.65\linewidth}
   \resizebox{\linewidth}{!}{\begin{tikzpicture}[
       aig/.style={draw,circle,inner sep=1.6pt,fill=black!12},
       state/.style={draw,thick,circle,inner sep=1.6pt,fill=teal!20},
@@ -300,12 +298,13 @@ We build this supervised dataset in order to study the predictive power of messa
 %----------------------------------------------------------------------------------------
 %	6. 1-WL REPRESENTATION FOR AIGS
 %----------------------------------------------------------------------------------------
-\headerbox{6. 1-WL representations for AIGs}{name=asym,column=2,below=triad,span=1}{
-Best error (a) and best ranking (b) achievable on $\widehat{V}$ by each model class, over nine benchmarks and ten seeds: each class is replaced by the optimal predictor for what it can distinguish~\citep{graphtester}, so no model in that class can do better.
-$^{*}$\texttt{C1355} has only six distinct targets.
-
+\headerbox{6. 1-WL representation error bounds}{name=asym,column=2,below=triad,span=1}{
 \begin{posterfigure}
-  \includegraphics[width=0.95\linewidth]{fig_value_bounds.pdf}
+  \includegraphics[width=1\linewidth]{fig_value_bounds.pdf}
+\end{posterfigure}
+\vspace{-1em}
+\begin{posterfigure}
+  \includegraphics[width=1\linewidth]{fig_mpnn_depth.pdf}
 \end{posterfigure}
 }
 
@@ -313,40 +312,24 @@ $^{*}$\texttt{C1355} has only six distinct targets.
 %	7. AIG-SPECIFIC VALUE MODELS
 %----------------------------------------------------------------------------------------
 \headerbox{7. AIG-specific value models}{name=results,column=0,below=optimal,span=1}{
-Validation error over training when predicting $\widehat{V}$ with tuned AIG-specific models~\citep{deepgate} and with generic graph representation models.
-
 \begin{posterfigure}
-  \includegraphics[width=0.62\linewidth]{fig_training_curves.pdf}
+  \includegraphics[width=1\linewidth]{fig_training_curves.pdf}
 \end{posterfigure}
 }
 
 %----------------------------------------------------------------------------------------
 %	8. ADDITIONAL RESULTS
 %----------------------------------------------------------------------------------------
-\headerbox{Additional results}{name=extra,column=1,below=optimal,span=1,above=bottom}{
-The message passing bound moves by at most $1.1\times10^{-3}$ between $k = 1$ and $k = 50$ refinement iterations, and labeling edges with direction or with the complement bit changes it by less than $10^{-6}$.
+\headerbox{Additional results and future work}{name=extra,column=1,below=optimal,span=1,above=bottom}{
+\includegraphics[width=1\linewidth]{fig_gcn_ex_size.pdf}
 
-\begin{posterfigure}
-  \includegraphics[width=0.68\linewidth]{fig_mpnn_depth.pdf}
-\end{posterfigure}
-
-Reduction against the MLP as a function of input circuit size on \texttt{ex200}--\texttt{ex299}, the line being the mean over size quartiles.
-
-\begin{posterfigure}
-  \includegraphics[width=0.68\linewidth]{fig_gcn_ex_size.pdf}
-\end{posterfigure}
-}
-
-%----------------------------------------------------------------------------------------
-%	9. FUTURE WORK
-%----------------------------------------------------------------------------------------
-\headerbox{8. Future work}{name=future,column=0,below=results,span=1,above=bottom}{
-\begin{itemize}\compresslist
-    \item Extend the analysis to non 1-WL representations, since some AIG-specific models might not be 1-WL.
+\begin{itemize}
+    \item Extend the analysis to non 1-WL representation, since some AIG-specific models might not be 1-WL.
     \item \texttt{ABC} implements much more than 5 primitives, but no search method uses them all. More actions would mean more varied states, which could be where graph representation learning helps.
 \end{itemize}
 }
 
+%----------------------------------------------------------------------------------------
 %----------------------------------------------------------------------------------------
 %	REFERENCES
 %----------------------------------------------------------------------------------------
