@@ -160,8 +160,8 @@ Our work reports such an ablation, in the fixed-horizon setting that~\citet{rl-g
 We keep that pipeline fixed---the Markov decision process, the policy and value heads, the training algorithm and the hyper-parameter grid---and vary only how the AIG is presented to the policy.
 We show the following results.
 
-\paragraph{Contributions:} First, we show that adding a graph convolutional network to the policy does not improve AIG minimization beyond a multi-layer perceptron (MLP) that reads graph statistics (number of nodes, of levels, \dots).
-Second, we give a candidate explanation: we compute, for AIG value prediction, the best error achievable by any model whose expressivity is bounded by the $1$-dimensional Weisfeiler-Leman refinement---which covers message passing networks---and find it no better than the one achievable from the graph statistics alone.
+\paragraph{Contributions:} First, we show that adding a graph convolutional network (GCN) to the policy does not improve AIG minimization beyond a multi-layer perceptron (MLP) that reads graph statistics (number of nodes, of levels, \dots).
+Second, we give a candidate explanation: we compute, for AIG value prediction, the best error achievable by any model whose expressivity is bounded by the $1$-dimensional Weisfeiler-Leman graph isomorphism test---which covers standard message passing networks---and find it no better than the one achievable from the graph statistics alone.
 Next, we present existing AIG minimization methods.
 
 \section{Related work}\label{sec:relwork}
@@ -301,10 +301,10 @@ $V^\star$ is the quantity a critic is trained to approximate in actor-critic met
 
 \subsection{Message passing neural networks}\label{sec:mpnn}
 A message passing neural network (MPNN)~\cite{mpnn} attaches a vector $h_v^{(0)}$ to each node $v$, initialized from that node's features, and refines it over $k$ rounds: {\small$h_v^{(t+1)} = \phi^{(t)}\Big(h_v^{(t)}, \textstyle\bigoplus_{u \in \mathcal{N}(v)} \psi^{(t)}\big(h_v^{(t)}, h_u^{(t)}, e_{uv}\big)\Big),$}
-where $\mathcal{N}(v)$ are the neighbours of $v$, $e_{uv}$ is an optional label on the edge between $u$ and $v$, $\bigoplus$ is a permutation-invariant aggregator, and $\phi^{(t)}, \psi^{(t)}$ are learned.
+where $\mathcal{N}(v)$ are the neighbors of $v$, $e_{uv}$ is an optional label on the edge between $u$ and $v$, $\bigoplus$ is a permutation-invariant aggregator, and $\phi^{(t)}, \psi^{(t)}$ are learned.
 A graph-level vector is then obtained by pooling $\{h_v^{(k)}\}_{v\in \mathcal{V}}$ with a second permutation-invariant readout.
 Architectures in this family differ only in the choice of $\psi$, $\bigoplus$ and $\phi$: GCN~\cite{gcn}, GIN~\cite{gin}, GAT~\cite{gat} and GraphSAGE~\cite{graphsage} are instances, and so are the AIG-specific encoders of appendix~\ref{app:trained}.
-They also share a limitation. After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman refinement assign the same color carry the same embedding~\cite{gin,wlgnn,graphtester}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
+They also share a limitation. After $k$ rounds, two nodes that $k$ iterations of the $1$-dimensional Weisfeiler-Leman (1-WL) algorithm assign the same color carry the same embedding~\cite{gin,wlgnn,graphtester}, so no network in the family can tell apart two AIGs that $1$-WL cannot.
 Section~\ref{sec:bounds} turns this into a lower bound on the error of every such encoder.
 
 Next, we present our methodology for studying the effect of MPNNs when using RL to train policies for AIG minimization formulated as an MDP.
@@ -316,7 +316,7 @@ We use a similar MDP to theirs: the actions are the five \texttt{ABC} primitives
 The reward differs slightly: writing $n_t$ for the number of AND nodes after $t$ actions, $R(s_t, a_t) = 1 - n_{t+1}/n_0$ is issued at every step, so with $\gamma = 1$ we optimize node count alone---the objective of section~\ref{sec:aig-min}---and not the multi-objective reward of~\citet{rl-logic1}.
 Unlike~\citet{rl-gnn1}, we use PPO~\cite{ppo} to train policies instead of REINFORCE~\cite{reinforce} since the former is the more modern and state-of-the-art learner.
 
-The policies we train always read a feature vector $x_\mathcal{G} \in \mathbb{R}^{|A|+5}$ holding the recent history of the actions taken so far, the AND and level counts of the current and previous AIG relative to $\mathcal{G}_0$, and the normalized time step: this is the same as in ~\citet{rl-logic1,rl-gnn1}.
+The policies we train always read a feature vector $x_\mathcal{G} \in \mathbb{R}^{|A|+5}$ holding the recent history of the actions taken so far, the AND and level counts of the current and previous AIG relative to $\mathcal{G}_0$, and the normalized time step: this is the same as in ~\citet{rl-logic1} and \citet{rl-gnn1}.
 This feature vector carries no AIG structural information, since two AIGs with the same size, depth and recent actions history are indistinguishable to it.
 The key novelty of~\citet{rl-gnn1} is to feed the policy a graph convolutional network~\cite{gcn} reading the AIG and pooling it into a graph-level vector concatenated with the aforementioned feature vector $x_\mathcal{G}$.
 This GCN addition has since then been built upon (cf. section~\ref{sec:related-rl}) but never ablated against e.g.~\citet{rl-logic1}.
@@ -446,7 +446,7 @@ A model that cannot distinguish two states must assign them the same prediction,
 No model in the class can beat that error, regardless of its size, its training procedure or its optimization.
 This is the protocol of \texttt{Graphtester}~\cite{graphtester}, which measures the theoretical boundary of MPNNs (cf. section~\ref{sec:mpnn}) on a given dataset rather than the performance of one trained instance; we reimplement it for the target of section~\ref{sec:dataset} and for four representations, ordered by what they can see: the number of nodes $|V_\mathcal{G}|$ alone, which is what a $0$-layer message passing network reduces to; the pair $(|V_\mathcal{G}|, d_\mathcal{G})$, with $d_\mathcal{G}$ the logic depth reported by \texttt{ABC}; the engineered statistics $x_\mathcal{G}$ of section~\ref{sec:features} in full, the action histogram included, which is exactly what the MLP baseline of section~\ref{sec:method} reads; and the $1$-WL coloring of the AIG, which upper bounds the separating power of every architecture of section~\ref{sec:mpnn}.
 Comparing the last two is the question of this section: what a learned encoder could express, against what the statistics already express.
-They are incomparable rather than nested---only the current size and depth entries of $x_\mathcal{G}$ are functions of the current AIG, the previous step's size and depth, the normalized time step and the action histogram being episode history that no encoder of the current graph can recover---so the $x_\mathcal{G}$ bound may fall below the $1$-WL bound without contradicting it, and a policy that reads both, as algorithm~\ref{alg:graphppo} does, is bounded by neither alone.
+They are incomparable rather than nested---only the current size and depth entries of $x_\mathcal{G}$ are functions of the current AIG, the previous step's size and depth, the normalized time step and the action histogram being episode history that no encoder of the current graph can recover---so the $x_\mathcal{G}$ bound may fall below the $1$-WL bound without contradicting it, and a policy that reads both, as algorithm~\ref{alg:graphppo} in Appendix~\ref{app:rl-hp} does, is bounded by neither alone.
 Besides the squared error, which we normalize by the variance of the target, we report how well each class can \emph{order} states, with Spearman's $\rho$, Kendall's $\tau$ and the weighted $\tau$, since a critic that ranks successors correctly is useful even when its absolute errors are large.
 The bounds are computed in sample, so a partition fine enough to isolate every state would drive the error to zero regardless of whether the representation carries any signal about $\widehat{V}$; we control for this by recomputing every bound with the targets randomly permuted across states, which leaves the partition intact and destroys the association.
 Every bound we report sits $11$ to $474$ times below its shuffled-label counterpart, depending on the benchmark, and the two partitions we compare are of nearly equal granularity, at $865$ parts for $x_\mathcal{G}$ and $860$ for $1$-WL out of $1{,}000$ states on average, so neither class is merely memorizing the targets nor given more degrees of freedom than the other.
@@ -519,6 +519,8 @@ Five primitives give the policy little to decide, and the states it can reach ar
 \texttt{ABC} exposes many more primitives.
 With more primitives, reachable states might differ from one another in more ways, and a representation that sees the circuit rather than its summary would have correspondingly more to distinguish.
 Rerunning both the ablation of section~\ref{sec:rl-exp} and the bounds of section~\ref{sec:bounds} over that action space would say whether our negative result is a property of AIG reduction itself or of the small action space it is usually given.
+
+\paragraph{Further Work on Bespoke Graph Representations.} It is possible that $k$-hop neighborhoods in AIGs do not exhibit great structural diversity and that therefore the structural information that is being processed by standard $k$-layer message passing neural networks is not helpful. Future work in this vein could focus on developing graph representations at an optimal granularity of locality to capture diverse, informative structural properties of the AIGs under consideration.   
 
 To conclude, we have proposed the first empirical study of graph representation learning in RL-based logic synthesis. We hope our work will help researchers design better RL algorithms for AIG minimization by choosing the right representations that help policies accurately distinguish valuable AIG states.
 
