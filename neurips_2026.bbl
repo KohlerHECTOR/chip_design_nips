@@ -1,4 +1,4 @@
-\begin{thebibliography}{48}
+\begin{thebibliography}{50}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -37,7 +37,7 @@ Animesh Basak~Chowdhury, Marco Romanelli, Benjamin Tan, Ramesh Karri, and
 \bibitem[Bellman(1957)]{Bellman}
 Richard Bellman.
 \newblock \emph{Dynamic Programming}.
-\newblock 1957.
+\newblock Princeton University Press, 1957.
 
 \bibitem[Brayton and Mishchenko(2010)]{abc}
 Robert~K. Brayton and Alan Mishchenko.
@@ -98,6 +98,15 @@ Antoine Grosnit, Cedric Malherbe, Rasul Tutunov, Xingchen Wan, Jun Wang, and
   1193--1196, 2022.
 \newblock \doi{10.23919/DATE54114.2022.9774632}.
 
+\bibitem[Haaswijk et~al.(2020)Haaswijk, Soeken, Mishchenko, and
+  De~Micheli]{exact-synthesis}
+Winston Haaswijk, Mathias Soeken, Alan Mishchenko, and Giovanni De~Micheli.
+\newblock {SAT}-based exact synthesis: Encodings, topology families, and
+  parallelism.
+\newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
+  Circuits and Systems}, 39\penalty0 (4):\penalty0 871--884, 2020.
+\newblock \doi{10.1109/TCAD.2019.2897703}.
+
 \bibitem[Hagberg et~al.(2008)Hagberg, Schult, and Swart]{networkx}
 Aric~A. Hagberg, Daniel~A. Schult, and Pieter~J. Swart.
 \newblock Exploring network structure, dynamics, and function using networkx.
@@ -117,6 +126,14 @@ Abdelrahman Hosny, Soheil Hashemi, Mohamed Shalan, and Sherief Reda.
   Conference (ASP-DAC)}, pages 581--586, 2020.
 \newblock \doi{10.1109/ASP-DAC47756.2020.9045559}.
 
+\bibitem[Ilango et~al.(2020)Ilango, Loff, and Oliveira]{ilango2020}
+Rahul Ilango, Bruno Loff, and Igor~C. Oliveira.
+\newblock {NP}-hardness of circuit minimization for multi-output functions.
+\newblock In \emph{35th Computational Complexity Conference (CCC 2020)}, volume
+  169 of \emph{Leibniz International Proceedings in Informatics (LIPIcs)},
+  pages 22:1--22:36, 2020.
+\newblock \doi{10.4230/LIPIcs.CCC.2020.22}.
+
 \bibitem[Kabanets and Cai(2000)]{nphard}
 Valentine Kabanets and Jin-Yi Cai.
 \newblock Circuit minimization problem.
@@ -133,21 +150,22 @@ Thomas~N. Kipf and Max Welling.
 \newblock Semi-supervised classification with graph convolutional networks.
 \newblock In \emph{International Conference on Learning Representations}, 2017.
 
-\bibitem[Li et~al.(2022)Li, Khan, Shi, Wang, Yu, and Xu]{deepgate}
-Min Li, Sadaf Khan, Zhengyuan Shi, Naixing Wang, Huang Yu, and Qiang Xu.
+\bibitem[Li et~al.(2022)Li, Khan, Shi, Wang, Huang, and Xu]{deepgate}
+Min Li, Sadaf Khan, Zhengyuan Shi, Naixing Wang, Yu~Huang, and Qiang Xu.
 \newblock Deepgate: Learning neural representations of logic gates.
 \newblock In \emph{Proceedings of the 59th ACM/IEEE Design Automation
   Conference}, pages 667--672, 2022.
+\newblock \doi{10.1145/3489517.3530497}.
 
-\bibitem[Li et~al.(2024)Li, Shitole, Chien, Man, Wang, Srinivas, Zhang,
+\bibitem[Li et~al.(2025)Li, Shitole, Chien, Man, Wang, Sridharan, Zhang,
   Krishna, and Li]{layerdag}
-Mufei Li, Viraj Shitole, Eli Chien, Changhai Man, Zhaodong Wang, Srinivas, Ying
-  Zhang, Tushar Krishna, and Pan Li.
-\newblock Layer{DAG}: A layerwise autoregressive diffusion model of directed
-  acyclic graphs for system.
-\newblock In \emph{Machine Learning for Computer Architecture and Systems
-  2024}, 2024.
-\newblock URL \url{https://openreview.net/forum?id=IsarrieeQA}.
+Mufei Li, Viraj Shitole, Eli Chien, Changhai Man, Zhaodong Wang, Srinivas
+  Sridharan, Ying Zhang, Tushar Krishna, and Pan Li.
+\newblock Layer{DAG}: A layerwise autoregressive diffusion model for directed
+  acyclic graph generation.
+\newblock In \emph{The Thirteenth International Conference on Learning
+  Representations}, 2025.
+\newblock URL \url{https://arxiv.org/abs/2411.02322}.
 
 \bibitem[Liu et~al.(2026)Liu, Tang, Pei, Yu, Zheng, He, Dai, Chen, and
   Yu]{contextual-bandit}
@@ -190,7 +208,8 @@ A.~Mishchenko, S.~Chatterjee, and R.~Brayton.
 \bibitem[Mishchenko and Brayton(2006)]{Mishchenko2006ScalableLS}
 Alan Mishchenko and Robert~K. Brayton.
 \newblock Scalable logic synthesis using a simple circuit structure.
-\newblock 2006.
+\newblock In \emph{Proceedings of the International Workshop on Logic and
+  Synthesis (IWLS)}, pages 15--22, 2006.
 \newblock URL \url{https://api.semanticscholar.org/CorpusID:8597391}.
 
 \bibitem[Mishchenko et~al.(2005)Mishchenko, Chatterjee, Jiang, and
@@ -199,6 +218,22 @@ Alan Mishchenko, Satrajit Chatterjee, Roland Jiang, and Robert~K. Brayton.
 \newblock Fraigs: A unifying representation for logic synthesis and
   verification, 2005.
 \newblock URL \url{https://api.semanticscholar.org/CorpusID:9209313}.
+
+\bibitem[Miyasaka(2024)]{transduction}
+Yukio Miyasaka.
+\newblock Transduction method for {AIG} minimization.
+\newblock In \emph{2024 29th Asia and South Pacific Design Automation
+  Conference (ASP-DAC)}, pages 398--403, 2024.
+\newblock \doi{10.1109/ASP-DAC58780.2024.10473816}.
+
+\bibitem[Miyasaka et~al.(2025)Miyasaka, Mishchenko, Wawrzynek, Rui{\'c}, and
+  Xu]{randomized-transduction}
+Yukio Miyasaka, Alan Mishchenko, John Wawrzynek, Dino Rui{\'c}, and Xiaoqing
+  Xu.
+\newblock High-effort logic synthesis using randomized transduction.
+\newblock In \emph{Proceedings of the 30th Asia and South Pacific Design
+  Automation Conference (ASP-DAC)}, pages 58--64, 2025.
+\newblock \doi{10.1145/3658617.3697720}.
 
 \bibitem[Mnih et~al.(2015)Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare,
   Graves, Riedmiller, Fidjeland, Ostrovski, et~al.]{dqn}
@@ -234,19 +269,6 @@ Walter~Lau Neto, Yingjie Li, Pierre-Emmanuel Gaillardon, and Cunxi Yu.
 \newblock \emph{IEEE Transactions on Computer-Aided Design of Integrated
   Circuits and Systems}, 42\penalty0 (6):\penalty0 1912--1925, 2023.
 \newblock \doi{10.1109/TCAD.2022.3213611}.
-
-\bibitem[Ou et~al.(2024)Ou, Yang, and Liu]{economy}
-Suhua Ou, Qingshan Yang, and Jian Liu.
-\newblock The global production pattern of the semiconductor industry: an
-  empirical research based on trade network.
-\newblock \emph{Humanities and Social Sciences Communications}, 11\penalty0
-  (1):\penalty0 1--13, 2024.
-
-\bibitem[Panda and Najm(1998)]{resyn}
-Rajendran Panda and Farid~N. Najm.
-\newblock Post-mapping transformations for low-power synthesis.
-\newblock \emph{VLSI Design}, 7:\penalty0 289--301, 1998.
-\newblock URL \url{https://api.semanticscholar.org/CorpusID:6811282}.
 
 \bibitem[Pei et~al.(2023)Pei, Liu, He, Chen, Zheng, Zhu, and Yu]{gnn-mcts}
 Zehua Pei, Fangzhou Liu, Zhuolun He, Guojin Chen, Haisheng Zheng, Keren Zhu,
@@ -287,11 +309,11 @@ John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov.
 \newblock Proximal policy optimization algorithms.
 \newblock \emph{arXiv preprint arXiv:1707.06347}, 2017.
 
-\bibitem[Shi et~al.(2016)Shi, Li, Zhang, Sun, and Yu]{hetero}
+\bibitem[Shi et~al.(2017)Shi, Li, Zhang, Sun, and Yu]{hetero}
 Chuan Shi, Yitong Li, Jiawei Zhang, Yizhou Sun, and Philip~S Yu.
 \newblock A survey of heterogeneous information network analysis.
 \newblock \emph{IEEE Transactions on Knowledge and Data Engineering},
-  29\penalty0 (1):\penalty0 17--37, 2016.
+  29\penalty0 (1):\penalty0 17--37, 2017.
 
 \bibitem[Stoll et~al.(2026)Stoll, Qian, Finkelshtein, Parviz, Weber, Frasca,
   Shavit, Siraudin, Mielke, Anastacio, Müller, Bechler-Speicher, Bronstein,
@@ -357,10 +379,13 @@ Keyulu Xu, Weihua Hu, Jure Leskovec, and Stefanie Jegelka.
 \newblock How powerful are graph neural networks?
 \newblock In \emph{International Conference on Learning Representations}, 2019.
 
-\bibitem[Zhao(2025)]{funcgnn}
-Qiyun Zhao.
-\newblock Funcgnn: Learning functional semantics of logic circuits with graph
-  neural networks, 2025.
+\bibitem[Zhao et~al.(2026)Zhao, Guo, Zhao, Wang, Li, and Jiang]{funcgnn}
+Qiyun Zhao, Shikai Guo, Wen Zhao, Ning Wang, Xiaochen Li, and He~Jiang.
+\newblock {FuncGNN}: Learning functional semantics of logic circuits with graph
+  neural networks.
+\newblock \emph{ACM Transactions on Reconfigurable Technology and Systems},
+  19\penalty0 (2):\penalty0 1--24, 2026.
+\newblock \doi{10.1145/3779445}.
 
 \bibitem[Zheng et~al.(2025)Zheng, Huang, Zhong, Shi, Dai, Xu, and Xu]{chipgrl}
 Ziyang Zheng, Shan Huang, Jianyuan Zhong, Zhengyuan Shi, Guohao Dai, Ningyi Xu,
